@@ -6,11 +6,11 @@ const CONFIG = {
     MAX_ZOOM: 18,
     MIN_ZOOM: 10,
     
-    // Colores por tipo de institución
+    // Colores por tipo de institución (Paleta personalizada)
     INSTITUTION_COLORS: {
-        universidad: '#2563eb',
-        colegio: '#10b981',
-        tecnico: '#f59e0b'
+        universidad: '#03588C',  // azul fuerte
+        colegio: '#03A63C',     // Verde resal
+        tecnico: '#F2CE16'      // Amarillo el
     },
     
     // Configuración de mapas
@@ -28,7 +28,7 @@ const CONFIG = {
             attribution: '© OpenStreetMap contributors'
         },
         minimal: {
-            name: 'Minimalista',
+            name: 'Barrios Barranquilla',
             url: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
             attribution: '© CARTO © OpenStreetMap contributors'
         },
@@ -56,7 +56,7 @@ const EDUCATIONAL_INSTITUTIONS = [
         programs: ['Ingeniería', 'Medicina', 'Administración', 'Derecho'],
         students: 12000,
         founded: 1966,
-        image: '../assets/images/images.jpeg'
+        image: 'src/assets/images/images.jpeg'
     },
     {
         id: 2,
@@ -70,7 +70,7 @@ const EDUCATIONAL_INSTITUTIONS = [
         programs: ['Psicología', 'Arquitectura', 'Comunicación Social'],
         students: 8500,
         founded: 1967,
-        image: '../assets/images/residuos2.jpg'
+        image: 'src/assets/images/residuos2.jpg'
     },
     {
         id: 3,
@@ -84,7 +84,7 @@ const EDUCATIONAL_INSTITUTIONS = [
         programs: ['Derecho', 'Contaduría', 'Ingeniería Industrial'],
         students: 3200,
         founded: 1973,
-        image: '../assets/images/residuos3.jpg'
+        image: 'src/assets/images/residuos3.jpg'
     },
     {
         id: 4,
@@ -98,7 +98,7 @@ const EDUCATIONAL_INSTITUTIONS = [
         programs: ['Medicina', 'Odontología', 'Fisioterapia', 'Enfermería'],
         students: 15000,
         founded: 1972,
-        image: '../assets/images/residuos 4.jpg'
+        image: 'src/assets/images/residuos 4.jpg'
     },
     
     // Colegios
@@ -114,7 +114,7 @@ const EDUCATIONAL_INSTITUTIONS = [
         levels: ['Preescolar', 'Primaria', 'Bachillerato'],
         students: 1200,
         founded: 1938,
-        image: '../assets/images/residuos 5.jpg'
+        image: 'src/assets/images/residuos 5.jpg'
     },
     {
         id: 6,
@@ -128,7 +128,7 @@ const EDUCATIONAL_INSTITUTIONS = [
         levels: ['Preescolar', 'Primaria', 'Bachillerato'],
         students: 800,
         founded: 1954,
-        image: '../assets/images/images.jpeg'
+        image: 'src/assets/images/images.jpeg'
     },
     {
         id: 7,
@@ -142,7 +142,7 @@ const EDUCATIONAL_INSTITUTIONS = [
         levels: ['Primaria', 'Bachillerato'],
         students: 950,
         founded: 1941,
-        image: '../assets/images/residuos2.jpg'
+        image: 'src/assets/images/residuos2.jpg'
     },
     {
         id: 8,
@@ -156,10 +156,10 @@ const EDUCATIONAL_INSTITUTIONS = [
         levels: ['Nursery', 'Primary', 'Secondary'],
         students: 650,
         founded: 1992,
-        image: '../assets/images/residuos3.jpg'
+        image: 'src/assets/images/residuos3.jpg'
     },
     
-    // Institutos Técnicos
+    // Instituciones técnicas
     {
         id: 9,
         name: 'SENA - Centro Industrial del Diseño',
@@ -172,7 +172,7 @@ const EDUCATIONAL_INSTITUTIONS = [
         programs: ['Diseño Gráfico', 'Sistemas', 'Mecánica Industrial'],
         students: 2500,
         founded: 1957,
-        image: '../assets/images/residuos 4.jpg'
+        image: 'src/assets/images/residuos 4.jpg'
     },
     {
         id: 10,
@@ -186,7 +186,7 @@ const EDUCATIONAL_INSTITUTIONS = [
         programs: ['Electricidad', 'Mecánica', 'Electrónica'],
         students: 1100,
         founded: 1962,
-        image: '../assets/images/residuos 5.jpg'
+        image: 'src/assets/images/residuos 5.jpg'
     },
     {
         id: 11,
@@ -200,7 +200,7 @@ const EDUCATIONAL_INSTITUTIONS = [
         programs: ['Sistemas', 'Administración', 'Contabilidad'],
         students: 3500,
         founded: 1950,
-        image: '../assets/images/images.jpeg'
+        image: 'src/assets/images/images.jpeg'
     },
     {
         id: 12,
@@ -214,7 +214,7 @@ const EDUCATIONAL_INSTITUTIONS = [
         programs: ['Soldadura', 'Refrigeración', 'Automotriz'],
         students: 800,
         founded: 1975,
-        image: '../assets/images/residuos2.jpg'
+        image: 'src/assets/images/residuos2.jpg'
     }
 ];
 
@@ -262,7 +262,10 @@ class BarranquillaEduMap {
             zoom: CONFIG.DEFAULT_ZOOM,
             minZoom: CONFIG.MIN_ZOOM,
             maxZoom: CONFIG.MAX_ZOOM,
-            zoomControl: false // Removemos el control por defecto
+            zoomControl: false, // Removemos el control por defecto
+            fadeAnimation: true,
+            zoomAnimation: true,
+            markerZoomAnimation: true
         });
         
         // Crear capas de mapa
@@ -274,7 +277,7 @@ class BarranquillaEduMap {
             });
         });
         
-        // Agregar capa inicial (minimalista)
+        // Agregar capa inicial (Barrios Barranquilla para enfatizar los barrios)
         this.currentLayer = this.mapLayers.minimal;
         this.currentLayer.addTo(map);
         
@@ -491,25 +494,17 @@ class BarranquillaEduMap {
      */
     createPopupContent(institution) {
         return `
-            <div class="popup-content">
-                <div class="popup-header">
-                    ${institution.image ? `<img data-src="${institution.image}" alt="${institution.name}" class="institution-image lazy-load" loading="lazy">` : ''}
-                    <h4>${institution.name}</h4>
-                    <span class="institution-badge ${institution.type}">
-                        ${this.getTypeLabel(institution.type)}
-                    </span>
-                </div>
-                <div class="popup-body">
-                    <p><i class="fas fa-map-marker-alt"></i> ${institution.address}</p>
-                    <p><i class="fas fa-phone"></i> ${institution.phone}</p>
-                    <p class="description">${institution.description}</p>
-                </div>
-                <div class="popup-actions">
-                    <button onclick="eduMap.selectInstitution(${institution.id})" class="popup-btn primary">
-                        <i class="fas fa-info-circle"></i> Ver detalles
-                    </button>
-                </div>
-            </div>
+            ${institution.image ? `<img src="${institution.image}" alt="${institution.name}" class="institution-image" loading="lazy">` : ''}
+            <h4>${institution.name}</h4>
+            <span class="institution-badge ${institution.type}">
+                ${this.getTypeLabel(institution.type)}
+            </span>
+            <p><i class="fas fa-map-marker-alt"></i> ${institution.address}</p>
+            <p><i class="fas fa-phone"></i> ${institution.phone}</p>
+            <p class="description">${institution.description}</p>
+            <button onclick="eduMap.selectInstitution(${institution.id})" class="popup-btn primary">
+                <i class="fas fa-info-circle"></i> Ver detalles
+            </button>
         `;
     }
     
@@ -981,37 +976,43 @@ const additionalStyles = `
             animation: pulse 2s infinite;
         }
         
-        .popup-content {
+        .leaflet-popup-content {
             font-family: 'Inter', sans-serif;
+            padding: 0;
+            background: #0F1B26;  /* azul oscuro */
+            border-radius: 8px;
+            overflow: hidden;
+            margin: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            border: 1px solid #03588C;
         }
-        
-        .popup-header {
-            margin-bottom: 12px;
+
+        .leaflet-popup-content::before {
+            content: '';
+            display: block;
+            height: 4px;
+            background: linear-gradient(90deg, #03588C 0%, #03A63C 50%, #F2CE16 100%);
         }
-        
-        .popup-header h4 {
-            margin: 0 0 8px 0;
-            color: #1e293b;
+
+        .leaflet-popup-content h4 {
+            margin: 12px 12px 8px 12px;
+            color: #F2F2F2;  /* gris fondos */
             font-size: 16px;
             font-weight: 600;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+            line-height: 1.3;
         }
         
         .institution-image {
-            width: 100%;
+            width: calc(100% - 24px);
             height: 120px;
             object-fit: cover;
-            border-radius: 8px;
-            margin-bottom: 12px;
-            transition: opacity 0.3s ease;
-        }
-        
-        .institution-image.lazy-load {
-            opacity: 0;
-            background: #f1f5f9;
-        }
-        
-        .institution-image.loaded {
-            opacity: 1;
+            margin: 8px 12px 12px 12px;
+            border-radius: 6px;
+            transition: opacity 0.2s ease;
+            background: #03588C;  /* azul fuerte */
+            border: 2px solid #F2CE16;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
         }
         
         .institution-badge {
@@ -1024,27 +1025,28 @@ const additionalStyles = `
         }
         
         .institution-badge.universidad {
-            background: #2563eb;
+            background: #03588C;  /* azul fuerte */
         }
-        
+
         .institution-badge.colegio {
-            background: #10b981;
+            background: #03A63C;  /* Verde resal */
         }
-        
+
         .institution-badge.tecnico {
-            background: #f59e0b;
+            background: #F2CE16;  /* Amarillo el */
+            color: #0F1B26;  /* azul oscuro para contraste */
         }
         
-        .popup-body p {
-            margin: 8px 0;
+        .leaflet-popup-content p {
+            margin: 6px 12px;
             font-size: 14px;
-            color: #64748b;
+            color: #F2F2F2;  /* gris fondos */
         }
-        
-        .popup-body i {
+
+        .leaflet-popup-content i {
             width: 16px;
             margin-right: 8px;
-            color: #94a3b8;
+            color: #F2CE16;  /* amarillo */
         }
         
         .description {
@@ -1052,8 +1054,13 @@ const additionalStyles = `
             margin-top: 12px !important;
         }
         
-        .popup-actions {
-            margin-top: 16px;
+        .leaflet-popup-content .popup-btn {
+            margin: 12px;
+            width: calc(100% - 24px);
+        }
+
+        .leaflet-popup-content .institution-badge {
+            margin: 0 12px 8px 12px;
         }
         
         .popup-btn {
@@ -1067,12 +1074,13 @@ const additionalStyles = `
         }
         
         .popup-btn.primary {
-            background: #2563eb;
-            color: white;
+            background: #03588C;  /* azul fuerte */
+            color: #F2F2F2;  /* gris fondos para contraste */
         }
-        
+
         .popup-btn.primary:hover {
-            background: #1d4ed8;
+            background: #0F1B26;  /* azul oscuro */
+            color: #F2F2F2;  /* gris fondos para contraste */
         }
         
         .no-results {
@@ -1091,3 +1099,42 @@ const additionalStyles = `
 
 // Inyectar estilos adicionales
 document.head.insertAdjacentHTML('beforeend', additionalStyles);
+
+// Estilos para optimización de popups
+const popupOptimizationStyles = `
+    <style>
+        /* Optimización de animaciones de popup */
+        .leaflet-popup {
+            animation: popupFadeIn 0.15s ease-out;
+        }
+        
+        .leaflet-popup.leaflet-popup-closing {
+            animation: popupFadeOut 0.1s ease-in;
+        }
+        
+        @keyframes popupFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        
+        @keyframes popupFadeOut {
+            from {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+            to {
+                opacity: 0;
+                transform: translateY(-5px) scale(0.98);
+            }
+        }
+    </style>
+`;
+
+// Inyectar estilos de optimización de popups
+document.head.insertAdjacentHTML('beforeend', popupOptimizationStyles);

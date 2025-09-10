@@ -306,7 +306,7 @@ body {
     backdrop-filter: blur(20px) saturate(180%);
     -webkit-backdrop-filter: blur(20px) saturate(180%);
     border-bottom: 1px solid var(--border);
-    padding: 12px 24px;
+    padding: 8px 24px;
     position: sticky;
     top: 0;
     z-index: 1000;
@@ -326,22 +326,23 @@ body {
     display: flex;
     align-items: center;
     gap: 16px;
-    padding: 4px 0;
+    padding: 0;
 }
 
 .logo-section::before {
-    content: '';
-    width: 60px;
-    height: 60px;
-    background-image: url('../assets/logos/Logo_Simbolo.png');
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-    display: block;
+    display: none; /* Ocultamos el pseudo-elemento para usar la imagen directa */
 }
 
 .logo-section i {
     display: none; /* Ocultamos el icono FontAwesome para usar el logo */
+}
+
+.header-logo {
+    width: 150px;
+    height: 150px;
+    object-fit: contain;
+    display: block;
+    filter: invert(1) brightness(0);
 }
 
 .logo-section h1 {
