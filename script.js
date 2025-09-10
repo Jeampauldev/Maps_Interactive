@@ -56,7 +56,7 @@ const EDUCATIONAL_INSTITUTIONS = [
         programs: ['Ingeniería', 'Medicina', 'Administración', 'Derecho'],
         students: 12000,
         founded: 1966,
-        image: 'Imagenes/images.jpeg'
+        image: './Imagenes/images.jpeg'
     },
     {
         id: 2,
@@ -70,7 +70,7 @@ const EDUCATIONAL_INSTITUTIONS = [
         programs: ['Psicología', 'Arquitectura', 'Comunicación Social'],
         students: 8500,
         founded: 1967,
-        image: 'Imagenes/residuos2.jpg'
+        image: './Imagenes/residuos2.jpg'
     },
     {
         id: 3,
@@ -84,7 +84,7 @@ const EDUCATIONAL_INSTITUTIONS = [
         programs: ['Derecho', 'Contaduría', 'Ingeniería Industrial'],
         students: 3200,
         founded: 1973,
-        image: 'Imagenes/residuos3.jpg'
+        image: './Imagenes/residuos3.jpg'
     },
     {
         id: 4,
@@ -98,7 +98,7 @@ const EDUCATIONAL_INSTITUTIONS = [
         programs: ['Medicina', 'Odontología', 'Fisioterapia', 'Enfermería'],
         students: 15000,
         founded: 1972,
-        image: 'Imagenes/residuos 4.jpg'
+        image: './Imagenes/residuos 4.jpg'
     },
     
     // Colegios
@@ -114,7 +114,7 @@ const EDUCATIONAL_INSTITUTIONS = [
         levels: ['Preescolar', 'Primaria', 'Bachillerato'],
         students: 1200,
         founded: 1938,
-        image: 'Imagenes/residuos 5.jpg'
+        image: './Imagenes/residuos 5.jpg'
     },
     {
         id: 6,
@@ -128,7 +128,7 @@ const EDUCATIONAL_INSTITUTIONS = [
         levels: ['Preescolar', 'Primaria', 'Bachillerato'],
         students: 800,
         founded: 1954,
-        image: 'Imagenes/images.jpeg'
+        image: './Imagenes/images.jpeg'
     },
     {
         id: 7,
@@ -142,7 +142,7 @@ const EDUCATIONAL_INSTITUTIONS = [
         levels: ['Primaria', 'Bachillerato'],
         students: 950,
         founded: 1941,
-        image: 'Imagenes/residuos2.jpg'
+        image: './Imagenes/residuos2.jpg'
     },
     {
         id: 8,
@@ -156,7 +156,7 @@ const EDUCATIONAL_INSTITUTIONS = [
         levels: ['Nursery', 'Primary', 'Secondary'],
         students: 650,
         founded: 1992,
-        image: 'Imagenes/residuos3.jpg'
+        image: './Imagenes/residuos3.jpg'
     },
     
     // Institutos Técnicos
@@ -172,7 +172,7 @@ const EDUCATIONAL_INSTITUTIONS = [
         programs: ['Diseño Gráfico', 'Sistemas', 'Mecánica Industrial'],
         students: 2500,
         founded: 1957,
-        image: 'Imagenes/residuos 4.jpg'
+        image: './Imagenes/residuos 4.jpg'
     },
     {
         id: 10,
@@ -186,7 +186,7 @@ const EDUCATIONAL_INSTITUTIONS = [
         programs: ['Electricidad', 'Mecánica', 'Electrónica'],
         students: 1100,
         founded: 1962,
-        image: 'Imagenes/residuos 5.jpg'
+        image: './Imagenes/residuos 5.jpg'
     },
     {
         id: 11,
@@ -200,7 +200,7 @@ const EDUCATIONAL_INSTITUTIONS = [
         programs: ['Sistemas', 'Administración', 'Contabilidad'],
         students: 3500,
         founded: 1950,
-        image: 'Imagenes/images.jpeg'
+        image: './Imagenes/images.jpeg'
     },
     {
         id: 12,
@@ -214,7 +214,7 @@ const EDUCATIONAL_INSTITUTIONS = [
         programs: ['Soldadura', 'Refrigeración', 'Automotriz'],
         students: 800,
         founded: 1975,
-        image: 'Imagenes/residuos2.jpg'
+        image: './Imagenes/residuos2.jpg'
     }
 ];
 

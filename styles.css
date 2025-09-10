@@ -1,28 +1,28 @@
 /* ===== FUENTES PERSONALIZADAS ===== */
 @font-face {
     font-family: 'Volkswagen';
-    src: url('fuente_letra/SoftMaker - VolkswagenSerial.otf') format('opentype');
+    src: url('./fuente_letra/SoftMaker - VolkswagenSerial.otf') format('opentype');
     font-weight: normal;
     font-style: normal;
 }
 
 @font-face {
     font-family: 'Volkswagen';
-    src: url('fuente_letra/SoftMaker - Volkswagen Serial Bold.ttf') format('truetype');
+    src: url('./fuente_letra/SoftMaker - Volkswagen Serial Bold.ttf') format('truetype');
     font-weight: bold;
     font-style: normal;
 }
 
 @font-face {
     font-family: 'Volkswagen';
-    src: url('fuente_letra/SoftMaker - VolkswagenSerial-Heavy.otf') format('opentype');
+    src: url('./fuente_letra/SoftMaker - VolkswagenSerial-Heavy.otf') format('opentype');
     font-weight: 900;
     font-style: normal;
 }
 
 @font-face {
     font-family: 'Volkswagen';
-    src: url('fuente_letra/SoftMaker - VolkswagenSerial-LightItalic.otf') format('opentype');
+    src: url('./fuente_letra/SoftMaker - VolkswagenSerial-LightItalic.otf') format('opentype');
     font-weight: 300;
     font-style: italic;
 }
@@ -157,7 +157,7 @@ body {
     content: '';
     width: 60px;
     height: 60px;
-    background-image: url('Logo/Logo_Simbolo.png');
+    background-image: url('./Logo/Logo_Simbolo.png');
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
