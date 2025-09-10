@@ -22,13 +22,19 @@ const CONFIG = {
     
     // Configuración de capas de mapa
     MAP_LAYERS: {
+        barrios: {
+            name: 'Barrios Barranquilla',
+            url: 'https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png',
+            attribution: '© CARTO © OpenStreetMap contributors',
+            style: 'custom-barrios'
+        },
         detailed: {
             name: 'Detallado',
             url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
             attribution: '© OpenStreetMap contributors'
         },
         minimal: {
-            name: 'Barrios Barranquilla',
+            name: 'Minimalista',
             url: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
             attribution: '© CARTO © OpenStreetMap contributors'
         },
@@ -277,9 +283,8 @@ class BarranquillaEduMap {
             });
         });
         
-        // Agregar capa inicial (Barrios Barranquilla para enfatizar los barrios)
-        this.currentLayer = this.mapLayers.minimal;
-        this.currentLayer.addTo(map);
+        // Cargar capa de barrios de forma asíncrona
+        await this.loadBarriosLayer();
         
         // Crear capa para los marcadores
         markersLayer = L.layerGroup().addTo(map);
@@ -289,12 +294,20 @@ class BarranquillaEduMap {
             position: 'bottomright'
         }).addTo(map);
         
-        // Configurar control de capas
+        // Configurar control de capas después de cargar barrios
         this.setupLayerControl();
+        
+        // Agregar estilos CSS para popups de barrios
+        this.addBarriosPopupStyles();
         
         // Configurar eventos del mapa
         map.on('click', () => {
             this.hideInstitutionInfo();
+        });
+        
+        // Agregar control de zoom para etiquetas de barrios
+        map.on('zoomend', () => {
+            this.updateLabelsVisibility(map.getZoom());
         });
         
         return map;
@@ -358,6 +371,21 @@ class BarranquillaEduMap {
     }
     
     /**
+     * Método para cargar la capa de barrios de forma asíncrona
+     */
+    async loadBarriosLayer() {
+        try {
+            this.barriosLayer = await this.createCustomBarriosLayer();
+            this.barriosLayer.addTo(map);
+        } catch (error) {
+            console.error('Error cargando capa de barrios:', error);
+            // Fallback: usar capa de barrios básica
+            this.currentLayer = this.mapLayers.barrios;
+            this.currentLayer.addTo(map);
+        }
+    }
+    
+    /**
      * Configura el control de capas del mapa
      */
     setupLayerControl() {
@@ -367,8 +395,385 @@ class BarranquillaEduMap {
                 this.changeMapLayer(e.target.value);
             });
         }
+        
+        // Crear control de capas simplificado si no existe
+        if (!this.layerControl && this.barriosLayer) {
+            const baseLayers = {
+                '🏘️ Barrios': this.barriosLayer,
+                '🗺️ Detallado': this.mapLayers.detailed,
+                '✨ Minimalista': this.mapLayers.minimal
+            };
+            
+            this.layerControl = L.control.layers(baseLayers, {}, {
+                 position: 'topright',
+                 collapsed: true
+             }).addTo(map);
+        }
     }
     
+    async createCustomBarriosLayer() {
+        try {
+            const response = await fetch('./src/data/Barrios_de_Barranquilla_según_POT_20250910.geojson');
+            const geojsonData = await response.json();
+            
+            // Crear grupo de capas para barrios y etiquetas
+            const barriosGroup = L.layerGroup();
+            
+            const barriosLayer = L.geoJSON(geojsonData, {
+                style: (feature) => {
+                    return {
+                        color: CONFIG.INSTITUTION_COLORS.universidad,
+                        fillColor: CONFIG.INSTITUTION_COLORS.colegio,
+                        fillOpacity: 0.3,
+                        weight: 2,
+                        opacity: 0.8
+                    };
+                },
+                onEachFeature: (feature, layer) => {
+                    if (feature.properties && feature.properties.nombre) {
+                        const popupContent = `
+                            <div class="barrio-popup">
+                                <h3>${feature.properties.nombre}</h3>
+                                <p><strong>Localidad:</strong> ${feature.properties.localidad || 'No especificada'}</p>
+                                <p><strong>Pieza Urbana:</strong> ${feature.properties.pieza_urba || 'No especificada'}</p>
+                            </div>
+                        `;
+                        layer.bindPopup(popupContent);
+                        
+                        // Crear etiqueta permanente para el nombre del barrio
+                        const bounds = layer.getBounds();
+                        const center = bounds.getCenter();
+                        
+                        // Calcular tamaño dinámico basado en el área del barrio
+                        const area = (bounds.getNorthEast().lat - bounds.getSouthWest().lat) * 
+                                   (bounds.getNorthEast().lng - bounds.getSouthWest().lng);
+                        const labelWidth = Math.min(Math.max(feature.properties.nombre.length * 8, 60), 150);
+                        
+                        const labelIcon = L.divIcon({
+                            className: 'barrio-label-container',
+                            html: `<div class="barrio-label" data-zoom-min="13">${feature.properties.nombre}</div>`,
+                            iconSize: [labelWidth, 20],
+                            iconAnchor: [labelWidth/2, 10]
+                        });
+                        
+                        const labelMarker = L.marker(center, { 
+                            icon: labelIcon,
+                            interactive: false,
+                            zIndexOffset: 500
+                        });
+                        
+                        barriosGroup.addLayer(labelMarker);
+                    }
+                }
+            });
+            
+            // Agregar la capa de polígonos al grupo
+            barriosGroup.addLayer(barriosLayer);
+            
+            // Agregar funcionalidad de edición
+            barriosLayer.on('add', () => {
+                this.enableBarriosEditing();
+            });
+            
+            return barriosGroup;
+        } catch (error) {
+            console.error('Error cargando los barrios de Barranquilla:', error);
+            // Fallback: crear capa de tile como respaldo
+            const fallbackLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png', {
+                attribution: '© CARTO © OpenStreetMap contributors | Barrios Editables',
+                maxZoom: CONFIG.MAX_ZOOM,
+                minZoom: CONFIG.MIN_ZOOM,
+                className: 'editable-barrios-layer'
+            });
+            
+            fallbackLayer.on('add', () => {
+                this.enableBarriosEditing();
+            });
+            
+            return fallbackLayer;
+        }
+    }
+    
+    enableBarriosEditing() {
+        // Crear botón para personalizar barrios
+        const editButton = L.control({ position: 'topleft' });
+        editButton.onAdd = () => {
+            const div = L.DomUtil.create('div', 'leaflet-bar leaflet-control leaflet-control-custom');
+            div.innerHTML = '<button onclick="eduMap.openBarriosEditor()" title="Personalizar Barrios"><i class="fas fa-edit"></i></button>';
+            div.style.backgroundColor = '#0F1B26';
+            div.style.color = '#FFFFFF';
+            div.style.padding = '5px';
+            div.style.borderRadius = '4px';
+            return div;
+        };
+        
+        if (!this.editControl) {
+             this.editControl = editButton.addTo(this.map);
+         }
+    }
+    
+    openBarriosEditor() {
+        // Crear modal para editar configuración de barrios
+        const modal = document.createElement('div');
+        modal.className = 'barrios-editor-modal';
+        modal.innerHTML = `
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Editor de Barrios - Barranquilla</h3>
+                    <button onclick="this.parentElement.parentElement.parentElement.remove()">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="editor-section">
+                        <h4>Colores del Mapa</h4>
+                        <label>Filtro de Color: <input type="range" id="hue-slider" min="0" max="360" value="200" oninput="eduMap.updateMapFilter()"></label>
+                        <label>Saturación: <input type="range" id="saturation-slider" min="0" max="200" value="120" oninput="eduMap.updateMapFilter()"></label>
+                        <label>Brillo: <input type="range" id="brightness-slider" min="0" max="200" value="90" oninput="eduMap.updateMapFilter()"></label>
+                    </div>
+                    <div class="editor-section">
+                        <h4>Barrios Destacados</h4>
+                        <textarea id="barrios-list" placeholder="Ingrese nombres de barrios separados por comas\nEj: El Prado, Riomar, Villa Country, Alto Prado"></textarea>
+                        <button onclick="eduMap.highlightBarrios()">Destacar Barrios</button>
+                    </div>
+                    <div class="editor-section">
+                        <h4>Configuración Avanzada</h4>
+                        <label><input type="checkbox" id="show-labels" onchange="eduMap.toggleLabels()"> Mostrar Etiquetas</label>
+                        <label><input type="checkbox" id="show-borders" onchange="eduMap.toggleBorders()"> Mostrar Límites</label>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(modal);
+        this.injectEditorStyles();
+    }
+    
+    updateMapFilter() {
+        const hue = document.getElementById('hue-slider')?.value || 200;
+        const saturation = document.getElementById('saturation-slider')?.value || 120;
+        const brightness = document.getElementById('brightness-slider')?.value || 90;
+        
+        const filterValue = `hue-rotate(${hue}deg) saturate(${saturation/100}) brightness(${brightness/100})`;
+        
+        const layers = document.querySelectorAll('.editable-barrios-layer');
+        layers.forEach(layer => {
+            layer.style.filter = filterValue;
+        });
+    }
+    
+    highlightBarrios() {
+        const barriosList = document.getElementById('barrios-list')?.value;
+        if (barriosList) {
+            const barrios = barriosList.split(',').map(b => b.trim());
+            console.log('Destacando barrios:', barrios);
+            // Aquí se puede implementar lógica para destacar barrios específicos
+            this.showToast(`Destacando ${barrios.length} barrios: ${barrios.join(', ')}`, 'success');
+        }
+    }
+    
+    toggleLabels() {
+        const showLabels = document.getElementById('show-labels')?.checked;
+        console.log('Etiquetas:', showLabels ? 'Activadas' : 'Desactivadas');
+        // Implementar lógica para mostrar/ocultar etiquetas
+    }
+    
+    toggleBorders() {
+        const showBorders = document.getElementById('show-borders')?.checked;
+        console.log('Límites:', showBorders ? 'Activados' : 'Desactivados');
+        // Implementar lógica para mostrar/ocultar límites
+    }
+    
+    /**
+     * Actualiza la visibilidad de las etiquetas de barrios según el nivel de zoom
+     */
+    updateLabelsVisibility(zoomLevel) {
+        const labels = document.querySelectorAll('.barrio-label[data-zoom-min]');
+        labels.forEach(label => {
+            const minZoom = parseInt(label.getAttribute('data-zoom-min'));
+            if (zoomLevel >= minZoom) {
+                label.style.opacity = '1';
+                label.style.transform = 'scale(1)';
+                label.style.display = 'block';
+            } else {
+                label.style.opacity = '0';
+                label.style.transform = 'scale(0.9)';
+                label.style.display = 'none';
+            }
+        });
+    }
+    
+    injectEditorStyles() {
+        if (document.getElementById('barrios-editor-styles')) return;
+        
+        const styles = document.createElement('style');
+        styles.id = 'barrios-editor-styles';
+        styles.textContent = `
+            .barrios-editor-modal {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0,0,0,0.7);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 10000;
+            }
+            .modal-content {
+                background: white;
+                border-radius: 8px;
+                width: 90%;
+                max-width: 500px;
+                max-height: 80vh;
+                overflow-y: auto;
+            }
+            .modal-header {
+                background: #0F1B26;
+                color: white;
+                padding: 15px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                border-radius: 8px 8px 0 0;
+            }
+            .modal-header button {
+                background: none;
+                border: none;
+                color: white;
+                font-size: 20px;
+                cursor: pointer;
+            }
+            .modal-body {
+                padding: 20px;
+            }
+            .editor-section {
+                margin-bottom: 20px;
+                padding-bottom: 15px;
+                border-bottom: 1px solid #eee;
+            }
+            .editor-section h4 {
+                color: #0F1B26;
+                margin-bottom: 10px;
+            }
+            .editor-section label {
+                display: block;
+                margin-bottom: 8px;
+                color: #333;
+            }
+            .editor-section input[type="range"] {
+                width: 100%;
+                margin-left: 10px;
+            }
+            .editor-section textarea {
+                width: 100%;
+                height: 80px;
+                padding: 8px;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+                resize: vertical;
+            }
+            .editor-section button {
+                background: #03588C;
+                color: white;
+                border: none;
+                padding: 8px 16px;
+                border-radius: 4px;
+                cursor: pointer;
+                margin-top: 8px;
+            }
+            .editor-section button:hover {
+                background: #2E5984;
+            }
+        `;
+        document.head.appendChild(styles);
+    }
+    
+    /**
+     * Agrega estilos CSS específicos para los popups de barrios
+     */
+    addBarriosPopupStyles() {
+        if (document.getElementById('barrios-popup-styles')) return;
+        
+        const styles = document.createElement('style');
+        styles.id = 'barrios-popup-styles';
+        styles.textContent = `
+            .leaflet-popup-content-wrapper {
+                background: transparent !important;
+                box-shadow: none !important;
+                border-radius: 0 !important;
+                padding: 0 !important;
+            }
+            
+            .leaflet-popup-tip {
+                background: transparent !important;
+                box-shadow: none !important;
+            }
+            
+            .leaflet-popup-close-button {
+                background: rgba(3, 88, 140, 0.9) !important;
+                color: #FFFFFF !important;
+                width: 24px !important;
+                height: 24px !important;
+                border-radius: 50% !important;
+                border: 2px solid rgba(255, 255, 255, 0.3) !important;
+                font-size: 16px !important;
+                font-weight: bold !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                text-decoration: none !important;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+                transition: all 0.2s ease !important;
+                top: -8px !important;
+                right: -8px !important;
+                z-index: 1000 !important;
+            }
+            
+            .leaflet-popup-close-button:hover {
+                background: rgba(242, 206, 22, 0.9) !important;
+                color: #0F1B26 !important;
+                transform: scale(1.1) !important;
+                border-color: rgba(255, 255, 255, 0.6) !important;
+            }
+            
+            .barrio-popup {
+                font-family: 'Inter', sans-serif;
+                padding: 16px;
+                background: linear-gradient(135deg, rgba(15, 27, 38, 0.95) 0%, rgba(46, 89, 132, 0.95) 100%);
+                color: #F2F2F2;
+                border-radius: 12px;
+                box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+                border: 2px solid rgba(3, 88, 140, 0.6);
+                backdrop-filter: blur(10px);
+                min-width: 200px;
+                max-width: 280px;
+            }
+            
+            .barrio-popup h3 {
+                margin: 0 0 12px 0;
+                color: #F2CE16;
+                font-size: 18px;
+                font-weight: 600;
+                text-shadow: 0 2px 4px rgba(0,0,0,0.6);
+                text-align: center;
+                border-bottom: 2px solid rgba(242, 206, 22, 0.3);
+                padding-bottom: 8px;
+            }
+            
+            .barrio-popup p {
+                margin: 6px 0;
+                font-size: 14px;
+                line-height: 1.5;
+            }
+            
+            .barrio-popup strong {
+                color: #03A63C;
+                font-weight: 500;
+            }
+        `;
+        document.head.appendChild(styles);
+    }
+
     /**
      * Cambia la capa del mapa
      */
@@ -1138,3 +1543,166 @@ const popupOptimizationStyles = `
 
 // Inyectar estilos de optimización de popups
 document.head.insertAdjacentHTML('beforeend', popupOptimizationStyles);
+
+// Estilos CSS personalizados para colorear el mapa con la paleta institucional
+const mapCustomStyles = `
+    <style>
+        /* Estilos para las imágenes de instituciones */
+        .institution-image {
+            width: 80px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border: 2px solid #0F1B26;
+            box-shadow: 0 2px 8px rgba(15, 27, 38, 0.2);
+        }
+        
+        /* Estilos personalizados para la capa de barrios */
+        .custom-barrios-layer {
+            filter: hue-rotate(200deg) saturate(1.2) brightness(0.9);
+        }
+        
+        /* Personalización del mapa base con colores institucionales */
+        .leaflet-container {
+            background-color: #E8F4FD !important;
+        }
+        
+        /* Estilos para elementos del mapa */
+        .leaflet-control-zoom a {
+            background-color: #0F1B26 !important;
+            color: #FFFFFF !important;
+            border: 1px solid #2E5984 !important;
+        }
+        
+        .leaflet-control-zoom a:hover {
+            background-color: #2E5984 !important;
+        }
+        
+        /* Personalización de controles de capas */
+        .leaflet-control-layers {
+            background: linear-gradient(135deg, rgba(15, 27, 38, 0.9) 0%, rgba(46, 89, 132, 0.9) 100%) !important;
+            color: #FFFFFF !important;
+            border: 1px solid rgba(3, 88, 140, 0.4) !important;
+            border-radius: 12px !important;
+            backdrop-filter: blur(10px) !important;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3) !important;
+            padding: 8px !important;
+            min-width: 160px !important;
+        }
+
+        .leaflet-control-layers-toggle {
+            background: linear-gradient(135deg, #03588C 0%, #2E5984 100%) !important;
+            color: #FFFFFF !important;
+            border-radius: 8px !important;
+            border: 1px solid rgba(255, 255, 255, 0.2) !important;
+            transition: all 0.2s ease !important;
+            width: 32px !important;
+            height: 32px !important;
+        }
+        
+        .leaflet-control-layers-toggle:hover {
+            background: linear-gradient(135deg, #F2CE16 0%, #03A63C 100%) !important;
+            color: #0F1B26 !important;
+            transform: scale(1.05) !important;
+        }
+        
+        .leaflet-control-layers label {
+            color: #F2F2F2 !important;
+            font-size: 13px !important;
+            font-weight: 500 !important;
+            margin: 4px 0 !important;
+            display: flex !important;
+            align-items: center !important;
+            transition: color 0.2s ease !important;
+        }
+        
+        .leaflet-control-layers label:hover {
+            color: #F2CE16 !important;
+        }
+        
+        .leaflet-control-layers input[type="radio"] {
+            accent-color: #F2CE16 !important;
+            margin-right: 8px !important;
+        }
+        
+        .leaflet-control-layers-separator {
+            border-top: 1px solid rgba(242, 206, 22, 0.3) !important;
+            margin: 8px 0 !important;
+        }
+        
+        /* Estilos para etiquetas de barrios */
+        .barrio-label-container {
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+        }
+        
+        .barrio-label {
+            background: rgba(3, 88, 140, 0.75);
+            color: white;
+            padding: 2px 6px;
+            border-radius: 8px;
+            font-size: 9px;
+            font-weight: 500;
+            text-align: center;
+            white-space: nowrap;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(2px);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            letter-spacing: 0.2px;
+            text-shadow: 0 1px 1px rgba(0, 0, 0, 0.4);
+            transition: all 0.2s ease;
+            cursor: default;
+            pointer-events: none;
+            opacity: 0;
+            transform: scale(0.9);
+        }
+        
+        /* Control de visibilidad por zoom */
+        .leaflet-zoom-level-10 .barrio-label[data-zoom-min="13"],
+        .leaflet-zoom-level-11 .barrio-label[data-zoom-min="13"],
+        .leaflet-zoom-level-12 .barrio-label[data-zoom-min="13"] {
+            opacity: 0;
+            display: none;
+        }
+        
+        .leaflet-zoom-level-13 .barrio-label[data-zoom-min="13"],
+        .leaflet-zoom-level-14 .barrio-label[data-zoom-min="13"],
+        .leaflet-zoom-level-15 .barrio-label[data-zoom-min="13"],
+        .leaflet-zoom-level-16 .barrio-label[data-zoom-min="13"],
+        .leaflet-zoom-level-17 .barrio-label[data-zoom-min="13"],
+        .leaflet-zoom-level-18 .barrio-label[data-zoom-min="13"] {
+            opacity: 1;
+            transform: scale(1);
+            display: block;
+        }
+        
+        /* Tamaños responsivos más sutiles */
+        .leaflet-zoom-level-13 .barrio-label {
+            font-size: 8px;
+            padding: 1px 4px;
+        }
+        
+        .leaflet-zoom-level-14 .barrio-label {
+            font-size: 9px;
+            padding: 2px 5px;
+        }
+        
+        .leaflet-zoom-level-15 .barrio-label,
+        .leaflet-zoom-level-16 .barrio-label {
+            font-size: 10px;
+            padding: 2px 6px;
+        }
+        
+        .leaflet-zoom-level-17 .barrio-label,
+        .leaflet-zoom-level-18 .barrio-label {
+            font-size: 11px;
+            padding: 3px 7px;
+        }
+    </style>
+`;
+
+// Insertar estilos en el head
+document.head.insertAdjacentHTML('beforeend', mapCustomStyles);
