@@ -1,0 +1,5 @@
+azul oscuro: #0F1B26
+azul fuerte: #03588C  
+Verde resal: #03A63C
+Amarillo el: #F2CE16
+gris fondos y letras de contrastes: #F2F2F2
