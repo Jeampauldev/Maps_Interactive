@@ -1,0 +1,25 @@
+{
+  "name": "maps-interactive",
+  "version": "1.0.0",
+  "description": "Mapa interactivo de Barranquilla con instituciones educativas",
+  "main": "index.html",
+  "scripts": {
+    "start": "python -m http.server 8000",
+    "dev": "python -m http.server 8000"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Jeampauldev/Maps_Interactive.git"
+  },
+  "keywords": [
+    "map",
+    "interactive",
+    "barranquilla",
+    "education",
+    "leaflet"
+  ],
+  "author": "Jeampauldev",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {}
+}
