@@ -20,7 +20,7 @@
       ]
     },
     {
-      "source": "/Imagenes/(.*)",
+      "source": "/src/assets/(.*)",
       "headers": [
         {
           "key": "Cache-Control",
@@ -29,7 +29,7 @@
       ]
     },
     {
-      "source": "/fuente_letra/(.*)",
+      "source": "/src/webfonts/(.*)",
       "headers": [
         {
           "key": "Cache-Control",
@@ -38,11 +38,11 @@
       ]
     },
     {
-      "source": "/Logo/(.*)",
+      "source": "/src/libs/(.*)",
       "headers": [
         {
           "key": "Cache-Control",
-          "value": "public, max-age=2678400"
+          "value": "public, max-age=31536000, immutable"
         }
       ]
     },
@@ -64,7 +64,7 @@
       ]
     },
     {
-      "source": "/(.*)\.html",
+      "source": "/(.*)\\.html",
       "headers": [
         {
           "key": "Cache-Control",
@@ -94,6 +94,26 @@
         {
           "key": "Expires",
           "value": "0"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self'; script-src 'self' 'unsafe-inline' unpkg.com cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' unpkg.com cdnjs.cloudflare.com fonts.googleapis.com; font-src 'self' cdnjs.cloudflare.com fonts.gstatic.com; img-src 'self' data: *.openstreetmap.org *.tile.openstreetmap.org; connect-src 'self' *.openstreetmap.org *.tile.openstreetmap.org"
         }
       ]
     }

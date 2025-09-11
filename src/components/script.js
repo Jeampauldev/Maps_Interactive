@@ -283,6 +283,10 @@ class BarranquillaEduMap {
             });
         });
         
+        // Agregar capa base por defecto (minimalista) para evitar fondo azul
+        this.currentLayer = this.mapLayers.minimal;
+        this.currentLayer.addTo(map);
+        
         // Cargar capa de barrios de forma asíncrona
         await this.loadBarriosLayer();
         
@@ -376,44 +380,43 @@ class BarranquillaEduMap {
     async loadBarriosLayer() {
         try {
             this.barriosLayer = await this.createCustomBarriosLayer();
-            this.barriosLayer.addTo(map);
+            if (map && this.barriosLayer) {
+                this.barriosLayer.addTo(map);
+            }
         } catch (error) {
             console.error('Error cargando capa de barrios:', error);
             // Fallback: usar capa de barrios básica
-            this.currentLayer = this.mapLayers.barrios;
-            this.currentLayer.addTo(map);
+            if (this.mapLayers && this.mapLayers.barrios && map) {
+                this.currentLayer = this.mapLayers.barrios;
+                this.currentLayer.addTo(map);
+            }
         }
     }
     
     /**
-     * Configura el control de capas del mapa
+     * Configura el control de capas del mapa (solo selector HTML integrado)
      */
     setupLayerControl() {
         const layerSelect = document.getElementById('layerSelect');
         if (layerSelect) {
+            // Establecer valor por defecto en el selector
+            layerSelect.value = 'minimal';
+            
             layerSelect.addEventListener('change', (e) => {
                 this.changeMapLayer(e.target.value);
             });
         }
         
-        // Crear control de capas simplificado si no existe
-        if (!this.layerControl && this.barriosLayer) {
-            const baseLayers = {
-                '🏘️ Barrios': this.barriosLayer,
-                '🗺️ Detallado': this.mapLayers.detailed,
-                '✨ Minimalista': this.mapLayers.minimal
-            };
-            
-            this.layerControl = L.control.layers(baseLayers, {}, {
-                 position: 'topright',
-                 collapsed: true
-             }).addTo(map);
-        }
+        // No crear controles duplicados de Leaflet
+        // Solo usar el selector HTML integrado en la interfaz
     }
     
     async createCustomBarriosLayer() {
         try {
-            const response = await fetch('./src/data/Barrios_de_Barranquilla_según_POT_20250910.geojson');
+            const response = await fetch('./src/data/barrios_ultra_optimizado.geojson');
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
             const geojsonData = await response.json();
             
             // Crear grupo de capas para barrios y etiquetas
@@ -423,9 +426,9 @@ class BarranquillaEduMap {
                 style: (feature) => {
                     return {
                         color: CONFIG.INSTITUTION_COLORS.universidad,
-                        fillColor: CONFIG.INSTITUTION_COLORS.colegio,
-                        fillOpacity: 0.3,
-                        weight: 2,
+                        fillColor: 'transparent',
+                        fillOpacity: 0,
+                        weight: 0.5,
                         opacity: 0.8
                     };
                 },
@@ -470,10 +473,8 @@ class BarranquillaEduMap {
             // Agregar la capa de polígonos al grupo
             barriosGroup.addLayer(barriosLayer);
             
-            // Agregar funcionalidad de edición
-            barriosLayer.on('add', () => {
-                this.enableBarriosEditing();
-            });
+            // No agregar controles de edición duplicados
+            // La funcionalidad de edición se maneja desde la interfaz principal
             
             return barriosGroup;
         } catch (error) {
@@ -486,66 +487,15 @@ class BarranquillaEduMap {
                 className: 'editable-barrios-layer'
             });
             
-            fallbackLayer.on('add', () => {
-                this.enableBarriosEditing();
-            });
+            // Fallback sin controles duplicados
             
             return fallbackLayer;
         }
     }
     
-    enableBarriosEditing() {
-        // Crear botón para personalizar barrios
-        const editButton = L.control({ position: 'topleft' });
-        editButton.onAdd = () => {
-            const div = L.DomUtil.create('div', 'leaflet-bar leaflet-control leaflet-control-custom');
-            div.innerHTML = '<button onclick="eduMap.openBarriosEditor()" title="Personalizar Barrios"><i class="fas fa-edit"></i></button>';
-            div.style.backgroundColor = '#0F1B26';
-            div.style.color = '#FFFFFF';
-            div.style.padding = '5px';
-            div.style.borderRadius = '4px';
-            return div;
-        };
-        
-        if (!this.editControl) {
-             this.editControl = editButton.addTo(this.map);
-         }
-    }
+    // Método eliminado - funcionalidad de edición integrada en la interfaz principal
     
-    openBarriosEditor() {
-        // Crear modal para editar configuración de barrios
-        const modal = document.createElement('div');
-        modal.className = 'barrios-editor-modal';
-        modal.innerHTML = `
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h3>Editor de Barrios - Barranquilla</h3>
-                    <button onclick="this.parentElement.parentElement.parentElement.remove()">&times;</button>
-                </div>
-                <div class="modal-body">
-                    <div class="editor-section">
-                        <h4>Colores del Mapa</h4>
-                        <label>Filtro de Color: <input type="range" id="hue-slider" min="0" max="360" value="200" oninput="eduMap.updateMapFilter()"></label>
-                        <label>Saturación: <input type="range" id="saturation-slider" min="0" max="200" value="120" oninput="eduMap.updateMapFilter()"></label>
-                        <label>Brillo: <input type="range" id="brightness-slider" min="0" max="200" value="90" oninput="eduMap.updateMapFilter()"></label>
-                    </div>
-                    <div class="editor-section">
-                        <h4>Barrios Destacados</h4>
-                        <textarea id="barrios-list" placeholder="Ingrese nombres de barrios separados por comas\nEj: El Prado, Riomar, Villa Country, Alto Prado"></textarea>
-                        <button onclick="eduMap.highlightBarrios()">Destacar Barrios</button>
-                    </div>
-                    <div class="editor-section">
-                        <h4>Configuración Avanzada</h4>
-                        <label><input type="checkbox" id="show-labels" onchange="eduMap.toggleLabels()"> Mostrar Etiquetas</label>
-                        <label><input type="checkbox" id="show-borders" onchange="eduMap.toggleBorders()"> Mostrar Límites</label>
-                    </div>
-                </div>
-            </div>
-        `;
-        
-        document.body.appendChild(modal);
-        this.injectEditorStyles();
-    }
+    // Método eliminado - funcionalidad de edición integrada en la interfaz principal
     
     updateMapFilter() {
         const hue = document.getElementById('hue-slider')?.value || 200;
@@ -775,19 +725,41 @@ class BarranquillaEduMap {
     }
 
     /**
-     * Cambia la capa del mapa
+     * Cambia la capa del mapa con validación y manejo de errores
+     * Integrado con el selector HTML del DOM
      */
     changeMapLayer(layerKey) {
-        if (this.currentLayer) {
-            map.removeLayer(this.currentLayer);
+        try {
+            // Validar que la capa existe
+            if (!this.mapLayers[layerKey]) {
+                console.warn(`Capa no encontrada: ${layerKey}`);
+                this.showToast('Error: Capa de mapa no disponible', 'error');
+                return;
+            }
+            
+            // Remover capa actual si existe
+            if (this.currentLayer) {
+                map.removeLayer(this.currentLayer);
+            }
+            
+            // Agregar nueva capa
+            this.currentLayer = this.mapLayers[layerKey];
+            this.currentLayer.addTo(map);
+            
+            // Actualizar selector HTML para mantener sincronización
+            const layerSelector = document.getElementById('layer-selector');
+            if (layerSelector && layerSelector.value !== layerKey) {
+                layerSelector.value = layerKey;
+            }
+            
+            // Mostrar notificación de éxito
+            const layerName = CONFIG.MAP_LAYERS[layerKey]?.name || layerKey;
+            this.showToast(`Mapa cambiado a: ${layerName}`, 'success');
+            
+        } catch (error) {
+            console.error('Error al cambiar capa del mapa:', error);
+            this.showToast('Error al cambiar la capa del mapa', 'error');
         }
-        
-        this.currentLayer = this.mapLayers[layerKey];
-        this.currentLayer.addTo(map);
-        
-        // Mostrar notificación
-        const layerName = CONFIG.MAP_LAYERS[layerKey].name;
-        this.showToast(`Mapa cambiado a: ${layerName}`, 'info');
     }
     
     /**
@@ -1639,25 +1611,26 @@ const mapCustomStyles = `
         }
         
         .barrio-label {
-            background: rgba(3, 88, 140, 0.75);
+            background: rgba(3, 88, 140, 0.85);
             color: white;
-            padding: 2px 6px;
-            border-radius: 8px;
-            font-size: 9px;
-            font-weight: 500;
+            padding: 1px 4px;
+            border-radius: 6px;
+            font-size: 7px;
+            font-weight: 600;
             text-align: center;
             white-space: nowrap;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(2px);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(3px);
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            letter-spacing: 0.2px;
-            text-shadow: 0 1px 1px rgba(0, 0, 0, 0.4);
+            letter-spacing: 0.1px;
+            text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
             transition: all 0.2s ease;
             cursor: default;
             pointer-events: none;
             opacity: 0;
             transform: scale(0.9);
+            line-height: 1.2;
         }
         
         /* Control de visibilidad por zoom */
@@ -1679,27 +1652,27 @@ const mapCustomStyles = `
             display: block;
         }
         
-        /* Tamaños responsivos más sutiles */
+        /* Tamaños responsivos más pequeños y sutiles */
         .leaflet-zoom-level-13 .barrio-label {
-            font-size: 8px;
-            padding: 1px 4px;
+            font-size: 6px;
+            padding: 1px 3px;
         }
         
         .leaflet-zoom-level-14 .barrio-label {
-            font-size: 9px;
-            padding: 2px 5px;
+            font-size: 7px;
+            padding: 1px 4px;
         }
         
         .leaflet-zoom-level-15 .barrio-label,
         .leaflet-zoom-level-16 .barrio-label {
-            font-size: 10px;
-            padding: 2px 6px;
+            font-size: 8px;
+            padding: 2px 5px;
         }
         
         .leaflet-zoom-level-17 .barrio-label,
         .leaflet-zoom-level-18 .barrio-label {
-            font-size: 11px;
-            padding: 3px 7px;
+            font-size: 9px;
+            padding: 2px 6px;
         }
     </style>
 `;

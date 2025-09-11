@@ -10,18 +10,14 @@ const STATIC_ASSETS = [
   '/index.html',
   '/src/styles/styles.css',
   '/src/components/script.js',
-  '/src/assets/icons/icons.js',
   '/manifest.json',
-  '/src/assets/logos/Logo_Simbolo.png',
-  '/src/assets/fonts/SoftMaker - VolkswagenSerial.otf',
-  '/src/assets/fonts/SoftMaker - Volkswagen Serial Bold.ttf',
-  '/src/assets/fonts/SoftMaker - VolkswagenSerial-Heavy.otf',
-  '/src/assets/fonts/SoftMaker - VolkswagenSerial-LightItalic.otf',
-  // Leaflet assets
-  'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css',
-  'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js',
-  // FontAwesome
-  'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css'
+  '/src/assets/logos/Alcaldia_Original.png',
+  '/src/libs/leaflet.css',
+  '/src/libs/leaflet.js',
+  '/src/libs/font-awesome.css',
+  '/src/webfonts/fa-solid-900.woff2',
+  '/src/webfonts/fa-solid-900.ttf',
+  '/src/data/barrios_ultra_optimizado.geojson'
 ];
 
 // Recursos dinámicos (imágenes, tiles del mapa)
