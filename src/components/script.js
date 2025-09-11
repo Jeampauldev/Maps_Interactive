@@ -747,7 +747,7 @@ class BarranquillaEduMap {
             this.currentLayer.addTo(map);
             
             // Actualizar selector HTML para mantener sincronización
-            const layerSelector = document.getElementById('layer-selector');
+            const layerSelector = document.getElementById('layerSelect');
             if (layerSelector && layerSelector.value !== layerKey) {
                 layerSelector.value = layerKey;
             }
@@ -1537,7 +1537,7 @@ const mapCustomStyles = `
         
         /* Personalización del mapa base con colores institucionales */
         .leaflet-container {
-            background-color: #E8F4FD !important;
+            background-color: transparent !important;
         }
         
         /* Estilos para elementos del mapa */
