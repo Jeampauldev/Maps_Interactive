@@ -300,6 +300,10 @@ body {
     height: 100vh;
     width: 100%;
     max-width: 100vw;
+    /* Prevenir fondo blanco durante carga en Vercel */
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 
 /* Prevenir scroll horizontal global */
@@ -861,6 +865,14 @@ html {
     border-radius: var(--border-radius-lg);
     box-sizing: border-box;
     overflow: hidden;
+    /* Prevenir fondo blanco durante carga de tiles */
+    background-image: linear-gradient(45deg, #f0f0f0 25%, transparent 25%), 
+                      linear-gradient(-45deg, #f0f0f0 25%, transparent 25%), 
+                      linear-gradient(45deg, transparent 75%, #f0f0f0 75%), 
+                      linear-gradient(-45deg, transparent 75%, #f0f0f0 75%);
+    background-size: 20px 20px;
+    background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+    background-color: #f8f9fa;
 }
 
 .map-controls {
@@ -1553,4 +1565,36 @@ html {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     transform: translateX(-50%) translateY(-100%);
     margin-top: -8px;
+}
+
+/* Estilos para prevenir fondo blanco en tiles de Leaflet */
+.leaflet-tile {
+    background: #f8f9fa !important;
+    opacity: 0.9;
+    /* Transición suave para evitar parpadeo */
+    transition: opacity 0.3s ease-in-out;
+}
+
+.leaflet-tile-loaded {
+    opacity: 1 !important;
+}
+
+.leaflet-tile-container {
+    background: #f8f9fa !important;
+}
+
+/* Loader para tiles que están cargando */
+.leaflet-tile:not(.leaflet-tile-loaded) {
+    background: linear-gradient(45deg, #e9ecef 25%, transparent 25%), 
+                linear-gradient(-45deg, #e9ecef 25%, transparent 25%), 
+                linear-gradient(45deg, transparent 75%, #e9ecef 75%), 
+                linear-gradient(-45deg, transparent 75%, #e9ecef 75%) !important;
+    background-size: 10px 10px !important;
+    background-position: 0 0, 0 5px, 5px -5px, -5px 0px !important;
+    animation: tileLoading 1s linear infinite;
+}
+
+@keyframes tileLoading {
+    0% { background-position: 0 0, 0 5px, 5px -5px, -5px 0px; }
+    100% { background-position: 10px 10px, 10px 15px, 15px 5px, 5px 10px; }
 }

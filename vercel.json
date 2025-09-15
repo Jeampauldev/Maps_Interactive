@@ -51,57 +51,29 @@
       "headers": [
         {
           "key": "Cache-Control",
-          "value": "no-cache, no-store, must-revalidate"
-        },
-        {
-          "key": "Pragma",
-          "value": "no-cache"
-        },
-        {
-          "key": "Expires",
-          "value": "0"
+          "value": "public, max-age=0, must-revalidate"
         }
       ]
     },
     {
-      "source": "/(.*)\\.html",
+      "source": "/src/data/(.*)",
       "headers": [
         {
           "key": "Cache-Control",
-          "value": "no-cache, no-store, must-revalidate"
-        },
-        {
-          "key": "Pragma",
-          "value": "no-cache"
-        },
-        {
-          "key": "Expires",
-          "value": "0"
+          "value": "public, max-age=3600"
         }
       ]
     },
     {
-      "source": "/",
+      "source": "/(.*)",
       "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "no-cache, no-store, must-revalidate"
-        },
-        {
-          "key": "Pragma",
-          "value": "no-cache"
-        },
-        {
-          "key": "Expires",
-          "value": "0"
-        },
-        {
-          "key": "X-Frame-Options",
-          "value": "DENY"
-        },
         {
           "key": "X-Content-Type-Options",
           "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "SAMEORIGIN"
         },
         {
           "key": "X-XSS-Protection",
@@ -113,7 +85,7 @@
         },
         {
           "key": "Content-Security-Policy",
-          "value": "default-src 'self'; script-src 'self' 'unsafe-inline' unpkg.com cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' unpkg.com cdnjs.cloudflare.com fonts.googleapis.com; font-src 'self' cdnjs.cloudflare.com fonts.gstatic.com; img-src 'self' data: *.openstreetmap.org *.tile.openstreetmap.org; connect-src 'self' *.openstreetmap.org *.tile.openstreetmap.org"
+          "value": "default-src 'self'; script-src 'self' 'unsafe-inline' unpkg.com cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' unpkg.com cdnjs.cloudflare.com fonts.googleapis.com; font-src 'self' cdnjs.cloudflare.com fonts.gstatic.com; img-src 'self' data: *.openstreetmap.org *.tile.openstreetmap.org *.basemaps.cartocdn.com *.arcgisonline.com server.arcgisonline.com; connect-src 'self' *.openstreetmap.org *.tile.openstreetmap.org *.basemaps.cartocdn.com *.arcgisonline.com server.arcgisonline.com"
         }
       ]
     }
@@ -123,5 +95,10 @@
       "source": "/(.*)",
       "destination": "/index.html"
     }
-  ]
+  ],
+  "functions": {
+    "src/components/script.js": {
+      "maxDuration": 10
+    }
+  }
 }

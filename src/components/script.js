@@ -20,28 +20,32 @@ const CONFIG = {
         terrain: 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png'
     },
     
-    // Configuración de capas de mapa
+    // Configuración de capas de mapa con soporte para Vercel
     MAP_LAYERS: {
         barrios: {
             name: 'Barrios Barranquilla',
             url: 'https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png',
             attribution: '© CARTO © OpenStreetMap contributors',
-            style: 'custom-barrios'
+            style: 'custom-barrios',
+            errorTileUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg=='
         },
         detailed: {
             name: 'Detallado',
             url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-            attribution: '© OpenStreetMap contributors'
+            attribution: '© OpenStreetMap contributors',
+            errorTileUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg=='
         },
         minimal: {
             name: 'Minimalista',
             url: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
-            attribution: '© CARTO © OpenStreetMap contributors'
+            attribution: '© CARTO © OpenStreetMap contributors',
+            errorTileUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg=='
         },
         dark: {
             name: 'Oscuro',
             url: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
-            attribution: '© CARTO © OpenStreetMap contributors'
+            attribution: '© CARTO © OpenStreetMap contributors',
+            errorTileUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg=='
         }
     }
 };
@@ -284,7 +288,7 @@ class BarranquillaEduMap {
         }
         console.log('✅ Contenedor del mapa encontrado:', mapContainer);
         
-        // Crear el mapa centrado en Barranquilla
+        // Crear el mapa centrado en Barranquilla con configuración para Vercel
         console.log('🎯 Creando mapa con coordenadas:', CONFIG.BARRANQUILLA_COORDS);
         map = L.map('map', {
             center: CONFIG.BARRANQUILLA_COORDS,
@@ -294,18 +298,29 @@ class BarranquillaEduMap {
             zoomControl: false, // Removemos el control por defecto
             fadeAnimation: true,
             zoomAnimation: true,
-            markerZoomAnimation: true
+            markerZoomAnimation: true,
+            preferCanvas: true,
+            renderer: L.canvas()
         });
         console.log('✅ Mapa creado exitosamente:', map);
         
-        // Crear capas de mapa
+        // Crear capas de mapa con manejo de errores para Vercel
         console.log('🗂️ Creando capas del mapa...');
         this.mapLayers = {};
         Object.keys(CONFIG.MAP_LAYERS).forEach(key => {
             const layer = CONFIG.MAP_LAYERS[key];
             console.log(`📍 Creando capa: ${key} - URL: ${layer.url}`);
             this.mapLayers[key] = L.tileLayer(layer.url, {
-                attribution: layer.attribution
+                attribution: layer.attribution,
+                errorTileUrl: layer.errorTileUrl || 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg==',
+                timeout: 10000,
+                retryAttempts: 3,
+                crossOrigin: true
+            });
+            
+            // Manejo de errores de tiles
+            this.mapLayers[key].on('tileerror', function(error) {
+                console.warn(`Error loading tile for layer ${key}:`, error);
             });
         });
         console.log('✅ Capas creadas:', Object.keys(this.mapLayers));
@@ -315,6 +330,14 @@ class BarranquillaEduMap {
         this.currentLayer = this.mapLayers.minimal;
         this.currentLayer.addTo(map);
         console.log('✅ Capa base agregada al mapa');
+        
+        // Forzar redibujado después de la carga para Vercel
+        map.whenReady(() => {
+            setTimeout(() => {
+                map.invalidateSize();
+                console.log('🔄 Mapa redibujado para Vercel');
+            }, 100);
+        });
         
         // Cargar capa de barrios de forma asíncrona
         await this.loadBarriosLayer();
@@ -1992,7 +2015,21 @@ const mapCustomStyles = `
         
         /* Personalización del mapa base con colores institucionales */
         .leaflet-container {
-            background-color: transparent !important;
+            background-color: #f8f9fa !important;
+            min-height: 400px !important;
+        }
+        
+        .leaflet-tile-container {
+            opacity: 1 !important;
+        }
+        
+        .leaflet-tile {
+            background-color: #e9ecef !important;
+            transition: opacity 0.3s ease !important;
+        }
+        
+        .leaflet-tile-loaded {
+            opacity: 1 !important;
         }
         
         /* Estilos para elementos del mapa */
