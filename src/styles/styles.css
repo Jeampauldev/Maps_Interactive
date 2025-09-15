@@ -1583,6 +1583,30 @@ html {
     background: #f8f9fa !important;
 }
 
+/* Estilos específicos para canvas de Leaflet */
+.leaflet-zoom-animated {
+    background: #f8f9fa !important;
+    opacity: 1 !important;
+}
+
+canvas.leaflet-zoom-animated {
+    background-color: #f8f9fa !important;
+    opacity: 1 !important;
+    transition: none !important;
+}
+
+/* Capa de tiles personalizada */
+.custom-tile-layer {
+    background: #f8f9fa !important;
+    opacity: 1 !important;
+}
+
+/* Contenedor principal del canvas */
+.leaflet-container canvas {
+    background: #f8f9fa !important;
+    opacity: 1 !important;
+}
+
 /* Loader para tiles que están cargando */
 .leaflet-tile:not(.leaflet-tile-loaded) {
     background: linear-gradient(45deg, #e9ecef 25%, transparent 25%), 
@@ -1597,4 +1621,30 @@ html {
 @keyframes tileLoading {
     0% { background-position: 0 0, 0 5px, 5px -5px, -5px 0px; }
     100% { background-position: 10px 10px, 10px 15px, 15px 5px, 5px 10px; }
+}
+
+/* Prevenir fondo blanco durante inicialización */
+.leaflet-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #f8f9fa;
+    z-index: -1;
+    pointer-events: none;
+}
+
+/* Asegurar que el canvas tenga fondo */
+.leaflet-container .leaflet-map-pane {
+    background: #f8f9fa !important;
+}
+
+.leaflet-container .leaflet-tile-pane {
+    background: #f8f9fa !important;
+}
+
+.leaflet-container .leaflet-objects-pane {
+    background: transparent !important;
 }

@@ -300,9 +300,67 @@ class BarranquillaEduMap {
             zoomAnimation: true,
             markerZoomAnimation: true,
             preferCanvas: true,
-            renderer: L.canvas()
+            renderer: L.canvas({
+                padding: 0.5,
+                tolerance: 0
+            }),
+            // Configuraciones específicas para Vercel
+            worldCopyJump: false,
+            maxBoundsViscosity: 1.0,
+            inertia: true,
+            inertiaDeceleration: 3000,
+            inertiaMaxSpeed: Infinity,
+            easeLinearity: 0.2,
+            // Configuración del canvas para evitar fondo blanco
+            attributionControl: false,
+            zoomSnap: 1,
+            zoomDelta: 1
         });
         console.log('✅ Mapa creado exitosamente:', map);
+        
+        // Configurar eventos específicos para canvas y Vercel
+        map.on('ready', function() {
+            console.log('🎨 Mapa listo, configurando canvas...');
+            // Forzar redibujado del canvas
+            setTimeout(() => {
+                map.invalidateSize();
+                // Asegurar que el canvas tenga el fondo correcto
+                const canvas = document.querySelector('.leaflet-zoom-animated');
+                if (canvas) {
+                    canvas.style.backgroundColor = '#f8f9fa';
+                    canvas.style.opacity = '1';
+                    console.log('✅ Canvas configurado correctamente');
+                }
+            }, 100);
+        });
+        
+        // Función mejorada para configurar canvas
+        const configureMapCanvas = () => {
+            const container = map.getContainer();
+            const canvases = container.querySelectorAll('canvas, .leaflet-zoom-animated');
+            canvases.forEach(canvas => {
+                canvas.style.backgroundColor = '#f8f9fa';
+                canvas.style.opacity = '1';
+                canvas.style.transition = 'none';
+            });
+            
+            // Asegurar que el contenedor tenga el fondo correcto
+            container.style.backgroundColor = '#f8f9fa';
+        };
+        
+        // Eventos del mapa mejorados
+        map.on('zoomstart', configureMapCanvas);
+        map.on('zoomend', configureMapCanvas);
+        map.on('movestart', configureMapCanvas);
+        map.on('moveend', configureMapCanvas);
+        map.on('layeradd', configureMapCanvas);
+        
+        // Configuración adicional después de que el mapa esté completamente cargado
+        map.whenReady(() => {
+            setTimeout(configureMapCanvas, 100);
+            setTimeout(configureMapCanvas, 500);
+            setTimeout(configureMapCanvas, 1000);
+        });
         
         // Crear capas de mapa con manejo de errores para Vercel
         console.log('🗂️ Creando capas del mapa...');
@@ -313,9 +371,18 @@ class BarranquillaEduMap {
             this.mapLayers[key] = L.tileLayer(layer.url, {
                 attribution: layer.attribution,
                 errorTileUrl: layer.errorTileUrl || 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg==',
-                timeout: 10000,
-                retryAttempts: 3,
-                crossOrigin: true
+                timeout: 15000,
+                retryAttempts: 5,
+                crossOrigin: 'anonymous',
+                // Configuraciones específicas para canvas y Vercel
+                keepBuffer: 2,
+                updateWhenIdle: false,
+                updateWhenZooming: true,
+                updateInterval: 200,
+                zIndex: 1,
+                opacity: 1,
+                // Prevenir fondo blanco durante carga
+                className: 'custom-tile-layer'
             });
             
             // Manejo de errores de tiles
@@ -1662,8 +1729,66 @@ class BarranquillaEduMap {
 
 
 
+// ===== CONFIGURACIÓN CANVAS PARA VERCEL =====
+function preConfigureCanvas() {
+    // Configurar canvas antes de la inicialización del mapa
+    const style = document.createElement('style');
+    style.textContent = `
+        canvas.leaflet-zoom-animated {
+            background-color: #f8f9fa !important;
+            opacity: 1 !important;
+        }
+        .leaflet-container canvas {
+            background: #f8f9fa !important;
+        }
+        .leaflet-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #f8f9fa;
+            z-index: -1;
+        }
+    `;
+    document.head.appendChild(style);
+    
+    // Observer para detectar canvas dinámicamente
+    const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+            mutation.addedNodes.forEach((node) => {
+                if (node.nodeType === 1) {
+                    const canvases = node.tagName === 'CANVAS' ? [node] : node.querySelectorAll ? node.querySelectorAll('canvas') : [];
+                    canvases.forEach(canvas => {
+                        canvas.style.backgroundColor = '#f8f9fa';
+                        canvas.style.opacity = '1';
+                    });
+                }
+            });
+        });
+    });
+    
+    observer.observe(document.body, {
+        childList: true,
+        subtree: true
+    });
+    
+    // Configurar canvas existentes
+    setTimeout(() => {
+        const existingCanvases = document.querySelectorAll('canvas');
+        existingCanvases.forEach(canvas => {
+            canvas.style.backgroundColor = '#f8f9fa';
+            canvas.style.opacity = '1';
+        });
+    }, 100);
+}
+
 // ===== INICIALIZACIÓN =====
 let eduMap;
+
+// Preconfigurar canvas antes de cualquier inicialización
+preConfigureCanvas();
 
 // Inicializar cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', () => {
