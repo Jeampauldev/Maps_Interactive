@@ -276,7 +276,6 @@
 }
 
 /* Reducir repaints en animaciones */
-.marker-pulse,
 .loading-spinner,
 .toast,
 .leaflet-marker-icon {
@@ -297,7 +296,7 @@ body {
     overflow-y: hidden;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    background: linear-gradient(135deg, #F8F9FA 0%, #E3F2FD 100%);
+    background: #ffffff;
     height: 100vh;
     width: 100%;
     max-width: 100vw;
@@ -371,39 +370,46 @@ html {
 
 .header-stats {
     display: flex;
-    gap: 16px;
+    gap: 6px;
+    flex-wrap: wrap;
 }
 
 .stat-item {
     text-align: center;
-    padding: 6px 12px;
+    padding: 4px 8px;
     background: var(--surface-elevated);
     border-radius: var(--border-radius);
     border: 1px solid var(--border);
     box-shadow: var(--shadow-sm);
     transition: var(--transition-fast);
+    min-width: 60px;
+    flex: 1;
+    max-width: 100px;
 }
 
 .stat-item:hover {
     border-color: var(--border-hover);
     box-shadow: var(--shadow);
+    transform: translateY(-1px);
 }
 
 .stat-number {
     display: block;
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 600;
     color: var(--accent-blue);
-    line-height: 1.2;
+    line-height: 1.1;
     font-family: 'Volkswagen', -apple-system, BlinkMacSystemFont, sans-serif;
+    margin-bottom: 1px;
 }
 
 .stat-label {
-    font-size: 11px;
+    font-size: 10px;
     color: var(--text-secondary);
-    margin-top: 1px;
+    margin-top: 0;
     font-weight: 400;
     letter-spacing: -0.008em;
+    line-height: 1.1;
 }
 
 /* ===== CONTENEDOR PRINCIPAL ===== */
@@ -457,7 +463,7 @@ html {
 .sidebar-header {
     background: var(--surface-elevated);
     color: var(--text-primary);
-    padding: 20px 24px;
+    padding: 12px 24px;
     text-align: left;
     border-bottom: 1px solid var(--border);
 }
@@ -480,7 +486,7 @@ html {
 
 /* ===== BÚSQUEDA ===== */
 .search-section {
-    padding: var(--spacing-lg);
+    padding: var(--spacing-md);
     border-bottom: 1px solid var(--border-color);
     min-width: 0;
     box-sizing: border-box;
@@ -688,33 +694,25 @@ html {
     transition: var(--transition-fast);
 }
 
-.checkmark.universidad {
-    border-color: var(--primary-color);
+.checkmark.critico {
+    border-color: #16a34a;
 }
 
-.checkmark.colegio {
-    border-color: var(--secondary-color);
-}
-
-.checkmark.tecnico {
-    border-color: var(--accent-color);
+.checkmark.voluminoso {
+    border-color: #f59e0b;
 }
 
 .filter-item input:checked + .checkmark {
-    background: var(--primary-color);
-    border-color: var(--primary-color);
+    background: #16a34a;
+    border-color: #16a34a;
 }
 
-.filter-item input:checked + .checkmark.universidad {
-    background: var(--primary-color);
+.filter-item input:checked + .checkmark.critico {
+    background: #16a34a;
 }
 
-.filter-item input:checked + .checkmark.colegio {
-    background: var(--secondary-color);
-}
-
-.filter-item input:checked + .checkmark.tecnico {
-    background: var(--accent-color);
+.filter-item input:checked + .checkmark.voluminoso {
+    background: #f59e0b;
 }
 
 .filter-item input:checked + .checkmark::after {
@@ -744,8 +742,8 @@ html {
     text-align: center;
 }
 
-/* ===== LISTA DE INSTITUCIONES ===== */
-.institutions-list {
+/* ===== LISTA DE PUNTOS CRÍTICOS ===== */
+.critical-points-list, .institutions-list {
     flex: 1;
     padding: var(--spacing-lg);
     overflow: hidden;
@@ -764,7 +762,7 @@ html {
     overflow-wrap: break-word;
 }
 
-.institutions-container {
+.institutions-container, .points-container {
     flex: 1;
     overflow-y: auto;
     overflow-x: hidden;
@@ -775,7 +773,7 @@ html {
     box-sizing: border-box;
 }
 
-.institution-item {
+.institution-item, .point-item {
     padding: var(--spacing-md);
     border: 1px solid var(--border-color);
     border-radius: var(--border-radius);
@@ -788,18 +786,18 @@ html {
     overflow-wrap: break-word;
 }
 
-.institution-item:hover {
+.institution-item:hover, .point-item:hover {
     border-color: var(--primary-color);
     box-shadow: var(--shadow-md);
     transform: translateY(-1px);
 }
 
-.institution-item.active {
+.institution-item.active, .point-item.active {
     border-color: var(--primary-color);
     background: rgba(37, 99, 235, 0.05);
 }
 
-.institution-name {
+.institution-name, .point-name {
     font-weight: 600;
     color: var(--text-primary);
     margin-bottom: var(--spacing-xs);
@@ -809,7 +807,7 @@ html {
     max-width: 100%;
 }
 
-.institution-type {
+.institution-type, .point-type {
     font-size: var(--font-size-sm);
     color: var(--text-secondary);
     margin-bottom: var(--spacing-xs);
@@ -817,13 +815,33 @@ html {
     overflow-wrap: break-word;
 }
 
-.institution-address {
+.institution-address, .point-location {
     font-size: var(--font-size-xs);
     color: var(--text-light);
     word-wrap: break-word;
     overflow-wrap: break-word;
     hyphens: auto;
     max-width: 100%;
+}
+
+.point-severity {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.point-severity.critico {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+}
+
+.point-severity.voluminoso {
+    background: rgba(245, 158, 11, 0.1);
+    color: #f59e0b;
 }
 
 /* ===== SECCIÓN DEL MAPA ===== */
@@ -1167,14 +1185,7 @@ html {
 }
 
 /* ===== ANIMACIONES OPTIMIZADAS ===== */
-@keyframes pulse {
-    0%, 100% {
-        transform: scale3d(1, 1, 1);
-    }
-    50% {
-        transform: scale3d(1.05, 1.05, 1);
-    }
-}
+/* Animación de pulso eliminada para evitar parpadeo en marcadores */
 
 @keyframes spin {
     0% {
@@ -1442,63 +1453,104 @@ html {
     border-color: var(--accent-blue) !important;
 }
 
-/* ===== MARCADORES MINIMALISTAS APPLE ===== */
+/* ===== MARCADORES MINIMALISTAS ELEGANTES ===== */
 .custom-marker-clean {
     background: transparent !important;
     border: none !important;
 }
 
 .marker-container {
-    width: 32px;
-    height: 32px;
-    border-radius: 50% 50% 50% 0;
-    transform: rotate(-45deg);
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 3px solid white;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
-    transition: all 0.2s ease;
+    border: 2px solid white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    cursor: pointer;
 }
 
 .marker-container:hover {
-    transform: rotate(-45deg) scale(1.1);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
+    transform: scale(1.15);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
 }
 
 .marker-container i {
-    transform: rotate(45deg);
     color: white;
-    font-size: 14px;
+    font-size: 10px;
     font-weight: 600;
 }
 
-/* Estilos para iconos SVG personalizados */
+/* Estilos para marcadores de puntos críticos */
+.punto-critico-rojo-marker {
+    background: linear-gradient(135deg, #16a34a 0%, #15803d 100%) !important;
+    width: 12px !important;
+    height: 12px !important;
+    border-radius: 50% !important;
+    border: 2px solid rgba(255, 255, 255, 0.9) !important;
+    box-shadow: 0 2px 6px rgba(22, 163, 74, 0.3) !important;
+    transition: box-shadow 0.2s ease, border-color 0.2s ease !important;
+    cursor: pointer !important;
+    z-index: 100 !important;
+}
+
+.punto-critico-rojo-marker:hover {
+    box-shadow: 0 4px 12px rgba(22, 163, 74, 0.5) !important;
+    border-color: rgba(255, 255, 255, 1) !important;
+    z-index: 1000 !important;
+}
+
+.punto-voluminoso-marker {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important;
+    width: 12px !important;
+    height: 12px !important;
+    border-radius: 50% !important;
+    border: 2px solid rgba(255, 255, 255, 0.9) !important;
+    box-shadow: 0 2px 6px rgba(245, 158, 11, 0.3) !important;
+    transition: box-shadow 0.2s ease, border-color 0.2s ease !important;
+    cursor: pointer !important;
+    z-index: 100 !important;
+}
+
+.punto-voluminoso-marker:hover {
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.5) !important;
+    border-color: rgba(255, 255, 255, 1) !important;
+    z-index: 1000 !important;
+}
+
+.punto-voluminoso-marker:hover {
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.5) !important;
+    border-color: rgba(255, 255, 255, 1) !important;
+    z-index: 1000 !important;
+}
+
+/* Eliminar animaciones de parpadeo */
 .leaflet-marker-icon {
-    transition: all 0.3s ease;
+    transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    /* Eliminamos la animación de aparición que causa parpadeo */
 }
 
 .leaflet-marker-icon:hover {
-    transform: scale(1.1);
-    filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.3));
+    transform: scale(1.15);
+    z-index: 1000;
 }
 
-/* Animación de aparición para marcadores */
-@keyframes markerAppear {
-    0% {
-        opacity: 0;
-        transform: scale3d(0.5, 0.5, 1) translate3d(0, -20px, 0);
-    }
-    50% {
-        opacity: 0.7;
-        transform: scale3d(1.1, 1.1, 1) translate3d(0, -10px, 0);
-    }
-    100% {
-        opacity: 1;
-        transform: scale3d(1, 1, 1) translate3d(0, 0, 0);
-    }
-}
-
-.leaflet-marker-icon {
-    animation: markerAppear 0.6s ease-out;
+/* Tooltip personalizado para mostrar información al hover */
+.marker-tooltip {
+    position: absolute;
+    background: rgba(0, 0, 0, 0.9);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    white-space: nowrap;
+    pointer-events: none;
+    z-index: 10000;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transform: translateX(-50%) translateY(-100%);
+    margin-top: -8px;
 }

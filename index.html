@@ -84,11 +84,23 @@
             </div>
             <div class="header-stats">
                 <div class="stat-item">
-                    <span class="stat-number" id="total-institutions">0</span>
-                    <span class="stat-label">Instituciones</span>
+                    <span class="stat-number" id="total-points">12</span>
+                    <span class="stat-label">Puntos Críticos</span>
                 </div>
                 <div class="stat-item">
-                    <span class="stat-number" id="total-districts">5</span>
+                    <span class="stat-number" id="recovered-area">2.5</span>
+                    <span class="stat-label">Hectáreas Recuperadas</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" id="affected-population">1,250</span>
+                    <span class="stat-label">Población Impactada</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" id="co2-equivalent">45.8</span>
+                    <span class="stat-label">Ton CO₂ Equiv.</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" id="total-localities">5</span>
                     <span class="stat-label">Localidades</span>
                 </div>
             </div>
@@ -100,14 +112,14 @@
         <!-- Panel Lateral -->
         <aside class="sidebar">
             <div class="sidebar-header">
-                <h2><i class="fas fa-filter"></i> Filtros y Búsqueda</h2>
+                <h2><i class="fas fa-leaf"></i> Puntos Críticos</h2>
             </div>
             
             <!-- Barra de Búsqueda -->
             <div class="search-section">
                 <div class="search-box">
                     <i class="fas fa-search"></i>
-                    <input type="text" id="search-input" placeholder="Buscar institución...">
+                    <input type="text" id="search-input" placeholder="Buscar punto crítico...">
                     <button id="clear-search" class="clear-btn">
                         <i class="fas fa-times"></i>
                     </button>
@@ -116,36 +128,29 @@
 
             <!-- Filtros por Tipo -->
             <div class="filter-section">
-                <h3>Tipo de Institución</h3>
+                <h3>Tipo de Punto Crítico</h3>
                 <div class="filter-group">
                     <label class="filter-item">
-                        <input type="checkbox" id="filter-universidad" checked>
-                        <span class="checkmark universidad"></span>
-                        <span class="filter-text">Universidades</span>
-                        <span class="count" id="count-universidad">0</span>
+                        <input type="checkbox" id="filter-critico" checked>
+                        <span class="checkmark critico"></span>
+                        <span class="filter-text">Puntos Críticos</span>
+                        <span class="count" id="count-critico">50</span>
                     </label>
                     
                     <label class="filter-item">
-                        <input type="checkbox" id="filter-colegio" checked>
-                        <span class="checkmark colegio"></span>
-                        <span class="filter-text">Colegios</span>
-                        <span class="count" id="count-colegio">0</span>
-                    </label>
-                    
-                    <label class="filter-item">
-                        <input type="checkbox" id="filter-tecnico" checked>
-                        <span class="checkmark tecnico"></span>
-                        <span class="filter-text">Institutos Técnicos</span>
-                        <span class="count" id="count-tecnico">0</span>
+                        <input type="checkbox" id="filter-voluminoso" checked>
+                        <span class="checkmark voluminoso"></span>
+                        <span class="filter-text">Residuos Voluminosos</span>
+                        <span class="count" id="count-voluminoso">0</span>
                     </label>
                 </div>
             </div>
 
-            <!-- Lista de Instituciones -->
-            <div class="institutions-list">
-                <h3>Instituciones Encontradas</h3>
-                <div id="institutions-container" class="institutions-container">
-                    <!-- Las instituciones se cargarán dinámicamente -->
+            <!-- Lista de Puntos Críticos -->
+            <div class="critical-points-list">
+                <h3>Puntos Encontrados</h3>
+                <div id="points-container" class="points-container">
+                    <!-- Los puntos críticos se cargarán dinámicamente -->
                 </div>
             </div>
         </aside>

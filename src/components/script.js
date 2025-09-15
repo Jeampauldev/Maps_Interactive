@@ -251,7 +251,7 @@ class BarranquillaEduMap {
             await this.initializeMap();
             this.setupEventListeners();
             this.loadInstitutions();
-            this.loadPuntosCriticos();
+            await this.loadPuntosCriticos();
             this.updateStatistics();
             this.hideLoadingOverlay();
             this.showToast('Mapa cargado exitosamente', 'success');
@@ -370,12 +370,14 @@ class BarranquillaEduMap {
             searchInput.focus();
         });
         
-        // Filtros por tipo de institución
-        ['universidad', 'colegio', 'tecnico'].forEach(type => {
+        // Filtros por tipo de punto crítico
+        ['critico', 'voluminoso'].forEach(type => {
             const checkbox = document.getElementById(`filter-${type}`);
-            checkbox.addEventListener('change', () => {
-                this.handleFilterChange();
-            });
+            if (checkbox) {
+                checkbox.addEventListener('change', () => {
+                    this.handleFilterChange();
+                });
+            }
         });
         
         // Controles del mapa
@@ -897,6 +899,9 @@ class BarranquillaEduMap {
             
             console.log(`Cargados ${puntosData.length} puntos críticos`);
             
+            // Actualizar estadísticas después de cargar los datos
+            this.updateStatistics();
+            
         } catch (error) {
             console.error('Error cargando puntos críticos:', error);
             this.showToast('Error al cargar puntos críticos', 'error');
@@ -977,19 +982,28 @@ class BarranquillaEduMap {
         const coordinates = [punto.geometry.coordinates[1], punto.geometry.coordinates[0]];
         const properties = punto.properties;
         
-        // Crear icono personalizado para punto crítico
+        // Determinar el tipo de marcador basado en las propiedades
+        const tipoMarcador = properties.tipo === 'voluminoso' ? 'punto-voluminoso-marker' : 'punto-critico-rojo-marker';
+        
+        // Crear icono personalizado elegante y compacto
         const icon = L.divIcon({
-            className: 'punto-critico-rojo-marker',
+            className: tipoMarcador,
             html: '',
-            iconSize: [30, 30],
-            iconAnchor: [15, 30],
-            popupAnchor: [0, -30]
+            iconSize: [12, 12],
+            iconAnchor: [6, 6],
+            popupAnchor: [0, -6]
         });
         
         const marker = L.marker(coordinates, { icon })
             .bindPopup(this.createPuntoCriticoPopupContent(properties), {
                 maxWidth: 350,
                 className: 'custom-popup punto-critico-popup'
+            })
+            .bindTooltip(`<strong>${properties.id || properties.nombre || 'ID no disponible'}</strong>`, {
+                permanent: false,
+                direction: 'top',
+                offset: [0, -12],
+                className: 'custom-marker-tooltip'
             });
         
         puntosLayer.addLayer(marker);
@@ -1016,7 +1030,7 @@ class BarranquillaEduMap {
             ${institution.image ? `<img src="${institution.image}" alt="${institution.name}" class="institution-image" loading="lazy">` : ''}
             <h4>${institution.name}</h4>
             <span class="institution-badge ${institution.type}">
-                ${this.getTypeLabel(institution.type)}
+                ${this.getPointTypeLabel(institution.type)}
             </span>
             <p><i class="fas fa-map-marker-alt"></i> ${institution.address}</p>
             <p><i class="fas fa-phone"></i> ${institution.phone}</p>
@@ -1030,13 +1044,27 @@ class BarranquillaEduMap {
     /**
      * Obtiene la etiqueta legible para el tipo de institución
      */
-    getTypeLabel(type) {
+    getPointTypeLabel(type) {
         const labels = {
-            universidad: 'Universidad',
-            colegio: 'Colegio',
-            tecnico: 'Instituto Técnico'
+            critico: 'Punto Crítico',
+            voluminoso: 'Residuo Voluminoso'
         };
         return labels[type] || type;
+    }
+
+    selectPuntoCritico(pointId) {
+        const point = currentPuntosCriticos.find(p => p.properties.id === pointId);
+        if (point) {
+            // Centrar el mapa en el punto
+            map.setView([point.geometry.coordinates[1], point.geometry.coordinates[0]], 16);
+            
+            // Encontrar y abrir el popup del marcador
+            puntosLayer.eachLayer(layer => {
+                if (layer.feature && layer.feature.properties.id === pointId) {
+                    layer.openPopup();
+                }
+            });
+        }
     }
     
     /**
@@ -1126,25 +1154,34 @@ class BarranquillaEduMap {
     }
     
     /**
-     * Realiza la búsqueda real
+     * Realiza la búsqueda real en puntos críticos
      */
     performSearch(query) {
         const searchTerm = query.toLowerCase().trim();
         
         if (searchTerm === '') {
-            filteredInstitutions = [...EDUCATIONAL_INSTITUTIONS];
+            // Mostrar todos los puntos críticos
+            this.applyFilters();
         } else {
-            filteredInstitutions = EDUCATIONAL_INSTITUTIONS.filter(institution => {
+            // Filtrar puntos críticos por término de búsqueda
+            const filteredPoints = currentPuntosCriticos.filter(point => {
+                const props = point.properties;
                 return (
-                    institution.name.toLowerCase().includes(searchTerm) ||
-                    institution.address.toLowerCase().includes(searchTerm) ||
-                    institution.description.toLowerCase().includes(searchTerm) ||
-                    this.getTypeLabel(institution.type).toLowerCase().includes(searchTerm)
+                    props.descripcion.toLowerCase().includes(searchTerm) ||
+                    (props.direccion && props.direccion.toLowerCase().includes(searchTerm)) ||
+                    props.tipo.toLowerCase().includes(searchTerm) ||
+                    this.getPointTypeLabel(props.tipo).toLowerCase().includes(searchTerm)
                 );
+            });
+            
+            // Limpiar capa y agregar solo puntos filtrados
+            puntosLayer.clearLayers();
+            filteredPoints.forEach(point => {
+                const marker = this.createPuntoCriticoMarker(point);
+                puntosLayer.addLayer(marker);
             });
         }
         
-        this.applyFilters();
         this.updateInstitutionsList();
         this.updateStatistics();
     }
@@ -1163,92 +1200,155 @@ class BarranquillaEduMap {
      */
     applyFilters() {
         const activeFilters = {
-            universidad: document.getElementById('filter-universidad').checked,
-            colegio: document.getElementById('filter-colegio').checked,
-            tecnico: document.getElementById('filter-tecnico').checked
+            critico: document.getElementById('filter-critico')?.checked ?? true,
+            voluminoso: document.getElementById('filter-voluminoso')?.checked ?? true
         };
         
-        // Limpiar capa de marcadores
-        markersLayer.clearLayers();
+        // Limpiar capa de puntos críticos
+        if (puntosLayer) {
+            puntosLayer.clearLayers();
+        }
         
-        // Agregar marcadores que pasan los filtros
-        currentMarkers.forEach(({ marker, institution }) => {
-            const matchesSearch = filteredInstitutions.some(inst => inst.id === institution.id);
-            const matchesFilter = activeFilters[institution.type];
+        // Agregar marcadores de puntos críticos que pasan los filtros
+        currentPuntosCriticos.forEach(({ marker, punto }) => {
+            const matchesFilter = activeFilters[punto.tipo] || activeFilters.critico;
             
-            if (matchesSearch && matchesFilter) {
-                markersLayer.addLayer(marker);
+            if (matchesFilter && puntosLayer) {
+                puntosLayer.addLayer(marker);
             }
         });
     }
     
     /**
-     * Actualiza la lista de instituciones en el sidebar
+     * Actualiza la lista de puntos críticos en el sidebar
      */
     updateInstitutionsList() {
         const container = document.getElementById('institutions-container');
         const activeFilters = {
-            universidad: document.getElementById('filter-universidad').checked,
-            colegio: document.getElementById('filter-colegio').checked,
-            tecnico: document.getElementById('filter-tecnico').checked
+            critico: document.getElementById('filter-critico').checked,
+            voluminoso: document.getElementById('filter-voluminoso').checked
         };
         
-        // Filtrar instituciones visibles
-        const visibleInstitutions = filteredInstitutions.filter(inst => 
-            activeFilters[inst.type]
+        // Filtrar puntos críticos visibles
+        const visiblePoints = currentPuntosCriticos.filter(point => 
+            activeFilters[point.properties.tipo]
         );
         
-        if (visibleInstitutions.length === 0) {
+        if (visiblePoints.length === 0) {
             container.innerHTML = `
                 <div class="no-results">
                     <i class="fas fa-search"></i>
-                    <p>No se encontraron instituciones</p>
+                    <p>No se encontraron puntos críticos</p>
                 </div>
             `;
             return;
         }
         
-        // Generar HTML para cada institución
-        container.innerHTML = visibleInstitutions.map(institution => `
-            <div class="institution-item" onclick="eduMap.selectInstitution(${institution.id})">
-                <div class="institution-name">${institution.name}</div>
-                <div class="institution-type">${this.getTypeLabel(institution.type)}</div>
-                <div class="institution-address">${institution.address}</div>
+        // Generar HTML para cada punto crítico
+        container.innerHTML = visiblePoints.map(point => `
+            <div class="institution-item" onclick="eduMap.selectPuntoCritico('${point.properties.id}')">
+                <div class="institution-name">${point.properties.descripcion}</div>
+                <div class="institution-type">${this.getPointTypeLabel(point.properties.tipo)}</div>
+                <div class="institution-address">${point.properties.direccion || 'Dirección no disponible'}</div>
+                <div class="status-badge ${point.properties.estado}">${point.properties.estado}</div>
             </div>
         `).join('');
     }
     
     /**
-     * Actualiza las estadísticas en el header y filtros
+     * Actualiza las estadísticas en el header y filtros usando datos reales del JSON
      */
     updateStatistics() {
-        const activeFilters = {
-            universidad: document.getElementById('filter-universidad').checked,
-            colegio: document.getElementById('filter-colegio').checked,
-            tecnico: document.getElementById('filter-tecnico').checked
-        };
+        console.log('=== updateStatistics() iniciada ===');
+        console.log('puntosData.length:', puntosData.length);
         
-        // Contar por tipo
-        const counts = {
-            universidad: 0,
-            colegio: 0,
-            tecnico: 0
-        };
+        // Calcular métricas reales desde todos los puntos críticos
+        let totalAreaRecuperada = 0; // en m²
+        let totalPoblacionImpactada = 0;
+        let totalCo2Equivalente = 0;
+        const localidadesGestionadas = new Set();
         
-        filteredInstitutions.forEach(inst => {
-            if (activeFilters[inst.type]) {
-                counts[inst.type]++;
+        // Procesar todos los puntos sin filtros
+        puntosData.forEach((punto, index) => {
+            const properties = punto.properties;
+            
+            // Sumar datos reales del JSON
+            const area = parseFloat(properties.area_recuperada_m2) || 0;
+            const poblacion = parseInt(properties.poblacion_impactada) || 0;
+            const co2 = parseFloat(properties.toneladas_co2_equivalente) || 0;
+            
+            totalAreaRecuperada += area;
+            totalPoblacionImpactada += poblacion;
+            totalCo2Equivalente += co2;
+            
+            // Agregar localidad al conjunto (evita duplicados)
+            if (properties.localidad) {
+                localidadesGestionadas.add(properties.localidad);
             }
+            
+            console.log(`Punto ${index}: área=${area}, población=${poblacion}, co2=${co2}, localidad=${properties.localidad}`);
         });
         
-        // Actualizar contadores en filtros
-        Object.keys(counts).forEach(type => {
-            document.getElementById(`count-${type}`).textContent = counts[type];
+        console.log('Totales calculados:', {
+            totalPuntos: puntosData.length,
+            totalAreaRecuperada,
+            totalPoblacionImpactada,
+            totalCo2Equivalente,
+            localidades: localidadesGestionadas.size
         });
         
-        // Actualizar total en header
-        const total = Object.values(counts).reduce((sum, count) => sum + count, 0);
-        document.getElementById('total-institutions').textContent = total;
+        // Calcular totales finales
+        const totalPuntos = puntosData.length;
+        const areaRecuperadaHectareas = totalAreaRecuperada / 10000; // Convertir m² a hectáreas
+        
+        console.log('Actualizando elementos del DOM:', {
+            totalPuntos,
+            areaRecuperadaHectareas,
+            totalPoblacionImpactada,
+            totalCo2Equivalente,
+            localidades: localidadesGestionadas.size
+        });
+        
+        // Actualizar estadísticas del header con datos reales
+        const totalElement = document.getElementById('total-points');
+        if (totalElement) {
+            totalElement.textContent = totalPuntos;
+            console.log('Total points actualizado:', totalPuntos);
+        } else {
+            console.error('Elemento total-points no encontrado');
+        }
+        
+        const areaElement = document.getElementById('recovered-area');
+        if (areaElement) {
+            areaElement.textContent = areaRecuperadaHectareas.toFixed(1);
+            console.log('Área recuperada actualizada:', areaRecuperadaHectareas.toFixed(1));
+        } else {
+            console.error('Elemento recovered-area no encontrado');
+        }
+        
+        const poblacionElement = document.getElementById('affected-population');
+        if (poblacionElement) {
+            poblacionElement.textContent = totalPoblacionImpactada.toLocaleString();
+            console.log('Población impactada actualizada:', totalPoblacionImpactada.toLocaleString());
+        } else {
+            console.error('Elemento affected-population no encontrado');
+        }
+        
+        const co2Element = document.getElementById('co2-equivalent');
+        if (co2Element) {
+            co2Element.textContent = totalCo2Equivalente.toFixed(1);
+            console.log('CO2 equivalente actualizado:', totalCo2Equivalente.toFixed(1));
+        } else {
+            console.error('Elemento co2-equivalent no encontrado');
+        }
+        
+        const localidadesElement = document.getElementById('total-localities');
+        if (localidadesElement) {
+            localidadesElement.textContent = localidadesGestionadas.size;
+            console.log('Total localidades actualizado:', localidadesGestionadas.size);
+        } else {
+            console.error('Elemento total-localities no encontrado');
+        }
     }
     
     /**
@@ -1281,7 +1381,7 @@ class BarranquillaEduMap {
         
         // Actualizar contenido
         document.getElementById('info-name').textContent = institution.name;
-        document.getElementById('info-type').textContent = this.getTypeLabel(institution.type);
+        document.getElementById('info-type').textContent = this.getPointTypeLabel(institution.type);
         document.getElementById('info-address').textContent = institution.address;
         document.getElementById('info-phone').textContent = institution.phone;
         
@@ -1753,43 +1853,21 @@ const additionalStyles = `
             opacity: 0.5;
         }
 
-        /* Estilos para puntos críticos */
-        .punto-critico-rojo-marker {
-            background: #16a34a;
-            border: 3px solid white;
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 8px rgba(22, 163, 74, 0.4);
-            animation: pulse-green 2s infinite;
-            position: relative;
-        }
+        /* MARCADORES ELEGANTES PARA PUNTOS CRÍTICOS */
+        /* Estilos de marcadores movidos a styles.css para evitar conflictos */
 
-        .punto-critico-rojo-marker::before {
-            content: '🗑️';
-            font-size: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .punto-critico-rojo-marker i {
-            display: none; /* Ocultar icono interno */
-        }
-
-        @keyframes pulse-green {
-            0% {
-                box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.7);
-            }
-            70% {
-                box-shadow: 0 0 0 10px rgba(22, 163, 74, 0);
-            }
-            100% {
-                box-shadow: 0 0 0 0 rgba(22, 163, 74, 0);
-            }
+        /* Tooltip personalizado para marcadores */
+        .custom-marker-tooltip {
+            background: rgba(255, 255, 255, 0.95);
+            color: #1f2937;
+            border: 2px solid #03588C;
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-size: 12px;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            white-space: nowrap;
         }
 
         .status-badge {
