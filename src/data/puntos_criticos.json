@@ -1,0 +1,1055 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-74.77509000, 10.96769965]
+      },
+      "properties": {
+        "id": "PC001",
+        "fecha_entrega": "ND",
+        "direccion": "Cra 30 Con Calle 17",
+        "barrio": "Rebolo",
+        "localidad": "Suroriente",
+        "estado_actual": "Recuperado",
+        "acciones_realizadas": "Mejoramiento De La Infraestrctura",
+        "tipo_residuo": "Residuos Organicos, Ordinarios, Escombros, Poda De Arboles",
+        "frecuencia_limpieza": "Interdiaria",
+        "area_recuperada_m2": 252,
+        "poblacion_impactada": 1194,
+        "toneladas_co2_equivalente": 1049
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-74.80059454, 10.99074014]
+      },
+      "properties": {
+        "id": "PC011",
+        "fecha_entrega": "ND",
+        "direccion": "Carrera 45 Con Calle 66",
+        "barrio": "Boston",
+        "localidad": "Norte Centro Histórico",
+        "estado_actual": "Recuperado",
+        "acciones_realizadas": "Recuperacion",
+        "tipo_residuo": "Ordinarios, Escombros, Poda De Arboles Y Voluminosos",
+        "frecuencia_limpieza": "Interdiaria",
+        "area_recuperada_m2": 227.5,
+        "poblacion_impactada": 304,
+        "toneladas_co2_equivalente": 562
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-74.77682303, 10.98255360]
+      },
+      "properties": {
+        "id": "PC003",
+        "fecha_entrega": "ND",
+        "direccion": "Carrera 44 Con Calle 32",
+        "barrio": "Centro",
+        "localidad": "Norte Centro Histórico",
+        "estado_actual": "Recuperado",
+        "acciones_realizadas": "Recuperacion",
+        "tipo_residuo": "Ordinarios Y Voluminosos",
+        "frecuencia_limpieza": "Diaria",
+        "area_recuperada_m2": 145,
+        "poblacion_impactada": 5350,
+        "toneladas_co2_equivalente": 674
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-74.80202073, 10.98325225]
+      },
+      "properties": {
+        "id": "PC018",
+        "fecha_entrega": "ND",
+        "direccion": "Calle 65 Con Cra 38",
+        "barrio": "El Recreo",
+        "localidad": "Norte Centro Histórico",
+        "estado_actual": "Recuperado",
+        "acciones_realizadas": "Recuperacion",
+        "tipo_residuo": "Ordinarios, Podas, Escombros Y Voluminosos",
+        "frecuencia_limpieza": "Interdiaria",
+        "area_recuperada_m2": 775.6,
+        "poblacion_impactada": 274,
+        "toneladas_co2_equivalente": 907
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-74.79047534, 10.97970655]
+      },
+      "properties": {
+        "id": "PC009",
+        "fecha_entrega": "ND",
+        "direccion": "Carrera 37 Con Calle 50",
+        "barrio": "Chiquinquirá",
+        "localidad": "Suroriente",
+        "estado_actual": "Recuperado",
+        "acciones_realizadas": "Recuperacion",
+        "tipo_residuo": "Ordinarios, Podas, Escombros Y Voluminosos",
+        "frecuencia_limpieza": "Interdiaria",
+        "area_recuperada_m2": 290,
+        "poblacion_impactada": 350,
+        "toneladas_co2_equivalente": 1573
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-74.79981898, 10.94789789]
+      },
+      "properties": {
+        "id": "PC082",
+        "fecha_entrega": "ND",
+        "direccion": "Calle 45 Con Cra 8c",
+        "barrio": "La Arboraya",
+        "localidad": "Suroriente",
+        "estado_actual": "Recuperado",
+        "acciones_realizadas": "Limpieza Y Embellecimiento",
+        "tipo_residuo": "Ordinarios, Podas, Escombros Y Voluminosos",
+        "frecuencia_limpieza": "Diaria",
+        "area_recuperada_m2": 61.58,
+        "poblacion_impactada": 300,
+        "toneladas_co2_equivalente": 1123
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-74.79983613, 10.94286769]
+      },
+      "properties": {
+        "id": "PC057",
+        "fecha_entrega": "ND",
+        "direccion": "Calle 45 Con Cra 7c",
+        "barrio": "Buenos Aires",
+        "localidad": "Metropolitana",
+        "estado_actual": "Recuperado",
+        "acciones_realizadas": "Recuperacion",
+        "tipo_residuo": "Ordinarios, Podas, Escombros Y Voluminosos",
+        "frecuencia_limpieza": "Unisemanal",
+        "area_recuperada_m2": 900,
+        "poblacion_impactada": 381,
+        "toneladas_co2_equivalente": 75
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-74.77440022, 10.98432491]
+      },
+      "properties": {
+        "id": "PC025",
+        "fecha_entrega": "ND",
+        "direccion": "Calle 10 Con Cra 45",
+        "barrio": "Villanueva",
+        "localidad": "Norte Centro Histórico",
+        "estado_actual": "Recuperado",
+        "acciones_realizadas": "Recuperacion",
+        "tipo_residuo": "Ordinarios, Podas, Escombros Y Voluminosos",
+        "frecuencia_limpieza": "Interdiaria",
+        "area_recuperada_m2": 2940,
+        "poblacion_impactada": 500,
+        "toneladas_co2_equivalente": 4194
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-74.82902289, 10.93489515]
+      },
+      "properties": {
+        "id": "PC047",
+        "fecha_entrega": "ND",
+        "direccion": "Calle 98c #2sur",
+        "barrio": "Villa San Carlos",
+        "localidad": "Metropolitana",
+        "estado_actual": "Recuperado",
+        "acciones_realizadas": "Recuperacion",
+        "tipo_residuo": "Ordinarios, Podas, Escombros Y Voluminosos",
+        "frecuencia_limpieza": "Interdiaria",
+        "area_recuperada_m2": 10257,
+        "poblacion_impactada": 2200,
+        "toneladas_co2_equivalente": 174
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-74.80492763, 10.95755244]
+      },
+      "properties": {
+        "id": "PC023",
+        "fecha_entrega": "ND",
+        "direccion": "Calle 56 Con Cra 13",
+        "barrio": "La Sierra",
+        "localidad": "Metropolitana",
+        "estado_actual": "Recuperado",
+        "acciones_realizadas": "Recuperacion",
+        "tipo_residuo": "Ordinarios, Podas, Escombros Y Voluminosos",
+        "frecuencia_limpieza": "Interdiaria",
+        "area_recuperada_m2": 64,
+        "poblacion_impactada": 1348,
+        "toneladas_co2_equivalente": 1123
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-74.79408079, 10.95952662]
+      },
+      "properties": {
+        "id": "PC041",
+        "fecha_entrega": "ND",
+        "direccion": "Calle 45 # 19 - 136",
+        "barrio": "San José",
+        "localidad": "Suroriente",
+        "estado_actual": "Recuperado",
+        "acciones_realizadas": "Recuperacion",
+        "tipo_residuo": "Ordinarios, Podas, Escombros Y Voluminosos",
+        "frecuencia_limpieza": "Interdiaria",
+        "area_recuperada_m2": 252,
+        "poblacion_impactada": 1367,
+        "toneladas_co2_equivalente": 84
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-74.79022734, 10.96565870]
+      },
+      "properties": {
+        "id": "PC030",
+        "fecha_entrega": "ND",
+        "direccion": "Calle 42 Con Cra 24",
+        "barrio": "Alfonso López",
+        "localidad": "Suroccidente",
+        "estado_actual": "Recuperado",
+        "acciones_realizadas": "Recuperacion",
+        "tipo_residuo": "Ordinarios, Podas, Escombros Y Voluminosos",
+        "frecuencia_limpieza": "Interdiaria",
+        "area_recuperada_m2": 131,
+        "poblacion_impactada": 599,
+        "toneladas_co2_equivalente": 1459
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-74.78876661, 10.96672399]
+      },
+      "properties": {
+        "id": "PC079",
+        "fecha_entrega": "ND",
+        "direccion": "Calle 41 Con Cra 25",
+        "barrio": "Montes",
+        "localidad": "Suroriente",
+        "estado_actual": "Recuperado",
+        "acciones_realizadas": "Mejoramiento De La Infraestrctura",
+        "tipo_residuo": "Ordinarios, Podas, Escombros Y Voluminosos",
+        "frecuencia_limpieza": "Interdiaria",
+        "area_recuperada_m2": 56,
+        "poblacion_impactada": 356,
+        "toneladas_co2_equivalente": 31
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-74.80597006, 10.92670179]
+      },
+      "properties": {
+        "id": "PC081",
+        "fecha_entrega": "ND",
+        "direccion": "Calle 47b Con Carrera 8a Sur",
+        "barrio": "Ciudadela 20 De Julio",
+        "localidad": "Metropolitana",
+        "estado_actual": "Recuperado",
+        "acciones_realizadas": "Limpieza Y Embellecimiento",
+        "tipo_residuo": "Ordinarios, Podas Y Voluminosos",
+        "frecuencia_limpieza": "Interdiaria",
+        "area_recuperada_m2": 9.12,
+        "poblacion_impactada": 820,
+        "toneladas_co2_equivalente": 1798
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-74.78924797, 10.97242113]
+      },
+      "properties": {
+        "id": "PC083",
+        "fecha_entrega": "ND",
+        "direccion": "Calle 45 Con Cra 30",
+        "barrio": "Chiquinquirá",
+        "localidad": "Suroriente",
+        "estado_actual": "Recuperado",
+        "acciones_realizadas": "Limpieza Y Embellecimiento",
+        "tipo_residuo": "Ordinarios",
+        "frecuencia_limpieza": "Interdiaria",
+        "area_recuperada_m2": 137.5,
+        "poblacion_impactada": 341,
+        "toneladas_co2_equivalente": 210
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-74.77448069, 10.95377562]
+      },
+      "properties": {
+        "id": "PC035",
+        "fecha_entrega": "ND",
+        "direccion": "Carrera 15 Con Calle 17",
+        "barrio": "Las Nieves",
+        "localidad": "Suroriente",
+        "estado_actual": "Recuperado",
+        "acciones_realizadas": "Recuperacion",
+        "tipo_residuo": "Ordinarios, Podas, Escombros Y Voluminosos",
+        "frecuencia_limpieza": "Unisemanal",
+        "area_recuperada_m2": 117,
+        "poblacion_impactada": 593,
+        "toneladas_co2_equivalente": 524
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-74.80478444, 10.95560420]
+      },
+      "properties": {
+        "id": "PC037",
+        "fecha_entrega": "ND",
+        "direccion": "Calle 54 Con Cra 11",
+        "barrio": "La Sierra",
+        "localidad": "Suroriente",
+        "estado_actual": "Recuperado",
+        "acciones_realizadas": "Recuperacion",
+        "tipo_residuo": "Ordinarios, Podas, Escombros Y Voluminosos",
+        "frecuencia_limpieza": "Interdiaria",
+        "area_recuperada_m2": 284,
+        "poblacion_impactada": 571,
+        "toneladas_co2_equivalente": 1236
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-74.79272977, 11.00851585]
+      },
+      "properties": {
+        "id": "PC040",
+        "fecha_entrega": "ND",
+        "direccion": "Carrera 72 Con Calle 74 Hasta La 72",
+        "barrio": "La Concepción",
+        "localidad": "Norte Centro Histórico",
+        "estado_actual": "Recuperado",
+        "acciones_realizadas": "Recuperacion",
+        "tipo_residuo": "Ordinarios, Podas, Escombros Y Voluminosos",
+        "frecuencia_limpieza": "Interdiaria",
+        "area_recuperada_m2": 900,
+        "poblacion_impactada": 1772,
+        "toneladas_co2_equivalente": 793
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-74.82488873, 10.96549209]
+      },
+      "properties": {
+        "id": "PC084",
+        "fecha_entrega": "ND",
+        "direccion": "Calle 84b Con Carrera 13",
+        "barrio": "La Esmeralda",
+        "localidad": "Suroccidente",
+        "estado_actual": "Recuperado",
+        "acciones_realizadas": "Recuperacion",
+        "tipo_residuo": "Ordinarios",
+        "frecuencia_limpieza": "Unisemanal",
+        "area_recuperada_m2": 100,
+        "poblacion_impactada": 356,
+        "toneladas_co2_equivalente": 112
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-74.80274667, 10.93736713]
+      },
+      "properties": {
+        "id": "PC038",
+        "fecha_entrega": "ND",
+        "direccion": "Calle 39 Con Carrera 3d",
+        "barrio": "Ciudadela 20 De Julio",
+        "localidad": "Metropolitana",
+        "estado_actual": "Recuperado",
+        "acciones_realizadas": "Recuperacion",
+        "tipo_residuo": "Ordinarios, Podas, Escombros Y Voluminosos",
+        "frecuencia_limpieza": "Interdiaria",
+        "area_recuperada_m2": 270,
+        "poblacion_impactada": 399,
+        "toneladas_co2_equivalente": 429
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-74.78716303, 10.93942204]
+      },
+      "properties": {
+        "id": "PC085",
+        "fecha_entrega": "18/01/2025",
+        "direccion": "Carrera 4 Con Transversal 34b",
+        "barrio": "Universal",
+        "localidad": "Suroriente",
+        "estado_actual": "Recuperado",
+        "acciones_realizadas": "Mejoramiento De La Infraestrctura",
+        "tipo_residuo": "Residuos Ordinarios, Escombros.",
+        "frecuencia_limpieza": "Interdiaria",
+        "area_recuperada_m2": 180,
+        "poblacion_impactada": 2623,
+        "toneladas_co2_equivalente": 223
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-74.80475269, 10.93498639]
+      },
+      "properties": {
+        "id": "PC091",
+        "fecha_entrega": "25/01/2025",
+        "direccion": "Calle 49 Con Carrera 2f",
+        "barrio": "Carrizal",
+        "localidad": "Metropolitana",
+        "estado_actual": "Recuperado",
+        "acciones_realizadas": "Mejoramiento De La Infraestrctura",
+        "tipo_residuo": "Residuos Ordinarios, Partes De Vehiculos, Residuos Orgnicos.",
+        "frecuencia_limpieza": "Interdiaria",
+        "area_recuperada_m2": 90,
+        "poblacion_impactada": 597,
+        "toneladas_co2_equivalente": 212
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-74.77507358, 10.97404833]
+      },
+      "properties": {
+        "id": "PC036",
+        "fecha_entrega": "30/01/2025",
+        "direccion": "Calle 17 Con Carrera 38",
+        "barrio": "Rebolo",
+        "localidad": "Suroriente",
+        "estado_actual": "Recuperado",
+        "acciones_realizadas": "Arreglo De Bordillo Y Jardineras",
+        "tipo_residuo": "Residuos Ordinarios, Escombros, Estibas, Partes De Vehiculos, Colchones.",
+        "frecuencia_limpieza": "Diaria",
+        "area_recuperada_m2": 2860,
+        "poblacion_impactada": 2328,
+        "toneladas_co2_equivalente": 901
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-74.79921056, 10.93190190]
+      },
+      "properties": {
+        "id": "PC080",
+        "fecha_entrega": "1/02/2025",
+        "direccion": "Calle 45 Con Cra 1e",
+        "barrio": "Ciudadela 20 De Julio",
+        "localidad": "Metropolitana",
+        "estado_actual": "Recuperado",
+        "acciones_realizadas": "Mejoramiento De La Infraestrctura",
+        "tipo_residuo": "Organicos Y Escombros",
+        "frecuencia_limpieza": "Diaria",
+        "area_recuperada_m2": 86.5,
+        "poblacion_impactada": 2077,
+        "toneladas_co2_equivalente": 17
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-74.78044973, 10.97456289]
+      },
+      "properties": {
+        "id": "PC075",
+        "fecha_entrega": "8/02/2025",
+        "direccion": "Carrera 35 Con Calle 34",
+        "barrio": "San Roque",
+        "localidad": "Suroriente",
+        "estado_actual": "Recuperado",
+        "acciones_realizadas": "Arreglo De Anden, Bordillo, Levantamiento De Pared",
+        "tipo_residuo": "Resiudos Ordinarios, Escombros, Llantas, Madera, Partes De Vehiculos.",
+        "frecuencia_limpieza": "Diaria",
+        "area_recuperada_m2": 62,
+        "poblacion_impactada": 2210,
+        "toneladas_co2_equivalente": 440
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-74.77178326, 10.97745800]
+      },
+      "properties": {
+        "id": "PC029",
+        "fecha_entrega": "15/03/2025",
+        "direccion": "Carrera 41 Con Calle 8",
+        "barrio": "Centro",
+        "localidad": "Norte Centro Histórico",
+        "estado_actual": "Recuperado",
+        "acciones_realizadas": "Recuperacion",
+        "tipo_residuo": "Ordinarios",
+        "frecuencia_limpieza": "Diaria",
+        "area_recuperada_m2": 1080,
+        "poblacion_impactada": 5200,
+        "toneladas_co2_equivalente": 8054
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-74.80282189, 10.93638521]
+      },
+      "properties": {
+        "id": "PC039",
+        "fecha_entrega": "24/03/2025",
+        "direccion": "Calle 49 Con Carrera 3a1",
+        "barrio": "Ciudadela 20 De Julio",
+        "localidad": "Metropolitana",
+        "estado_actual": "Recuperado",
+        "acciones_realizadas": "Arreglo Del Anden, Bordillo Y Separador, Levantamiento De Muro.",
+        "tipo_residuo": "Residuos Ordinarios, Escombros, Podas De Arboles, Chatarra.",
+        "frecuencia_limpieza": "Diaria",
+        "area_recuperada_m2": 1490,
+        "poblacion_impactada": 9024,
+        "toneladas_co2_equivalente": 881
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-74.77445899, 10.97497058]
+      },
+      "properties": {
+        "id": "PC078",
+        "fecha_entrega": "30/03/2025",
+        "direccion": "Calle 11 Con Carrera 38",
+        "barrio": "Rebolo",
+        "localidad": "Suroriente",
+        "estado_actual": "Recuperado",
+        "acciones_realizadas": "Reconstruccion De Jardinera Anden Y Bordillos",
+        "tipo_residuo": "Residuos Ordinarios, Peligrosos, Escombros, Estibas De Madera, Poda De Arboles, Chatarra, Residuos Organicos.",
+        "frecuencia_limpieza": "Interdiaria",
+        "area_recuperada_m2": 400,
+        "poblacion_impactada": 1475,
+        "toneladas_co2_equivalente": 1678
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-74.77441833, 10.95319337]
+      },
+      "properties": {
+        "id": "PC106",
+        "fecha_entrega": "5/04/2025",
+        "direccion": "Carrera 14 Entre Calles 17 Y 18",
+        "barrio": "Las Nieves",
+        "localidad": "Suroriente",
+        "estado_actual": "Recuperado",
+        "acciones_realizadas": "Reconstruccion De Anden Y Bordillo",
+        "tipo_residuo": "Residuos Organicos, Ordinarios, Escombros",
+        "frecuencia_limpieza": "Interdiaria",
+        "area_recuperada_m2": 214,
+        "poblacion_impactada": 1032,
+        "toneladas_co2_equivalente": 783
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-74.80816400, 10.95545623]
+      },
+      "properties": {
+        "id": "PC008",
+        "fecha_entrega": "12/04/2025",
+        "direccion": "Calle 57 Con Carrera 10",
+        "barrio": "La Ceiba",
+        "localidad": "Suroccidente",
+        "estado_actual": "Recuperado",
+        "acciones_realizadas": "Reconstruccion De Anden Y Bordillo",
+        "tipo_residuo": "Residuos Ordinario, Podas, Escombros, Estibas, Chatarra.",
+        "frecuencia_limpieza": "Interdiaria",
+        "area_recuperada_m2": 171,
+        "poblacion_impactada": 462,
+        "toneladas_co2_equivalente": 1568
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-74.79062443, 10.98225914]
+      },
+      "properties": {
+        "id": "PC095",
+        "fecha_entrega": "26/04/2025",
+        "direccion": "Carrera 41 Con Calle 51",
+        "barrio": "El Rosario",
+        "localidad": "Norte Centro Histórico",
+        "estado_actual": "Recuperado",
+        "acciones_realizadas": "Reconstruccion De Anden Y Bordillo",
+        "tipo_residuo": "Residuos Organicos, Ordinarios, Escombros, Poda De Arboles, Partes De Vehiculos, Partes De Equipos De Computo.",
+        "frecuencia_limpieza": "Interdiaria",
+        "area_recuperada_m2": 360,
+        "poblacion_impactada": 2191,
+        "toneladas_co2_equivalente": 603
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-74.83444881, 10.98801813]
+      },
+      "properties": {
+        "id": "PC051",
+        "fecha_entrega": "3/05/2025",
+        "direccion": "Cra 41d Con Calle 91",
+        "barrio": "Campo Alegre",
+        "localidad": "Norte Centro Histórico",
+        "estado_actual": "Recuperado",
+        "acciones_realizadas": "Reconstruccion De Anden Y Bordillo",
+        "tipo_residuo": "Residuos Organicos, Ordinarios, Escombros",
+        "frecuencia_limpieza": "Interdiaria",
+        "area_recuperada_m2": 101,
+        "poblacion_impactada": 138,
+        "toneladas_co2_equivalente": 357
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-74.80293972, 10.99671852]
+      },
+      "properties": {
+        "id": "PC110",
+        "fecha_entrega": "10/05/2025",
+        "direccion": "Carrera 50 Entre Calles 70 Y 72",
+        "barrio": "Prado",
+        "localidad": "Norte Centro Histórico",
+        "estado_actual": "Recuperado",
+        "acciones_realizadas": "Reconstruccion De Anden Y Bordillo",
+        "tipo_residuo": "Residuos Organicos, Ordinarios, Escombros",
+        "frecuencia_limpieza": "Diaria",
+        "area_recuperada_m2": 1149,
+        "poblacion_impactada": 138,
+        "toneladas_co2_equivalente": 780
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-74.81049626, 10.97318169]
+      },
+      "properties": {
+        "id": "PC112",
+        "fecha_entrega": "17/05/2025",
+        "direccion": "Calle 70c Con Carrera 24b",
+        "barrio": "San Felipe",
+        "localidad": "Suroccidente",
+        "estado_actual": "Recuperado",
+        "acciones_realizadas": "Reconstruccion De Anden Y Bordillo",
+        "tipo_residuo": "Residuos Organicos, Ordinarios, Escombros",
+        "frecuencia_limpieza": "Interdiaria",
+        "area_recuperada_m2": 3966,
+        "poblacion_impactada": 1376,
+        "toneladas_co2_equivalente": 154
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-74.78583257, 10.94834849]
+      },
+      "properties": {
+        "id": "PC010",
+        "fecha_entrega": "24/05/2025",
+        "direccion": "Carrera 11 Con Calle 30",
+        "barrio": "La Union",
+        "localidad": "Suroriente",
+        "estado_actual": "Recuperado",
+        "acciones_realizadas": "Reconstruccion De Anden Y Bordillo",
+        "tipo_residuo": "Residuos Organicos, Ordinarios, Escombros",
+        "frecuencia_limpieza": "Interdiaria",
+        "area_recuperada_m2": 440,
+        "poblacion_impactada": 2180,
+        "toneladas_co2_equivalente": 664
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-74.81123849, 11.02315467]
+      },
+      "properties": {
+        "id": "PC052",
+        "fecha_entrega": "31/05/2025",
+        "direccion": "Calle 91 Con Carrera 75b",
+        "barrio": "La Floresta",
+        "localidad": "Riomar",
+        "estado_actual": "Recuperado",
+        "acciones_realizadas": "Reconstruccion De Anden Y Bordillo",
+        "tipo_residuo": "Residuos Organicos, Ordinarios, Escombros, Poda De Arboles",
+        "frecuencia_limpieza": "Unisemanal",
+        "area_recuperada_m2": 730,
+        "poblacion_impactada": 2341,
+        "toneladas_co2_equivalente": 73
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-74.77927963, 10.95635393]
+      },
+      "properties": {
+        "id": "PC117",
+        "fecha_entrega": "7/06/2025",
+        "direccion": "Calle 24 Con Carrera 19",
+        "barrio": "Las Nieves",
+        "localidad": "Suroriente",
+        "estado_actual": "Recuperado",
+        "acciones_realizadas": "Reconstruccion De Anden Y Bordillo",
+        "tipo_residuo": "Residuos Organicos, Ordinarios, Escombros, Poda De Arboles",
+        "frecuencia_limpieza": "Interdiaria",
+        "area_recuperada_m2": 9597,
+        "poblacion_impactada": 790,
+        "toneladas_co2_equivalente": 166
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-74.82668496, 11.03883877]
+      },
+      "properties": {
+        "id": "PC103",
+        "fecha_entrega": "14/06/2025",
+        "direccion": "Calle 110 Con Vía 40",
+        "barrio": "Las Flores",
+        "localidad": "Riomar",
+        "estado_actual": "Recuperado",
+        "acciones_realizadas": "Reconstruccion De Anden Y Bordillo",
+        "tipo_residuo": "Residuos Organicos, Ordinarios, Escombros, Poda De Arboles",
+        "frecuencia_limpieza": "Interdiaria",
+        "area_recuperada_m2": 868,
+        "poblacion_impactada": 1567,
+        "toneladas_co2_equivalente": 228
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-74.83161900, 11.03767475]
+      },
+      "properties": {
+        "id": "PC046",
+        "fecha_entrega": "14/06/2025",
+        "direccion": "Via La Playa Sentido Las Flores - La Playa Cerca Del Parqueadero De Camiones",
+        "barrio": "Las Flores",
+        "localidad": "Riomar",
+        "estado_actual": "Recuperado",
+        "acciones_realizadas": "Reconstruccion De Anden Y Bordillo",
+        "tipo_residuo": "Residuos Organicos, Ordinarios, Escombros, Poda De Arboles",
+        "frecuencia_limpieza": "Unisemanal",
+        "area_recuperada_m2": 645,
+        "poblacion_impactada": 1567,
+        "toneladas_co2_equivalente": 449
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-74.85983071, 11.03128120]
+      },
+      "properties": {
+        "id": "PC119",
+        "fecha_entrega": "14/06/2025",
+        "direccion": "Circunvalar De La Prosperidad Con Vía A La Playa",
+        "barrio": "La Playa",
+        "localidad": "Riomar",
+        "estado_actual": "Recuperado",
+        "acciones_realizadas": "Reconstruccion De Anden Y Bordillo",
+        "tipo_residuo": "Residuos Organicos, Ordinarios, Escombros, Poda De Arboles",
+        "frecuencia_limpieza": "Interdiaria",
+        "area_recuperada_m2": 395,
+        "poblacion_impactada": 247,
+        "toneladas_co2_equivalente": 169
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-74.80184764, 11.02435699]
+      },
+      "properties": {
+        "id": "PC002",
+        "fecha_entrega": "28/06/2025",
+        "direccion": "Via 40 Con Calle 82",
+        "barrio": "Siape",
+        "localidad": "Riomar",
+        "estado_actual": "Recuperado",
+        "acciones_realizadas": "Reconstruccion De Anden Y Bordillo",
+        "tipo_residuo": "Residuos Organicos, Ordinarios, Escombros",
+        "frecuencia_limpieza": "Interdiaria",
+        "area_recuperada_m2": 207,
+        "poblacion_impactada": 1410,
+        "toneladas_co2_equivalente": 518
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-74.78085471, 10.99248850]
+      },
+      "properties": {
+        "id": "PC012",
+        "fecha_entrega": "5/07/2025",
+        "direccion": "Calle 40 Entre Cra 51 Y 52 - Cra 52 Entre Calle 40 Y 42",
+        "barrio": "Barrio Abajo",
+        "localidad": "Norte Centro Histórico",
+        "estado_actual": "Recuperado",
+        "acciones_realizadas": "Reconstruccion De Anden Y Bordillo",
+        "tipo_residuo": "Residuos Organicos, Ordinarios, Escombros",
+        "frecuencia_limpieza": "Interdiaria",
+        "area_recuperada_m2": 978,
+        "poblacion_impactada": 399,
+        "toneladas_co2_equivalente": 1192
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-74.82368565, 10.95507012]
+      },
+      "properties": {
+        "id": "PC100",
+        "fecha_entrega": "12/07/2025",
+        "direccion": "Calle 87 Con Carrera 9",
+        "barrio": "El Bosque",
+        "localidad": "Suroccidente",
+        "estado_actual": "Recuperado",
+        "acciones_realizadas": "Reconstruccion De Anden Y Bordillo",
+        "tipo_residuo": "Residuos Organicos, Ordinarios, Escombros, Poda De Arboles",
+        "frecuencia_limpieza": "Interdiaria",
+        "area_recuperada_m2": 1393,
+        "poblacion_impactada": 318,
+        "toneladas_co2_equivalente": 281
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-74.79197996, 10.96440800]
+      },
+      "properties": {
+        "id": "PC019",
+        "fecha_entrega": "19/07/2025",
+        "direccion": "Avenida Cordialidad Con Calle Murillo",
+        "barrio": "San Jose",
+        "localidad": "Suroriente",
+        "estado_actual": "Recuperado",
+        "acciones_realizadas": "Reconstruccion De Anden Y Bordillo",
+        "tipo_residuo": "Residuos Organicos, Ordinarios, Escombros",
+        "frecuencia_limpieza": "Interdiaria",
+        "area_recuperada_m2": 543,
+        "poblacion_impactada": 908,
+        "toneladas_co2_equivalente": 388
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-74.83252326, 10.94395522]
+      },
+      "properties": {
+        "id": "PC015",
+        "fecha_entrega": "26/07/2025",
+        "direccion": "Cordialidad Con Circunvalar",
+        "barrio": "Cordialidad",
+        "localidad": "Suroccidente",
+        "estado_actual": "Recuperado",
+        "acciones_realizadas": "Reconstruccion De Anden, Bordillo Y Jardinera",
+        "tipo_residuo": "Residuos Organicos, Ordinarios, Escombros, Poda De Arboles.",
+        "frecuencia_limpieza": "Diario",
+        "area_recuperada_m2": 967,
+        "poblacion_impactada": 300,
+        "toneladas_co2_equivalente": 446
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-74.81326593, 11.01934915]
+      },
+      "properties": {
+        "id": "PC120",
+        "fecha_entrega": "2/08/2025",
+        "direccion": "Calle 88 Con Carrera 71",
+        "barrio": "Villa Carolina",
+        "localidad": "Riomar",
+        "estado_actual": "Recuperado",
+        "acciones_realizadas": "Reconstruccion De Anden, Bordillo Y Jardinera",
+        "tipo_residuo": "Residuos Organicos, Ordinarios, Escombros, Poda De Arboles",
+        "frecuencia_limpieza": "Interdiaria",
+        "area_recuperada_m2": 1408,
+        "poblacion_impactada": 1003,
+        "toneladas_co2_equivalente": 217
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-74.79412630, 11.01199561]
+      },
+      "properties": {
+        "id": "PC073",
+        "fecha_entrega": "23/08/2025",
+        "direccion": "Carrera 73 Con Calle 75",
+        "barrio": "La Concepción",
+        "localidad": "Norte Centro Histórico",
+        "estado_actual": "Recuperado",
+        "acciones_realizadas": "Reconstruccion De Anden, Bordillo Y Jardinera",
+        "tipo_residuo": "Residuos Organicos, Ordinarios, Escombros, Poda De Arboles",
+        "frecuencia_limpieza": "Cuatrisemanal",
+        "area_recuperada_m2": 1751,
+        "poblacion_impactada": 529,
+        "toneladas_co2_equivalente": 292
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-74.82417677, 10.95571697]
+      },
+      "properties": {
+        "id": "PC136",
+        "fecha_entrega": "23/08/2025",
+        "direccion": "Carrera 9a Entre Calle 87 Y 93",
+        "barrio": "El Bosque",
+        "localidad": "Suroccidente",
+        "estado_actual": "Recuperado",
+        "acciones_realizadas": "Embellecimiento",
+        "tipo_residuo": "Residuos De Rechazo De Raee",
+        "frecuencia_limpieza": "Interdiaria",
+        "area_recuperada_m2": 88,
+        "poblacion_impactada": 128,
+        "toneladas_co2_equivalente": 9
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-74.79208978, 10.98574727]
+      },
+      "properties": {
+        "id": "PC130",
+        "fecha_entrega": "30/08/2025",
+        "direccion": "Calle 54 Entre Carrera 43 Y 44",
+        "barrio": "Boston",
+        "localidad": "Norte Centro Histórico",
+        "estado_actual": "Recuperado",
+        "acciones_realizadas": "Reconstruccion De Anden, Bordillo Y Jardinera",
+        "tipo_residuo": "Residuos Organicos, Ordinarios, Escombros, Poda De Arboles",
+        "frecuencia_limpieza": "Interdiaria",
+        "area_recuperada_m2": 181,
+        "poblacion_impactada": 665,
+        "toneladas_co2_equivalente": 147
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-74.85453207, 10.95630613]
+      },
+      "properties": {
+        "id": "PC131",
+        "fecha_entrega": "6/09/2025",
+        "direccion": "Caribe Verde",
+        "barrio": "Caribe Verde",
+        "localidad": "Suroccidente",
+        "estado_actual": "Recuperado",
+        "acciones_realizadas": "Reconstruccion De Anden, Bordillo Y Jardinera",
+        "tipo_residuo": "Residuos Organicos, Ordinarios, Escombros, Poda De Arboles",
+        "frecuencia_limpieza": "Interdiaria",
+        "area_recuperada_m2": 150,
+        "poblacion_impactada": 3645,
+        "toneladas_co2_equivalente": 149
+      }
+    }
+  ]
+}

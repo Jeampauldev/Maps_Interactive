@@ -227,9 +227,12 @@ const EDUCATIONAL_INSTITUTIONS = [
 // ===== VARIABLES GLOBALES =====
 let map;
 let markersLayer;
+let puntosLayer;
 let currentMarkers = [];
+let currentPuntosCriticos = [];
 let filteredInstitutions = [...EDUCATIONAL_INSTITUTIONS];
 let selectedInstitution = null;
+let puntosData = [];
 
 // ===== CLASE PRINCIPAL DE LA APLICACIÓN =====
 class BarranquillaEduMap {
@@ -247,6 +250,7 @@ class BarranquillaEduMap {
             await this.initializeMap();
             this.setupEventListeners();
             this.loadInstitutions();
+            this.loadPuntosCriticos();
             this.updateStatistics();
             this.hideLoadingOverlay();
             this.showToast('Mapa cargado exitosamente', 'success');
@@ -292,6 +296,9 @@ class BarranquillaEduMap {
         
         // Crear capa para los marcadores
         markersLayer = L.layerGroup().addTo(map);
+        
+        // Crear capa para los puntos críticos
+        puntosLayer = L.layerGroup().addTo(map);
         
         // Agregar control de zoom personalizado
         L.control.zoom({
@@ -806,6 +813,37 @@ class BarranquillaEduMap {
     }
     
     /**
+     * Carga y renderiza los puntos críticos en el mapa
+     */
+    async loadPuntosCriticos() {
+        try {
+            const response = await fetch('src/data/puntos_criticos.json');
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            const data = await response.json();
+            puntosData = data.features || [];
+            
+            // Limpiar marcadores existentes de puntos críticos
+            puntosLayer.clearLayers();
+            currentPuntosCriticos = [];
+            
+            // Crear marcadores para cada punto crítico
+            puntosData.forEach(punto => {
+                const marker = this.createPuntoCriticoMarker(punto);
+                currentPuntosCriticos.push({ marker, punto });
+            });
+            
+            console.log(`Cargados ${puntosData.length} puntos críticos`);
+            
+        } catch (error) {
+            console.error('Error cargando puntos críticos:', error);
+            this.showToast('Error al cargar puntos críticos', 'error');
+        }
+    }
+    
+    /**
      * Crea un marcador personalizado para una institución
      * Implementa el patrón Factory Method
      */
@@ -855,6 +893,36 @@ class BarranquillaEduMap {
     }
     
     /**
+     * Crea un marcador personalizado para un punto crítico
+     */
+    createPuntoCriticoMarker(punto) {
+        const coordinates = [punto.geometry.coordinates[1], punto.geometry.coordinates[0]];
+        const properties = punto.properties;
+        
+        // Crear icono personalizado para punto crítico
+        const icon = L.divIcon({
+            className: 'custom-marker punto-critico-marker',
+            html: `
+                <div class="marker-container" style="background-color: #dc2626;">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+            `,
+            iconSize: [40, 40],
+            iconAnchor: [20, 40],
+            popupAnchor: [0, -40]
+        });
+        
+        const marker = L.marker(coordinates, { icon })
+            .bindPopup(this.createPuntoCriticoPopupContent(properties), {
+                maxWidth: 350,
+                className: 'custom-popup punto-critico-popup'
+            });
+        
+        puntosLayer.addLayer(marker);
+        return marker;
+    }
+    
+    /**
      * Obtiene el icono FontAwesome apropiado para cada tipo de institución
      */
     getInstitutionIcon(type) {
@@ -895,6 +963,58 @@ class BarranquillaEduMap {
             tecnico: 'Instituto Técnico'
         };
         return labels[type] || type;
+    }
+    
+    /**
+     * Crea el contenido HTML para el popup de un punto crítico
+     */
+    createPuntoCriticoPopupContent(properties) {
+        const formatDate = (dateStr) => {
+            if (!dateStr) return 'No especificada';
+            try {
+                const date = new Date(dateStr);
+                return date.toLocaleDateString('es-CO', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+            } catch {
+                return dateStr;
+            }
+        };
+        
+        const getStatusBadge = (status) => {
+            const statusColors = {
+                'ACTIVO': '#dc2626',
+                'INACTIVO': '#16a34a',
+                'EN PROCESO': '#f59e0b'
+            };
+            const color = statusColors[status] || '#6b7280';
+            return `<span class="status-badge" style="background-color: ${color}; color: white; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 500;">${status || 'Sin estado'}</span>`;
+        };
+        
+        return `
+            <div class="punto-critico-popup">
+                <h4 style="color: #dc2626; margin-bottom: 8px;">
+                    <i class="fas fa-exclamation-triangle" style="margin-right: 8px;"></i>
+                    Punto Crítico #${properties.id || 'N/A'}
+                </h4>
+                
+                ${getStatusBadge(properties.estado)}
+                
+                <div style="margin: 12px 0;">
+                    <p><i class="fas fa-map-marker-alt"></i> <strong>Dirección:</strong><br>${properties.direccion || 'No especificada'}</p>
+                    <p><i class="fas fa-calendar"></i> <strong>Fecha de entrega:</strong> ${formatDate(properties.fecha_entrega)}</p>
+                    <p><i class="fas fa-trash"></i> <strong>Tipo de residuo:</strong> ${properties.tipo_residuo || 'No especificado'}</p>
+                    <p><i class="fas fa-weight"></i> <strong>Cantidad:</strong> ${properties.cantidad || 'No especificada'}</p>
+                    ${properties.observaciones ? `<p><i class="fas fa-comment"></i> <strong>Observaciones:</strong><br><em>${properties.observaciones}</em></p>` : ''}
+                </div>
+                
+                <div style="border-top: 1px solid #e5e7eb; padding-top: 8px; margin-top: 12px;">
+                    <small style="color: #6b7280;">Coordenadas: ${properties.coord_y || 'N/A'}, ${properties.coord_x || 'N/A'}</small>
+                </div>
+            </div>
+        `;
     }
     
     /**
@@ -1470,6 +1590,74 @@ const additionalStyles = `
             font-size: 48px;
             margin-bottom: 16px;
             opacity: 0.5;
+        }
+
+        /* Estilos para puntos críticos */
+        .punto-critico-marker {
+            background: #dc2626;
+            border: 3px solid white;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 8px rgba(220, 38, 38, 0.4);
+            animation: pulse-red 2s infinite;
+        }
+
+        .punto-critico-marker i {
+            color: white;
+            font-size: 14px;
+        }
+
+        @keyframes pulse-red {
+            0% {
+                box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(220, 38, 38, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(220, 38, 38, 0);
+            }
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+
+        .status-badge.activo {
+            background-color: #dc2626;
+            color: white;
+        }
+
+        .status-badge.inactivo {
+            background-color: #6b7280;
+            color: white;
+        }
+
+        .punto-critico-popup {
+            min-width: 250px;
+        }
+
+        .punto-critico-popup h4 {
+            color: #dc2626;
+            margin-bottom: 8px;
+        }
+
+        .punto-critico-popup .info-row {
+            margin: 4px 0;
+            font-size: 13px;
+        }
+
+        .punto-critico-popup .info-row strong {
+            color: #374151;
         }
     </style>
 `;

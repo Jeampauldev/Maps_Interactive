@@ -1,0 +1,70 @@
+ID;FECHA DE ENTREGA;COORD_Y;COORD_X;DIRECCIÓN;BARRIO;LOCALIDAD;ESTADO ACTUAL;ACCIONES REALIZADAS;TIPO DE RESIDUO;FRECUENCIA DE LIMPIEZA;AREA RECUPERADA (m2);POBLACION IMPACTADA;TONELADAS DE CO2 EQUIVALENTE
+PC001;ND;10.96769965;-74.77509000;Cra 30 Con Calle 17;Rebolo;Suroriente;Recuperado;Mejoramiento De La Infraestrctura;Residuos Organicos, Ordinarios, Escombros, Poda De Arboles;Interdiaria;252;1194;1049
+PC011;ND;10.99074014;-74.80059454;Carrera 45 Con Calle 66;Boston;Norte Centro Histórico;Recuperado;Recuperacion;Ordinarios, Escombros, Poda De Arboles Y Voluminosos;Interdiaria;227.5;304;562
+PC003;ND;10.98255360;-74.77682303;Carrera 44 Con Calle 32;Centro;Norte Centro Histórico;Recuperado;Recuperacion;Ordinarios Y Voluminosos;Diaria;145;5350;674
+PC018;ND;10.98325225;-74.80202073;Calle 65 Con Cra 38;El Recreo;Norte Centro Histórico;Recuperado;Recuperacion;Ordinarios, Podas, Escombros Y Voluminosos;Interdiaria;775.6;274;907
+PC009;ND;10.97970655;-74.79047534;Carrera 37 Con Calle 50;Chiquinquirá;Suroriente;Recuperado;Recuperacion;Ordinarios, Podas, Escombros Y Voluminosos;Interdiaria;290;350;1573
+PC082;ND;10.94789789;-74.79981898;Calle 45 Con Cra 8c;La Arboraya;Suroriente;Recuperado;Limpieza Y Embellecimiento;Ordinarios, Podas, Escombros Y Voluminosos;Diaria ;61.58;300;1123
+PC057;ND;10.94286769;-74.79983613;Calle 45 Con Cra 7c;Buenos Aires;Metropolitana;Recuperado;Recuperacion;Ordinarios, Podas, Escombros Y Voluminosos;Unisemanal;900;381;75
+PC025;ND;10.98432491;-74.77440022;Calle 10 Con Cra 45;Villanueva;Norte Centro Histórico;Recuperado;Recuperacion;Ordinarios, Podas, Escombros Y Voluminosos;Interdiaria;2940;500;4194
+PC047;ND;10.93489515;-74.82902289;Calle 98c #2sur;Villa San Carlos;Metropolitana;Recuperado;Recuperacion;Ordinarios, Podas, Escombros Y Voluminosos;Interdiaria;10257;2200;174
+PC023;ND;10.95755244;-74.80492763;Calle 56 Con Cra 13;La Sierra;Metropolitana;Recuperado;Recuperacion;Ordinarios, Podas, Escombros Y Voluminosos;Interdiaria;64;1348;1123
+PC041;ND;10.95952662;-74.79408079;Calle 45 # 19 - 136;San José;Suroriente;Recuperado;Recuperacion;Ordinarios, Podas, Escombros Y Voluminosos;Interdiaria;252;1367;84
+PC030;ND;10.96565870;-74.79022734;Calle 42 Con Cra 24;Alfonso López;Suroccidente;Recuperado;Recuperacion;Ordinarios, Podas, Escombros Y Voluminosos;Interdiaria;131;599;1459
+PC079;ND;10.96672399;-74.78876661;Calle 41 Con Cra 25;Montes;Suroriente;Recuperado;Mejoramiento De La Infraestrctura;Ordinarios, Podas, Escombros Y Voluminosos;Interdiaria;56;356;31
+PC081;ND;10.92670179;-74.80597006;Calle 47b Con Carrera 8a Sur;Ciudadela 20 De Julio;Metropolitana;Recuperado;Limpieza Y Embellecimiento;Ordinarios, Podas Y Voluminosos;Interdiaria;9.12;820;1798
+PC083;ND;10.97242113;-74.78924797;Calle 45 Con Cra 30;Chiquinquirá;Suroriente;Recuperado;Limpieza Y Embellecimiento;Ordinarios;Interdiaria;137.5;341;210
+PC035;ND;10.95377562;-74.77448069;Carrera 15 Con Calle 17;Las Nieves;Suroriente;Recuperado;Recuperacion;Ordinarios, Podas, Escombros Y Voluminosos;Unisemanal;117;593;524
+PC037;ND;10.95560420;-74.80478444;Calle 54 Con Cra 11;La Sierra;Suroriente;Recuperado;Recuperacion;Ordinarios, Podas, Escombros Y Voluminosos;Interdiaria;284;571;1236
+PC040;ND;11.00851585;-74.79272977;Carrera 72 Con Calle 74 Hasta La 72;La Concepción;Norte Centro Histórico;Recuperado;Recuperacion;Ordinarios, Podas, Escombros Y Voluminosos;Interdiaria;900;1772;793
+PC084;ND;10.96549209;-74.82488873;Calle 84b Con Carrera 13;La Esmeralda;Suroccidente;Recuperado;Recuperacion;Ordinarios;Unisemanal;100;356;112
+PC038;ND;10.93736713;-74.80274667;Calle 39 Con Carrera 3d;Ciudadela 20 De Julio;Metropolitana;Recuperado;Recuperacion;Ordinarios, Podas, Escombros Y Voluminosos;Interdiaria;270;399;429
+PC085;18/01/2025;10.93942204;-74.78716303;Carrera 4 Con Transversal 34b;Universal;Suroriente;Recuperado;Mejoramiento De La Infraestrctura;Residuos Ordinarios, Escombros.;Interdiaria;180;2623;223
+PC091;25/01/2025;10.93498639;-74.80475269;Calle 49 Con Carrera 2f;Carrizal;Metropolitana;Recuperado;Mejoramiento De La Infraestrctura;Residuos Ordinarios, Partes De Vehiculos, Residuos Orgnicos.;Interdiaria;90;597;212
+PC036;30/01/2025;10.97404833;-74.77507358;Calle 17 Con Carrera 38;Rebolo;Suroriente;Recuperado;Arreglo De Bordillo Y Jardineras ;Residuos Ordinarios, Escombros, Estibas, Partes De Vehiculos, Colchones.;Diaria ;2860;2328;901
+PC080;1/02/2025;10.93190190;-74.79921056;Calle 45 Con Cra 1e;Ciudadela 20 De Julio;Metropolitana;Recuperado;Mejoramiento De La Infraestrctura;Organicos Y Escombros;Diaria;86.5;2077;17
+PC075;8/02/2025;10.97456289;-74.78044973;Carrera 35 Con Calle 34;San Roque;Suroriente;Recuperado;Arreglo De Anden, Bordillo, Levantamiento De Pared;Resiudos Ordinarios, Escombros, Llantas, Madera, Partes De Vehiculos.;Diaria ;62;2210;440
+PC029;15/03/2025;10.97745800;-74.77178326;Carrera 41 Con Calle 8;Centro;Norte Centro Histórico;Recuperado;Recuperacion;Ordinarios;Diaria;1080;5200;8054
+PC039;24/03/2025;10.93638521;-74.80282189;Calle 49 Con Carrera 3a1;Ciudadela 20 De Julio;Metropolitana;Recuperado;Arreglo Del Anden, Bordillo Y Separador, Levantamiento De Muro. ;Residuos Ordinarios, Escombros, Podas De Arboles, Chatarra. ;Diaria ;1490;9024;881
+PC078;30/03/2025;10.97497058;-74.77445899;Calle 11 Con Carrera 38;Rebolo;Suroriente;Recuperado;Reconstruccion De Jardinera Anden Y Bordillos ;Residuos Ordinarios, Peligrosos, Escombros, Estibas De Madera, Poda De Arboles, Chatarra, Residuos Organicos. ;Interdiaria;400;1475;1678
+PC106;5/04/2025;10.95319337;-74.77441833;Carrera 14 Entre Calles 17 Y 18;Las Nieves;Suroriente;Recuperado;Reconstruccion De Anden Y Bordillo ;Residuos Organicos, Ordinarios, Escombros;Interdiaria;214;1032;783
+PC008;12/04/2025;10.95545623;-74.80816400;Calle 57 Con Carrera 10;La Ceiba;Suroccidente;Recuperado;Reconstruccion De Anden Y Bordillo ;Residuos Ordinario, Podas, Escombros, Estibas, Chatarra. ;Interdiaria;171;462;1568
+PC095;26/04/2025;10.98225914;-74.79062443;Carrera 41 Con Calle 51;El Rosario;Norte Centro Histórico;Recuperado;Reconstruccion De Anden Y Bordillo ;Residuos Organicos, Ordinarios, Escombros, Poda De Arboles, Partes De Vehiculos, Partes De Equipos De Computo. ;Interdiaria;360;2191;603
+PC051;3/05/2025;10.98801813;-74.83444881;Cra 41d Con Calle 91;Campo Alegre;Norte Centro Histórico;Recuperado;Reconstruccion De Anden Y Bordillo ;Residuos Organicos, Ordinarios, Escombros;Interdiaria;101;138;357
+PC110;10/05/2025;10.99671852;-74.80293972;Carrera 50 Entre Calles 70 Y 72;Prado;Norte Centro Histórico;Recuperado;Reconstruccion De Anden Y Bordillo ;Residuos Organicos, Ordinarios, Escombros;Diaria ;1149;138;780
+PC112;17/05/2025;10.97318169;-74.81049626;Calle 70c Con Carrera 24b;San Felipe;Suroccidente;Recuperado;Reconstruccion De Anden Y Bordillo ;Residuos Organicos, Ordinarios, Escombros;Interdiaria;3966;1376;154
+PC010;24/05/2025;10.94834849;-74.78583257;Carrera 11 Con Calle 30;La Union;Suroriente;Recuperado;Reconstruccion De Anden Y Bordillo ;Residuos Organicos, Ordinarios, Escombros;Interdiaria;440;2180;664
+PC052;31/05/2025;11.02315467;-74.81123849;Calle 91 Con Carrera 75b;La Floresta;Riomar;Recuperado;Reconstruccion De Anden Y Bordillo ;Residuos Organicos, Ordinarios, Escombros, Poda De Arboles;Unisemanal;730;2341;73
+PC117;7/06/2025;10.95635393;-74.77927963;Calle 24 Con Carrera 19;Las Nieves;Suroriente;Recuperado;Reconstruccion De Anden Y Bordillo ;Residuos Organicos, Ordinarios, Escombros, Poda De Arboles;Interdiaria;9597;790;166
+PC103;14/06/2025;11.03883877;-74.82668496;Calle 110 Con Vía 40;Las Flores;Riomar;Recuperado;Reconstruccion De Anden Y Bordillo ;Residuos Organicos, Ordinarios, Escombros, Poda De Arboles;Interdiaria;868;1567;228
+PC046;14/06/2025;11.03767475;-74.83161900;Via La Playa Sentido Las Flores - La Playa Cerca Del Parqueadero De Camiones;Las Flores;Riomar;Recuperado;Reconstruccion De Anden Y Bordillo ;Residuos Organicos, Ordinarios, Escombros, Poda De Arboles;Unisemanal;645;1567;449
+PC119;14/06/2025;11.03128120;-74.85983071;Circunvalar De La Prosperidad Con Vía A La Playa;La Playa;Riomar;Recuperado;Reconstruccion De Anden Y Bordillo ;Residuos Organicos, Ordinarios, Escombros, Poda De Arboles;Interdiaria;395;247;169
+PC002;28/06/2025;11.02435699;-74.80184764;Via 40 Con Calle 82;Siape;Riomar;Recuperado;Reconstruccion De Anden Y Bordillo ;Residuos Organicos, Ordinarios, Escombros;Interdiaria;207;1410;518
+PC012;5/07/2025;10.99248850;-74.78085471;Calle 40 Entre Cra 51 Y 52 - Cra 52 Entre Calle 40 Y 42;Barrio Abajo;Norte Centro Histórico;Recuperado;Reconstruccion De Anden Y Bordillo ;Residuos Organicos, Ordinarios, Escombros;Interdiaria;978;399;1192
+PC100;12/07/2025;10.95507012;-74.82368565;Calle 87 Con Carrera 9;El Bosque;Suroccidente;Recuperado;Reconstruccion De Anden Y Bordillo ;Residuos Organicos, Ordinarios, Escombros, Poda De Arboles;Interdiaria;1393;318;281
+PC019;19/07/2025;10.96440800;-74.79197996;Avenida Cordialidad Con Calle Murillo;San Jose;Suroriente;Recuperado;Reconstruccion De Anden Y Bordillo ;Residuos Organicos, Ordinarios, Escombros;Interdiaria;543;908;388
+PC015;26/07/2025;10.94395522;-74.83252326;Cordialidad Con Circunvalar;Cordialidad;Suroccidente;Recuperado;Reconstruccion De Anden, Bordillo Y Jardinera;Residuos Organicos, Ordinarios, Escombros, Poda De Arboles.;Diario;967;300;446
+PC120;2/08/2025;11.01934915;-74.81326593;Calle 88 Con Carrera 71;Villa Carolina;Riomar;Recuperado;Reconstruccion De Anden, Bordillo Y Jardinera;Residuos Organicos, Ordinarios, Escombros, Poda De Arboles;Interdiaria;1408;1003;217
+PC073;23/08/2025;11.01199561;-74.79412630;Carrera 73 Con Calle 75;La Concepción;Norte Centro Histórico;Recuperado;Reconstruccion De Anden, Bordillo Y Jardinera;Residuos Organicos, Ordinarios, Escombros, Poda De Arboles;Cuatrisemanal;1751;529;292
+PC136;23/08/2025;10.95571697;-74.82417677;Carrera 9a Entre Calle 87 Y 93;El Bosque;Suroccidente;Recuperado;Embellecimiento;Residuos De Rechazo De Raee;Interdiaria;88;128;9
+PC130;30/08/2025;10.98574727;-74.79208978;Calle 54 Entre Carrera 43 Y 44;Boston;Norte Centro Histórico;Recuperado;Reconstruccion De Anden, Bordillo Y Jardinera;Residuos Organicos, Ordinarios, Escombros, Poda De Arboles;Interdiaria;181;665;147
+PC131;6/09/2025;10.95630613;-74.85453207;Caribe Verde;Caribe Verde;Suroccidente;Recuperado;Reconstruccion De Anden, Bordillo Y Jardinera;Residuos Organicos, Ordinarios, Escombros, Poda De Arboles;Interdiaria;150;3645;149
+;;;;;;;;;;;;;
+;;;;;;;;;;;;;
+;;;;;;;;;;;;;
+;;;;;;;;;;;;;
+;;;;;;;;;;;;;
+;;;;;;;;;;;;;
+;;;;;;;;;;;;;
+;;;;;;;;;;;;;
+;;;;;;;;;;;;;
+;;;;;;;;;;;;;
+;;;;;;;;;;;;;
+;;;;;;;;;;;;;
+;;;;;;;;;;;;;
+;;;;;;;;;;;;;
+;;;;;;;;;;;;;
+;;;;;;;;;;;;;
+;;;;;;;;;;;;;
+;;;;;;;;;;;;;
+;;;;;;;;;;;;;
