@@ -33,6 +33,14 @@
     <!-- Preload Critical Resources -->
     <link rel="preload" href="./src/styles/styles.css" as="style">
     
+    <!-- Cargar CSS con timestamp para evitar caché durante desarrollo -->
+    <script>
+        const cssLink = document.createElement('link');
+        cssLink.rel = 'stylesheet';
+        cssLink.href = `./src/styles/styles.css?v=${Date.now()}`;
+        document.head.appendChild(cssLink);
+    </script>
+    
     <!-- DNS Prefetch for External Resources -->
     <link rel="dns-prefetch" href="//unpkg.com">
     <link rel="dns-prefetch" href="//cdnjs.cloudflare.com">
@@ -48,8 +56,8 @@
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
-    <!-- Estilos personalizados -->
-    <link rel="stylesheet" href="./src/styles/styles.css">
+    <!-- Estilos personalizados - COMENTADO PARA DESARROLLO (se carga dinámicamente arriba) -->
+    <!-- <link rel="stylesheet" href="./src/styles/styles.css"> -->
     
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="./src/assets/logos/Logo_Simbolo.png">
@@ -232,10 +240,51 @@
     
     <!-- Scripts -->
     <script src="./src/assets/icons/icons.js" defer></script>
-    <script src="./src/components/script.js" defer></script>
-    
-    <!-- Service Worker Registration -->
     <script>
+        // Función para cargar script principal de forma segura
+        function loadMainScript() {
+            const script = document.createElement('script');
+            script.src = `./src/components/script.js?v=${Date.now()}`;
+            script.defer = true;
+            
+            // Manejar errores de carga
+            script.onerror = function() {
+                console.error('❌ Error cargando script principal, usando fallback mínimo');
+                // Cargar script mínimo como fallback
+                const fallbackScript = document.createElement('script');
+                fallbackScript.src = './minimal-test.js';
+                fallbackScript.defer = true;
+                document.head.appendChild(fallbackScript);
+            };
+            
+            script.onload = function() {
+                console.log('✅ Script principal cargado exitosamente');
+            };
+            
+            document.head.appendChild(script);
+        }
+        
+        // Cargar cuando el DOM esté listo
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', loadMainScript);
+        } else {
+            loadMainScript();
+        }
+    </script>
+    
+    <!-- Service Worker Registration - DESHABILITADO PARA DESARROLLO -->
+    <script>
+        // Desregistrar service worker existente para desarrollo
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.getRegistrations().then(function(registrations) {
+                for(let registration of registrations) {
+                    registration.unregister();
+                    console.log('Service Worker desregistrado para desarrollo');
+                }
+            });
+        }
+        
+        /* COMENTADO PARA DESARROLLO - DESCOMENTAR EN PRODUCCIÓN
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('/sw.js')
@@ -252,6 +301,7 @@
                     });
             });
         }
+        */
         
         // Detectar instalación de PWA
         let deferredPrompt;

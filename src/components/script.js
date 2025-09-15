@@ -237,6 +237,7 @@ let puntosData = [];
 // ===== CLASE PRINCIPAL DE LA APLICACIÓN =====
 class BarranquillaEduMap {
     constructor() {
+        console.log('🚀 Iniciando constructor de BarranquillaEduMap...');
         this.initializeApp();
     }
     
@@ -266,7 +267,25 @@ class BarranquillaEduMap {
      * Aplica el patrón Builder para la construcción del mapa
      */
     async initializeMap() {
+        console.log('🗺️ Iniciando inicialización del mapa...');
+        
+        // Verificar que Leaflet esté disponible
+        if (typeof L === 'undefined') {
+            console.error('❌ Leaflet no está disponible. Verifica que se haya cargado correctamente.');
+            throw new Error('Leaflet no está disponible');
+        }
+        console.log('✅ Leaflet está disponible');
+        
+        // Verificar que el contenedor del mapa exista
+        const mapContainer = document.getElementById('map');
+        if (!mapContainer) {
+            console.error('❌ No se encontró el contenedor del mapa con id="map"');
+            throw new Error('Contenedor del mapa no encontrado');
+        }
+        console.log('✅ Contenedor del mapa encontrado:', mapContainer);
+        
         // Crear el mapa centrado en Barranquilla
+        console.log('🎯 Creando mapa con coordenadas:', CONFIG.BARRANQUILLA_COORDS);
         map = L.map('map', {
             center: CONFIG.BARRANQUILLA_COORDS,
             zoom: CONFIG.DEFAULT_ZOOM,
@@ -277,19 +296,25 @@ class BarranquillaEduMap {
             zoomAnimation: true,
             markerZoomAnimation: true
         });
+        console.log('✅ Mapa creado exitosamente:', map);
         
         // Crear capas de mapa
+        console.log('🗂️ Creando capas del mapa...');
         this.mapLayers = {};
         Object.keys(CONFIG.MAP_LAYERS).forEach(key => {
             const layer = CONFIG.MAP_LAYERS[key];
+            console.log(`📍 Creando capa: ${key} - URL: ${layer.url}`);
             this.mapLayers[key] = L.tileLayer(layer.url, {
                 attribution: layer.attribution
             });
         });
+        console.log('✅ Capas creadas:', Object.keys(this.mapLayers));
         
         // Agregar capa base por defecto (minimalista) para evitar fondo azul
+        console.log('🎨 Agregando capa base minimalista...');
         this.currentLayer = this.mapLayers.minimal;
         this.currentLayer.addTo(map);
+        console.log('✅ Capa base agregada al mapa');
         
         // Cargar capa de barrios de forma asíncrona
         await this.loadBarriosLayer();
@@ -770,7 +795,7 @@ class BarranquillaEduMap {
     }
     
     /**
-     * Carga y renderiza todas las instituciones en el mapa
+     * Carga y renderiza todos los puntos críticos en el mapa
      * Utiliza el patrón Factory para crear marcadores específicos por tipo
      */
     loadInstitutions() {
@@ -778,8 +803,43 @@ class BarranquillaEduMap {
         markersLayer.clearLayers();
         currentMarkers = [];
         
-        // Crear marcadores para cada institución usando requestAnimationFrame para mejor performance
-        this.createMarkersAsync(EDUCATIONAL_INSTITUTIONS);
+        // Cargar puntos críticos desde el archivo JSON
+        this.loadPuntosCriticosAsInstitutions();
+    }
+    
+    /**
+     * Carga los puntos críticos como instituciones principales
+     */
+    async loadPuntosCriticosAsInstitutions() {
+        try {
+            const response = await fetch('src/data/puntos_criticos.json');
+            const data = await response.json();
+            
+            if (data && data.features) {
+                // Convertir features de GeoJSON a formato de instituciones
+                const puntosAsInstitutions = data.features.map(feature => ({
+                    id: feature.properties.id,
+                    name: `Punto Crítico ${feature.properties.id}`,
+                    type: 'punto_critico',
+                    coordinates: [feature.geometry.coordinates[1], feature.geometry.coordinates[0]], // Invertir lat/lng
+                    address: feature.properties.direccion,
+                    barrio: feature.properties.barrio,
+                    localidad: feature.properties.localidad,
+                    estado: feature.properties.estado_actual,
+                    acciones: feature.properties.acciones_realizadas,
+                    area: feature.properties.area_recuperada_m2,
+                    poblacion: feature.properties.poblacion_impactada,
+                    co2: feature.properties.toneladas_co2_equivalente,
+                    fecha_entrega: feature.properties.fecha_entrega
+                }));
+                
+                // Crear marcadores para cada punto crítico
+                this.createMarkersAsync(puntosAsInstitutions);
+            }
+        } catch (error) {
+            console.error('Error al cargar puntos críticos:', error);
+            this.showToast('Error al cargar los puntos críticos', 'error');
+        }
     }
     
     /**
@@ -844,12 +904,26 @@ class BarranquillaEduMap {
     }
     
     /**
-     * Crea un marcador personalizado para una institución
+     * Crea un marcador personalizado para una institución o punto crítico
      * Implementa el patrón Factory Method
      */
     createInstitutionMarker(institution) {
-        // Usar iconos personalizados mejorados
-        const customIcon = this.createCustomIcon(institution.type);
+        let customIcon;
+        
+        // Crear icono específico según el tipo
+        if (institution.type === 'punto_critico') {
+            // Marcador rojo sin icono para puntos críticos
+            customIcon = L.divIcon({
+                className: 'punto-critico-rojo-marker',
+                html: '',
+                iconSize: [20, 20],
+                iconAnchor: [10, 10],
+                popupAnchor: [0, -10]
+            });
+        } else {
+            // Usar iconos personalizados para instituciones
+            customIcon = this.createCustomIcon(institution.type);
+        }
         
         // Crear marcador con lazy popup loading
         const marker = L.marker(institution.coordinates, { icon: customIcon });
@@ -857,9 +931,13 @@ class BarranquillaEduMap {
         // Lazy load popup content
         marker.on('click', () => {
             if (!marker.getPopup()) {
-                marker.bindPopup(this.createPopupContent(institution), {
+                const popupContent = institution.type === 'punto_critico' 
+                    ? this.createPuntoCriticoPopupContent(institution.properties || institution, institution.coordinates)
+                    : this.createPopupContent(institution);
+                    
+                marker.bindPopup(popupContent, {
                     maxWidth: 300,
-                    className: 'custom-popup'
+                    className: institution.type === 'punto_critico' ? 'punto-critico-popup' : 'custom-popup'
                 });
             }
             this.selectInstitution(institution);
@@ -901,15 +979,11 @@ class BarranquillaEduMap {
         
         // Crear icono personalizado para punto crítico
         const icon = L.divIcon({
-            className: 'custom-marker punto-critico-marker',
-            html: `
-                <div class="marker-container" style="background-color: #dc2626;">
-                    <i class="fas fa-exclamation-triangle"></i>
-                </div>
-            `,
-            iconSize: [40, 40],
-            iconAnchor: [20, 40],
-            popupAnchor: [0, -40]
+            className: 'punto-critico-rojo-marker',
+            html: '',
+            iconSize: [30, 30],
+            iconAnchor: [15, 30],
+            popupAnchor: [0, -30]
         });
         
         const marker = L.marker(coordinates, { icon })
@@ -968,50 +1042,68 @@ class BarranquillaEduMap {
     /**
      * Crea el contenido HTML para el popup de un punto crítico
      */
-    createPuntoCriticoPopupContent(properties) {
-        const formatDate = (dateStr) => {
-            if (!dateStr) return 'No especificada';
-            try {
-                const date = new Date(dateStr);
-                return date.toLocaleDateString('es-CO', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                });
-            } catch {
-                return dateStr;
-            }
-        };
-        
+    createPuntoCriticoPopupContent(properties, coordinates) {
         const getStatusBadge = (status) => {
             const statusColors = {
-                'ACTIVO': '#dc2626',
-                'INACTIVO': '#16a34a',
-                'EN PROCESO': '#f59e0b'
+                'Recuperado': '#16a34a',
+                'En Proceso': '#f59e0b',
+                'Pendiente': '#dc2626',
+                'Activo': '#dc2626'
             };
             const color = statusColors[status] || '#6b7280';
-            return `<span class="status-badge" style="background-color: ${color}; color: white; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 500;">${status || 'Sin estado'}</span>`;
+            return `<span class="status-badge" style="background-color: ${color}; color: white; padding: 4px 12px; border-radius: 16px; font-size: 12px; font-weight: 600; text-transform: uppercase;">${status || 'Sin estado'}</span>`;
         };
+        
+        // Tomar coordenadas directamente del JSON tal como aparecen
+        let coordsText = 'N/A';
+        if (coordinates && Array.isArray(coordinates) && coordinates.length >= 2) {
+            // Mostrar con 6 decimales de precisión como en el JSON
+            coordsText = `${coordinates[0].toFixed(6)}, ${coordinates[1].toFixed(6)}`;
+        }
         
         return `
             <div class="punto-critico-popup">
-                <h4 style="color: #dc2626; margin-bottom: 8px;">
-                    <i class="fas fa-exclamation-triangle" style="margin-right: 8px;"></i>
-                    Punto Crítico #${properties.id || 'N/A'}
+                <h4>
+                    <i class="fas fa-check-circle" style="margin-right: 8px;"></i>
+                    Punto Crítico ${properties.id || 'N/A'}
                 </h4>
                 
-                ${getStatusBadge(properties.estado)}
-                
-                <div style="margin: 12px 0;">
-                    <p><i class="fas fa-map-marker-alt"></i> <strong>Dirección:</strong><br>${properties.direccion || 'No especificada'}</p>
-                    <p><i class="fas fa-calendar"></i> <strong>Fecha de entrega:</strong> ${formatDate(properties.fecha_entrega)}</p>
-                    <p><i class="fas fa-trash"></i> <strong>Tipo de residuo:</strong> ${properties.tipo_residuo || 'No especificado'}</p>
-                    <p><i class="fas fa-weight"></i> <strong>Cantidad:</strong> ${properties.cantidad || 'No especificada'}</p>
-                    ${properties.observaciones ? `<p><i class="fas fa-comment"></i> <strong>Observaciones:</strong><br><em>${properties.observaciones}</em></p>` : ''}
+                <div style="margin-bottom: 16px; padding: 0 16px;">
+                    ${getStatusBadge(properties.estado_actual)}
                 </div>
                 
-                <div style="border-top: 1px solid #e5e7eb; padding-top: 8px; margin-top: 12px;">
-                    <small style="color: #6b7280;">Coordenadas: ${properties.coord_y || 'N/A'}, ${properties.coord_x || 'N/A'}</small>
+                <div style="margin: 16px 0; line-height: 1.6; padding: 0 16px;">
+                    <div style="margin-bottom: 12px;">
+                        <i class="fas fa-map-marker-alt" style="color: #16a34a; width: 20px; margin-right: 8px;"></i>
+                        <span style="font-weight: 600; color: #374151;">Dirección:</span><br>
+                        <span style="margin-left: 28px; color: #6b7280;">${properties.direccion || 'No especificada'}</span>
+                    </div>
+                    
+                    <div style="margin-bottom: 12px;">
+                        <i class="fas fa-home" style="color: #16a34a; width: 20px; margin-right: 8px;"></i>
+                        <span style="font-weight: 600; color: #374151;">Barrio:</span>
+                        <span style="color: #6b7280;">${properties.barrio || 'No especificado'}</span>
+                    </div>
+                    
+                    <div style="margin-bottom: 12px;">
+                        <i class="fas fa-trash" style="color: #16a34a; width: 20px; margin-right: 8px;"></i>
+                        <span style="font-weight: 600; color: #374151;">Tipo de residuo:</span><br>
+                        <span style="margin-left: 28px; color: #6b7280; font-size: 13px;">${properties.tipo_residuo || 'No especificado'}</span>
+                    </div>
+                    
+                    ${properties.acciones_realizadas ? `
+                    <div style="margin-bottom: 12px;">
+                        <i class="fas fa-tools" style="color: #16a34a; width: 20px; margin-right: 8px;"></i>
+                        <span style="font-weight: 600; color: #374151;">Acciones realizadas:</span><br>
+                        <span style="margin-left: 28px; color: #6b7280; font-size: 13px;">${properties.acciones_realizadas}</span>
+                    </div>` : ''}
+                </div>
+                
+                <div style="border-top: 1px solid #e5e7eb; padding: 12px 16px; margin-top: 16px; background: rgba(248,250,252,0.5);">
+                    <small style="color: #9ca3af; font-size: 11px;">
+                        <i class="fas fa-globe" style="margin-right: 4px;"></i>
+                        Coordenadas: ${coordsText}
+                    </small>
                 </div>
             </div>
         `;
@@ -1370,16 +1462,30 @@ class BarranquillaEduMap {
      * Muestra el overlay de carga
      */
     showLoadingOverlay() {
-        document.getElementById('loading-overlay').classList.remove('hidden');
+        const loadingOverlay = document.getElementById('loading-overlay');
+        if (loadingOverlay) {
+            loadingOverlay.classList.remove('hidden');
+            loadingOverlay.style.display = 'flex';
+            loadingOverlay.style.opacity = '1';
+        }
     }
     
     /**
      * Oculta el overlay de carga
      */
     hideLoadingOverlay() {
-        setTimeout(() => {
-            document.getElementById('loading-overlay').classList.add('hidden');
-        }, 500);
+        const loadingOverlay = document.getElementById('loading-overlay');
+        if (loadingOverlay) {
+            // Agregar transición suave antes de ocultar
+            loadingOverlay.style.transition = 'opacity 0.5s ease-out';
+            loadingOverlay.style.opacity = '0';
+            
+            // Ocultar completamente después de la transición
+            setTimeout(() => {
+                loadingOverlay.classList.add('hidden');
+                loadingOverlay.style.display = 'none';
+            }, 500);
+        }
     }
     
     /**
@@ -1438,8 +1544,50 @@ let eduMap;
 
 // Inicializar cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', () => {
-    eduMap = new BarranquillaEduMap();
+    try {
+        eduMap = new BarranquillaEduMap();
+        
+        // Fallback de seguridad: ocultar loading después de 10 segundos máximo
+        setTimeout(() => {
+            const loadingOverlay = document.getElementById('loading-overlay');
+            if (loadingOverlay && !loadingOverlay.classList.contains('hidden')) {
+                console.warn('Loading overlay ocultado por fallback de seguridad');
+                loadingOverlay.classList.add('hidden');
+                loadingOverlay.style.display = 'none';
+            }
+        }, 10000);
+        
+    } catch (error) {
+        console.error('Error durante la inicialización:', error);
+        // Ocultar loading overlay en caso de error
+        const loadingOverlay = document.getElementById('loading-overlay');
+        if (loadingOverlay) {
+            loadingOverlay.classList.add('hidden');
+            loadingOverlay.style.display = 'none';
+        }
+    }
 });
+
+// Fallback adicional en caso de que DOMContentLoaded ya haya ocurrido
+if (document.readyState === 'loading') {
+    // El DOM aún se está cargando, el event listener funcionará
+    console.log('🔄 DOM aún cargando, esperando DOMContentLoaded...');
+} else {
+    // El DOM ya está listo, ejecutar inmediatamente
+    console.log('⚡ DOM ya listo, inicializando aplicación inmediatamente...');
+    try {
+        eduMap = new BarranquillaEduMap();
+        console.log('✅ Aplicación inicializada por fallback');
+    } catch (error) {
+        console.error('❌ Error en inicialización por fallback:', error);
+        // Ocultar loading overlay en caso de error
+        const loadingOverlay = document.getElementById('loading-overlay');
+        if (loadingOverlay) {
+            loadingOverlay.classList.add('hidden');
+            loadingOverlay.style.display = 'none';
+        }
+    }
+}
 
 // Agregar estilos CSS adicionales para marcadores personalizados
 const additionalStyles = `
@@ -1479,9 +1627,22 @@ const additionalStyles = `
             background: #0F1B26;  /* azul oscuro */
             border-radius: 8px;
             overflow: hidden;
-            margin: 8px;
+            margin: 0;
             box-shadow: 0 4px 12px rgba(0,0,0,0.3);
             border: 1px solid #03588C;
+        }
+        
+        .leaflet-popup-content-wrapper {
+            margin: 0;
+            padding: 0;
+        }
+        
+        .leaflet-popup {
+            margin-bottom: 20px;
+        }
+        
+        .leaflet-popup-tip-container {
+            margin: 0 auto;
         }
 
         .leaflet-popup-content::before {
@@ -1593,8 +1754,8 @@ const additionalStyles = `
         }
 
         /* Estilos para puntos críticos */
-        .punto-critico-marker {
-            background: #dc2626;
+        .punto-critico-rojo-marker {
+            background: #16a34a;
             border: 3px solid white;
             border-radius: 50%;
             width: 30px;
@@ -1602,24 +1763,32 @@ const additionalStyles = `
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 4px 8px rgba(220, 38, 38, 0.4);
-            animation: pulse-red 2s infinite;
+            box-shadow: 0 4px 8px rgba(22, 163, 74, 0.4);
+            animation: pulse-green 2s infinite;
+            position: relative;
         }
 
-        .punto-critico-marker i {
-            color: white;
-            font-size: 14px;
+        .punto-critico-rojo-marker::before {
+            content: '🗑️';
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        @keyframes pulse-red {
+        .punto-critico-rojo-marker i {
+            display: none; /* Ocultar icono interno */
+        }
+
+        @keyframes pulse-green {
             0% {
-                box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.7);
+                box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.7);
             }
             70% {
-                box-shadow: 0 0 0 10px rgba(220, 38, 38, 0);
+                box-shadow: 0 0 0 10px rgba(22, 163, 74, 0);
             }
             100% {
-                box-shadow: 0 0 0 0 rgba(220, 38, 38, 0);
+                box-shadow: 0 0 0 0 rgba(22, 163, 74, 0);
             }
         }
 
@@ -1633,7 +1802,7 @@ const additionalStyles = `
         }
 
         .status-badge.activo {
-            background-color: #dc2626;
+            background-color: #16a34a;
             color: white;
         }
 
@@ -1644,11 +1813,31 @@ const additionalStyles = `
 
         .punto-critico-popup {
             min-width: 250px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(248,250,252,0.95) 100%);
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+            border: 1px solid rgba(3, 88, 140, 0.2);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .punto-critico-popup::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #03588C 0%, #03A63C 50%, #F2CE16 100%);
         }
 
         .punto-critico-popup h4 {
-            color: #dc2626;
-            margin-bottom: 8px;
+            color: #16a34a;
+            margin-bottom: 12px;
+            margin-top: 16px;
+            font-size: 18px;
+            font-weight: 700;
+            padding: 0 16px;
         }
 
         .punto-critico-popup .info-row {

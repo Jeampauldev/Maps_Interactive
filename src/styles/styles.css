@@ -1105,7 +1105,10 @@ html {
 
 .loading-overlay.hidden {
     opacity: 0;
+    visibility: hidden;
+    display: none;
     pointer-events: none;
+    transition: opacity 0.3s ease-out;
 }
 
 .loading-spinner {
@@ -1319,6 +1322,10 @@ html {
 }
 
 /* ===== ESTILOS PARA LEAFLET ===== */
+.leaflet-popup {
+    margin-bottom: -40px !important; /* Corrige la posición para que aparezca arriba del pin */
+}
+
 .leaflet-popup-content-wrapper {
     background: var(--surface-elevated) !important;
     border-radius: var(--border-radius-lg) !important;
