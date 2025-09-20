@@ -1,5 +1,7 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "name": "edumap-barranquilla",
+  "version": 2,
   "headers": [
     {
       "source": "/(.*)\\.css",
