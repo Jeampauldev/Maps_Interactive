@@ -95,10 +95,5 @@
       "source": "/(.*)",
       "destination": "/index.html"
     }
-  ],
-  "functions": {
-    "src/components/script.js": {
-      "maxDuration": 10
-    }
-  }
+  ]
 }
