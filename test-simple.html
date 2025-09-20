@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Mapa Simple</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./src/libs/leaflet.css">
+    <style>
+        #map { 
+            height: 400px; 
+            width: 100%; 
+        }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🗺️ Test del Mapa</h1>
+    <div id="map"></div>
+    
+    <script src="./src/libs/leaflet.js"></script>
+    <script>
+        console.log('🟢 Iniciando test del mapa');
+        console.log('✅ Leaflet version:', L.version);
+        
+        // Crear el mapa centrado en Barranquilla
+        var map = L.map('map').setView([10.9639, -74.7964], 12);
+        
+        // Agregar tiles de OpenStreetMap
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+        
+        // Agregar un marcador
+        L.marker([10.9639, -74.7964])
+            .addTo(map)
+            .bindPopup('¡Barranquilla!')
+            .openPopup();
+            
+        console.log('✅ Mapa inicializado correctamente');
+    </script>
+</body>
+</html>

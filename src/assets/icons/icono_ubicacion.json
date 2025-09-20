@@ -1,0 +1,17 @@
+{
+  "id": "PC-001",
+  "type": "checkpoint",
+  "location": {
+    "latitude": 10.7765,
+    "longitude": -74.9568
+  },
+  "style": {
+    "themeColor": "#2E7D32",
+    "gradientStart": "#4CAF50",
+    "gradientEnd": "#2E7D32",
+    "borderColor": "#FFFFFF",
+    "textColor": "#FFFFFF",
+    "labelBgColor": "rgba(255, 255, 255, 0.25)"
+  },
+  "status": "active"
+}

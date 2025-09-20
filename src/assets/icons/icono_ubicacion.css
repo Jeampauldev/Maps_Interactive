@@ -1,0 +1,28 @@
+/* Estilos generales y fondo del mapa */
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #f0f0f0;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+}
+
+.map-background {
+    width: 300px;
+    height: 200px;
+    background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0iI2Y5ZjlmOSI+PC9yZWN0PjxwYXRoIGQ9Ik0wIDEwIEwxMDAgMTAgTSA0MCAwIEwgNDAgMTAwIE0gMCA0MCBMMTAwIDQwIE0gNzAgMCBMIDcwIDEwMCBNIDAgODUgTDEwMCA4NSIgc3Ryb2tlPSIjZGRkZGRkIiBzdHJva2Utd2lkdGg9IjIiPjwvcGF0aD48L3N2Zz4=');
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* El contenedor del pin ahora solo necesita centrar el SVG */
+#pin-container {
+    /* ¡Toda la lógica de dibujo y sombra ya no es necesaria aquí! */
+    text-align: center;
+}

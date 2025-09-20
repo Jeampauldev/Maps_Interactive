@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>🔍 Debug Avanzado - Mapa</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./src/libs/leaflet.css">
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        #map { height: 300px; width: 100%; border: 2px solid #ccc; }
+        #debug { margin-top: 20px; padding: 10px; background: #f5f5f5; }
+        .error { color: red; font-weight: bold; }
+        .success { color: green; font-weight: bold; }
+        .info { color: blue; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Debug Avanzado del Mapa</h1>
+    <div id="map"></div>
+    <div id="debug">
+        <h3>Estado del Debug:</h3>
+        <div id="log"></div>
+    </div>
+    
+    <script src="./src/libs/leaflet.js"></script>
+    <script>
+        const log = document.getElementById('log');
+        
+        function addLog(message, type = 'info') {
+            const p = document.createElement('p');
+            p.className = type;
+            p.textContent = new Date().toLocaleTimeString() + ' - ' + message;
+            log.appendChild(p);
+            console.log(message);
+        }
+        
+        addLog('🚀 Iniciando debug avanzado');
+        
+        // 1. Verificar Leaflet
+        if (typeof L !== 'undefined') {
+            addLog('✅ Leaflet cargado correctamente v' + L.version, 'success');
+        } else {
+            addLog('❌ ERROR: Leaflet NO está disponible', 'error');
+            addLog('Abortando debug...', 'error');
+        }
+        
+        // 2. Verificar contenedor del mapa
+        const mapContainer = document.getElementById('map');
+        if (mapContainer) {
+            addLog('✅ Contenedor del mapa encontrado', 'success');
+            addLog('📐 Dimensiones: ' + mapContainer.offsetWidth + 'x' + mapContainer.offsetHeight);
+        } else {
+            addLog('❌ ERROR: Contenedor del mapa NO encontrado', 'error');
+        }
+        
+        // 3. Intentar crear mapa básico
+        try {
+            addLog('🗺️ Creando mapa básico...');
+            const map = L.map('map').setView([10.9639, -74.7964], 12);
+            addLog('✅ Mapa básico creado', 'success');
+            
+            // 4. Agregar tiles
+            addLog('🌍 Agregando tiles...');
+            const tileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(map);
+            addLog('✅ Tiles agregados', 'success');
+            
+            // 5. Agregar marcador de prueba
+            addLog('📍 Agregando marcador...');
+            const marker = L.marker([10.9639, -74.7964])
+                .addTo(map)
+                .bindPopup('¡Test exitoso!')
+                .openPopup();
+            addLog('✅ Marcador agregado', 'success');
+            
+            // 6. Probar carga de datos
+            addLog('📊 Intentando cargar datos...');
+            fetch('./src/data/puntos_criticos.json')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('HTTP ' + response.status);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    addLog('✅ Datos cargados: ' + data.features.length + ' puntos críticos', 'success');
+                    
+                    // Agregar algunos puntos al mapa
+                    let added = 0;
+                    data.features.slice(0, 3).forEach(feature => {
+                        if (feature.geometry && feature.geometry.coordinates) {
+                            const [lng, lat] = feature.geometry.coordinates;
+                            L.marker([lat, lng])
+                                .addTo(map)
+                                .bindPopup(feature.properties.descripcion || 'Punto crítico');
+                            added++;
+                        }
+                    });
+                    addLog('✅ Agregados ' + added + ' puntos críticos al mapa', 'success');
+                })
+                .catch(error => {
+                    addLog('❌ ERROR cargando datos: ' + error.message, 'error');
+                });
+                
+            addLog('🎉 ¡MAPA FUNCIONANDO CORRECTAMENTE!', 'success');
+            
+        } catch (error) {
+            addLog('❌ ERROR CRÍTICO: ' + error.message, 'error');
+            addLog('Stack: ' + error.stack, 'error');
+        }
+        
+        // 7. Verificar archivos requeridos
+        addLog('🔍 Verificando archivos...');
+        const files = [
+            './src/styles/styles.css',
+            './src/assets/icons/icons.js'
+        ];
+        
+        files.forEach(file => {
+            fetch(file, { method: 'HEAD' })
+                .then(response => {
+                    if (response.ok) {
+                        addLog('✅ ' + file + ' - OK', 'success');
+                    } else {
+                        addLog('⚠️ ' + file + ' - ' + response.status, 'error');
+                    }
+                })
+                .catch(error => {
+                    addLog('❌ ' + file + ' - Error: ' + error.message, 'error');
+                });
+        });
+        
+    </script>
+</body>
+</html>

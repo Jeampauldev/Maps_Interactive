@@ -21,17 +21,16 @@
     <meta property="og:description" content="Explora las mejores instituciones educativas de Barranquilla con nuestro mapa interactivo">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://edumap-barranquilla.vercel.app">
-    <meta property="og:image" content="https://edumap-barranquilla.vercel.app/Logo/Logo_Simbolo.png">
+    <meta property="og:image" content="https://edumap-barranquilla.vercel.app/src/assets/logos/Alcaldia_Original.png">
     <meta property="og:locale" content="es_CO">
     
     <!-- Twitter Card Meta Tags -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="EduMap Barranquilla">
     <meta name="twitter:description" content="Mapa interactivo de instituciones educativas en Barranquilla">
-    <meta name="twitter:image" content="https://edumap-barranquilla.vercel.app/Logo/Logo_Simbolo.png">
+    <meta name="twitter:image" content="https://edumap-barranquilla.vercel.app/src/assets/logos/Alcaldia_Original.png">
     
-    <!-- Preload Critical Resources -->
-    <link rel="preload" href="./src/styles/styles.css" as="style">
+
     
     <!-- Cargar CSS con timestamp para evitar caché durante desarrollo -->
     <script>
@@ -60,8 +59,8 @@
     <!-- <link rel="stylesheet" href="./src/styles/styles.css"> -->
     
     <!-- Favicon -->
-    <link rel="icon" type="image/png" href="./src/assets/logos/Logo_Simbolo.png">
-    <link rel="apple-touch-icon" href="./src/assets/logos/Logo_Simbolo.png">
+    <link rel="icon" type="image/png" href="./src/assets/logos/Alcaldia_Original.png">
+    <link rel="apple-touch-icon" href="./src/assets/logos/Alcaldia_Original.png">
     
     <!-- PWA Manifest -->
     <link rel="manifest" href="./manifest.json">
@@ -69,9 +68,18 @@
     <!-- Theme color -->
     <meta name="theme-color" content="#03588C">
     <meta name="msapplication-TileColor" content="#03588C">
-    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="EduMap Barranquilla">
+    <style>
+        .filter-item.disabled-filter {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        .filter-item.disabled-filter input[type="checkbox"] {
+            cursor: not-allowed;
+        }
+    </style>
 </head>
 <body>
 
@@ -150,6 +158,7 @@
             <div class="critical-points-list">
                 <h3>Puntos Encontrados</h3>
                 <div id="points-container" class="points-container">
+                    <p class="loading-message">Cargando puntos críticos...</p>
                     <!-- Los puntos críticos se cargarán dinámicamente -->
                 </div>
             </div>
@@ -348,6 +357,34 @@
                     document.body.appendChild(installButton);
                 }
             }, 30000);
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const filterVoluminoso = document.getElementById('filter-voluminoso');
+            const countVoluminoso = document.getElementById('count-voluminoso');
+
+            if (filterVoluminoso) { // Check if filterVoluminoso exists
+                if (countVoluminoso && parseInt(countVoluminoso.textContent) === 0) {
+                    filterVoluminoso.disabled = true;
+                    filterVoluminoso.checked = false;
+                    filterVoluminoso.parentElement.classList.add('disabled-filter'); // Add a class for styling
+                } else {
+                    // If not disabled, add event listener
+                    filterVoluminoso.addEventListener('change', function() {
+                        console.log('Filter Voluminosos changed:', this.checked);
+                        // This function needs to be implemented in src/components/script.js
+                        // or the map object needs to be globally accessible.
+                        // For now, we'll just log.
+                        // Assuming a global function or event dispatch for map updates.
+                        if (typeof window.toggleVoluminososPoints === 'function') {
+                            window.toggleVoluminososPoints(this.checked);
+                        } else {
+                            console.warn('window.toggleVoluminososPoints is not defined. Map filtering logic needs to be implemented.');
+                        }
+                    });
+                }
+            }
         });
     </script>
 </body>

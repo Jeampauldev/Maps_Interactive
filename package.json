@@ -4,8 +4,11 @@
   "description": "Mapa interactivo de Barranquilla con instituciones educativas",
   "main": "index.html",
   "scripts": {
-    "start": "python -m http.server 8000",
-    "dev": "python -m http.server 8000"
+    "start": "python -m http.server 8080",
+    "dev": "live-server --port=8080 --open=/index.html --no-browser",
+    "serve": "http-server -p 8080 -c-1 --cors -o",
+    "python-server": "python -m http.server 8080",
+    "dev-auto": "live-server --port=8080 --open=/index.html"
   },
   "repository": {
     "type": "git",

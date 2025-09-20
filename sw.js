@@ -174,8 +174,8 @@ self.addEventListener('push', (event) => {
     const data = event.data.json();
     const options = {
       body: data.body,
-      icon: '/src/assets/logos/Logo_Simbolo.png',
-        badge: '/src/assets/logos/Logo_Simbolo.png',
+      icon: '/src/assets/logos/Alcaldia_Original.png',
+        badge: '/src/assets/logos/Alcaldia_Original.png',
       vibrate: [100, 50, 100],
       data: {
         dateOfArrival: Date.now(),
@@ -185,7 +185,7 @@ self.addEventListener('push', (event) => {
         {
           action: 'explore',
           title: 'Explorar',
-          icon: '/src/assets/logos/Logo_Simbolo.png'
+          icon: '/src/assets/logos/Alcaldia_Original.png'
         },
         {
           action: 'close',

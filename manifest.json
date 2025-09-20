@@ -48,7 +48,7 @@
       "url": "/?filter=universidad",
       "icons": [
         {
-          "src": "./src/assets/logos/Logo_Simbolo.png",
+          "src": "./src/assets/logos/Alcaldia_Original.png",
           "sizes": "96x96"
         }
       ]
@@ -60,7 +60,7 @@
       "url": "/?filter=colegio",
       "icons": [
         {
-          "src": "./src/assets/logos/Logo_Simbolo.png",
+          "src": "./src/assets/logos/Alcaldia_Original.png",
           "sizes": "96x96"
         }
       ]
