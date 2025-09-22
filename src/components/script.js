@@ -1271,28 +1271,46 @@ class BarranquillaEduMap {
         }
 
         // 2. Apply type filters usando pointType
-        const finalFilteredPoints = pointsAfterSearch.filter(feature => {
-            if (!feature.properties) return false;
-            
-            // Usar pointType para determinar el tipo
-            const isCritico = feature.pointType === 'critico';
-            const isVoluminoso = feature.pointType === 'voluminoso';
+        let finalFilteredPoints;
+        
+        console.log('Estado de checkboxes antes de filtrar:', { filterCriticoChecked, filterVoluminosoChecked });
+        
+        // Si AMBOS filtros están marcados O NINGUNO está marcado, mostrar TODOS los puntos
+        if ((filterCriticoChecked && filterVoluminosoChecked) || (!filterCriticoChecked && !filterVoluminosoChecked)) {
+            console.log('🎆 Mostrando TODOS los puntos (ambos filtros activos o ninguno)');
+            finalFilteredPoints = pointsAfterSearch;
+        } else {
+            // Solo un filtro está marcado, aplicar filtrado específico
+            console.log('⚙️ Aplicando filtrado específico');
+            finalFilteredPoints = pointsAfterSearch.filter(feature => {
+                if (!feature.properties) return false;
+                
+                // Usar pointType para determinar el tipo
+                const isCritico = feature.pointType === 'critico';
+                const isVoluminoso = feature.pointType === 'voluminoso';
+                
+                console.log(`Evaluando punto ${feature.properties.id}: tipo=${feature.pointType}, isCritico=${isCritico}, isVoluminoso=${isVoluminoso}`);
 
-            // Si NINGÚN filtro está marcado, mostrar TODOS los puntos (comportamiento por defecto)
-            if (!filterCriticoChecked && !filterVoluminosoChecked) {
-                return true;
-            }
-
-            // Si al menos un filtro está marcado, solo mostrar puntos que coincidan
-            let matchesAnyFilter = false;
-            if (filterCriticoChecked && isCritico) {
-                matchesAnyFilter = true;
-            }
-            if (filterVoluminosoChecked && isVoluminoso) {
-                matchesAnyFilter = true;
-            }
-            return matchesAnyFilter;
-        });
+                // Solo mostrar puntos que coincidan con el filtro marcado
+                let matchesFilter = false;
+                if (filterCriticoChecked && isCritico) {
+                    matchesFilter = true;
+                    console.log(`✅ Punto crítico ${feature.properties.id} incluido`);
+                }
+                if (filterVoluminosoChecked && isVoluminoso) {
+                    matchesFilter = true;
+                    console.log(`✅ Punto voluminoso ${feature.properties.id} incluido`);
+                }
+                
+                if (!matchesFilter) {
+                    console.log(`❌ Punto ${feature.properties.id} excluido`);
+                }
+                
+                return matchesFilter;
+            });
+        }
+        
+        console.log(`📋 Puntos finales después de filtrado: ${finalFilteredPoints.length} de ${pointsAfterSearch.length} puntos`);
 
         // Update map markers - usar la función correcta según el tipo
         console.log(`🗺️ Renderizando ${finalFilteredPoints.length} puntos filtrados`);
@@ -1316,11 +1334,18 @@ class BarranquillaEduMap {
      * Actualiza la lista de puntos en el sidebar
      */
     updatePointsList(points) {
+        console.log('📋 Actualizando lista de puntos:', points?.length || 0, 'puntos');
         const container = document.getElementById('points-container');
-        if (!container) return;
+        if (!container) {
+            console.error('❌ Contenedor points-container no encontrado');
+            return;
+        }
+        
+        console.log('Container encontrado:', container);
         
         // Validar que points sea un array válido
         if (!points || !Array.isArray(points) || points.length === 0) {
+            console.log('⚠️ No hay puntos para mostrar');
             container.innerHTML = `
                 <div class="no-results" style="text-align: center; padding: 20px; color: #86868b;">
                     <i class="fas fa-info-circle" style="font-size: 24px; margin-bottom: 10px;"></i>
@@ -1329,10 +1354,14 @@ class BarranquillaEduMap {
             `;
             return;
         }
+        
+        console.log('📋 Generando HTML para', points.length, 'puntos...');
 
-        container.innerHTML = points.map(feature => {
+        const htmlContent = points.map((feature, index) => {
             const props = feature.properties;
             const statusClass = props.estado_actual ? props.estado_actual.toLowerCase().replace(/ /g, '-') : 'sin-estado';
+            
+            console.log(`Generando tarjeta ${index + 1}:`, props.id, 'en barrio', props.barrio);
             
             return `
                 <div class="point-card" onclick="eduMap.selectPuntoCritico('${props.id}')">
@@ -1351,6 +1380,10 @@ class BarranquillaEduMap {
                 </div>
             `;
         }).join('');
+        
+        console.log('✅ HTML generado, longitud:', htmlContent.length, 'caracteres');
+        container.innerHTML = htmlContent;
+        console.log('✅ HTML insertado en el contenedor. Contenido:', container.innerHTML.substring(0, 200) + '...');
     }
     
     /**
@@ -1453,6 +1486,8 @@ class BarranquillaEduMap {
      * Inicializa los filtros con valores por defecto
      */
     initializeFilters() {
+        console.log('🎮 Inicializando filtros...');
+        
         // Marcar ambos checkboxes por defecto
         const criticoCheckbox = document.getElementById('filter-critico');
         const voluminosoCheckbox = document.getElementById('filter-voluminoso');
@@ -1467,8 +1502,13 @@ class BarranquillaEduMap {
             console.log('✅ Checkbox voluminosos inicializado como marcado');
         }
         
-        // Aplicar filtros iniciales
+        // Aplicar filtros iniciales - esto debe mostrar TODOS los puntos
+        console.log('🔄 Aplicando filtros iniciales con todos los checkboxes marcados');
         this.applyFilters('');
+        
+        // Forzar actualización inmediata de la lista
+        console.log('📋 La lista se actualizará automáticamente por applyFilters()');
+        // No llamar updatePointsList directamente aquí - applyFilters() ya lo hace
     }
     
     /**

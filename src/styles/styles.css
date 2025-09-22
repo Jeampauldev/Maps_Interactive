@@ -1792,4 +1792,76 @@ canvas.leaflet-zoom-animated,
 .point-card-address {
     font-size: 12px;
     color: var(--text-light);
+    margin-bottom: 6px;
+}
+
+/* Estilos adicionales para la población impactada */
+.point-card-population {
+    font-size: 11px !important;
+    color: var(--text-secondary) !important;
+    margin-top: 4px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 4px;
+}
+
+.point-card-population i {
+    color: var(--primary-color) !important;
+}
+
+/* Asegurar que el contenedor de puntos tenga altura adecuada */
+.critical-points-list {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 200px;
+    overflow: hidden;
+}
+
+.critical-points-list h3 {
+    margin: 0 0 12px 0;
+    padding: 0 24px;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-primary);
+    flex-shrink: 0;
+}
+
+/* Mejorar el contenedor de puntos */
+.points-container {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 0 24px 24px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-height: 0;
+    max-height: 100%;
+}
+
+/* Mensaje de carga */
+.loading-message {
+    text-align: center;
+    color: var(--text-secondary);
+    font-style: italic;
+    padding: 20px;
+    margin: 0;
+}
+
+/* Mensaje sin resultados */
+.no-results {
+    text-align: center;
+    color: var(--text-secondary);
+    padding: 30px 20px;
+}
+
+.no-results i {
+    color: var(--primary-color);
+    margin-bottom: 10px;
+}
+
+.no-results p {
+    margin: 0;
+    font-size: 14px;
 }
