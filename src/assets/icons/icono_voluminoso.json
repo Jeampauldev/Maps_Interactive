@@ -1,0 +1,17 @@
+{
+  "id": "VL-001",
+  "type": "voluminoso",
+  "location": {
+    "latitude": 10.9639,
+    "longitude": -74.7964
+  },
+  "style": {
+    "themeColor": "#FF8C00",
+    "gradientStart": "#FF8C00",
+    "gradientEnd": "#E55100",
+    "borderColor": "#FFFFFF",
+    "textColor": "#FFFFFF",
+    "labelBgColor": "rgba(255, 140, 0, 0.25)"
+  },
+  "status": "active"
+}

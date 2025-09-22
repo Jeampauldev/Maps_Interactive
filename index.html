@@ -71,15 +71,7 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="EduMap Barranquilla">
-    <style>
-        .filter-item.disabled-filter {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-        .filter-item.disabled-filter input[type="checkbox"] {
-            cursor: not-allowed;
-        }
-    </style>
+    <!-- Estilos de filtros deshabilitados removidos para permitir interacción -->
 </head>
 <body>
 
@@ -93,11 +85,11 @@
             <div class="header-stats">
                 <div class="stat-item">
                     <span class="stat-number" id="total-points">12</span>
-                    <span class="stat-label">Puntos Críticos</span>
+                    <span class="stat-label">Total de Puntos</span>
                 </div>
                 <div class="stat-item">
-                    <span class="stat-number" id="recovered-area">2.5</span>
-                    <span class="stat-label">Hectáreas Recuperadas</span>
+                    <span class="stat-number" id="recovered-area">2,500</span>
+                    <span class="stat-label">m² Recuperados</span>
                 </div>
                 <div class="stat-item">
                     <span class="stat-number" id="affected-population">1,250</span>
@@ -109,7 +101,7 @@
                 </div>
                 <div class="stat-item">
                     <span class="stat-number" id="total-localities">5</span>
-                    <span class="stat-label">Localidades</span>
+                    <span class="stat-label">Barrios Impactados</span>
                 </div>
             </div>
         </div>
@@ -136,17 +128,17 @@
 
             <!-- Filtros por Tipo -->
             <div class="filter-section">
-                <h3>Tipo de Punto Crítico</h3>
+                <h3>Tipo de Punto</h3>
                 <div class="filter-group">
                     <label class="filter-item">
-                        <input type="checkbox" id="filter-critico" checked>
+                        <input type="checkbox" id="filter-critico">
                         <span class="checkmark critico"></span>
                         <span class="filter-text">Puntos Críticos</span>
                         <span class="count" id="count-critico">50</span>
                     </label>
                     
                     <label class="filter-item">
-                        <input type="checkbox" id="filter-voluminoso" checked>
+                        <input type="checkbox" id="filter-voluminoso">
                         <span class="checkmark voluminoso"></span>
                         <span class="filter-text">Residuos Voluminosos</span>
                         <span class="count" id="count-voluminoso">0</span>

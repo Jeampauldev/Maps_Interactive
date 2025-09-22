@@ -230,9 +230,11 @@ let currentPuntosCriticos = [];
 let filteredInstitutions = [...EDUCATIONAL_INSTITUTIONS];
 let selectedInstitution = null;
 let puntosData = [];
-let cachedIconSvg = null; // Variable para cachear el SVG del ícono
+let puntosVoluminosos = [];
+let allPoints = []; // Array combinado de todos los puntos
 let barriosWithPoints = new Set(); // Nuevo Set para almacenar barrios con puntos
-
+let cachedIconSvg = null; // Variable para cachear el SVG del ícono verde (críticos)
+let cachedOrangeIconSvg = null; // Variable para cachear el SVG del ícono naranja (voluminosos)
 // ===== CLASE PRINCIPAL DE LA APLICACIÓN =====
 class BarranquillaEduMap {
     constructor() {
@@ -246,37 +248,73 @@ class BarranquillaEduMap {
      */
     async initializeApp() {
         try {
+            console.log('🚀 Iniciando aplicación...');
             this.showLoadingOverlay();
+            
+            console.log('🗺️ Inicializando mapa...');
             await this.initializeMap();
-            await this.loadIconTemplate(); // Cargar el ícono SVG
+            
+            console.log('🎨 Cargando iconos...');
+            await this.loadIconTemplate();
+            
+            console.log('🎲 Configurando eventos...');
             this.setupEventListeners();
+            
+            console.log('📍 Cargando puntos críticos...');
             await this.loadPuntosCriticos();
+            
+            console.log('📊 Actualizando estadísticas...');
             this.updateStatistics();
+            
             this.hideLoadingOverlay();
             this.showToast('Mapa cargado exitosamente', 'success');
+            console.log('✅ Aplicación inicializada correctamente');
+            
         } catch (error) {
-            console.error('Error inicializando la aplicación:', error);
-            this.showToast('Error al cargar el mapa', 'error');
+            console.error('❌ Error inicializando la aplicación:', error);
+            console.error('Stack trace:', error.stack);
+            this.showToast('Error al cargar el mapa: ' + error.message, 'error');
             this.hideLoadingOverlay();
         }
     }
 
     /**
-     * Carga la plantilla del ícono SVG desde un archivo externo
+     * Carga las plantillas de iconos SVG desde archivos externos
      */
     async loadIconTemplate() {
-        if (cachedIconSvg) return; // No volver a cargar si ya está en caché
+        if (cachedIconSvg && cachedOrangeIconSvg) return;
+        
         try {
-            const response = await fetch('src/assets/icons/icono_ubicacion.xml');
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+            console.log('🔄 Iniciando carga de iconos...');
+            
+            // Cargar icono verde para puntos críticos
+            console.log('Cargando icono verde...');
+            const responseGreen = await fetch('src/assets/icons/icono_ubicacion.xml');
+            if (responseGreen.ok) {
+                cachedIconSvg = await responseGreen.text();
+                console.log('✅ Icono verde cargado');
+            } else {
+                throw new Error(`Error cargando icono verde: ${responseGreen.status}`);
             }
-            cachedIconSvg = await response.text();
-            console.log('✅ Plantilla de ícono SVG cargada y cacheada.');
+            
+            // Cargar icono naranja para puntos voluminosos
+            console.log('Cargando icono naranja...');
+            const responseOrange = await fetch('src/assets/icons/icono_ubicacion_naranja.xml');
+            if (responseOrange.ok) {
+                cachedOrangeIconSvg = await responseOrange.text();
+                console.log('✅ Icono naranja cargado');
+            } else {
+                console.warn('Icono naranja no encontrado, usando fallback');
+                // Usar el icono verde como fallback para naranjas
+                cachedOrangeIconSvg = cachedIconSvg.replace(/#03A63C/g, '#FF8C00');
+            }
+            
         } catch (error) {
-            console.error('Error cargando la plantilla del ícono:', error);
-            // Opcional: tener un SVG de fallback por si falla la carga
-            cachedIconSvg = '<svg></svg>'; // Un SVG vacío para no romper el resto
+            console.error('Error cargando iconos:', error);
+            // Fallback con iconos SVG simples
+            cachedIconSvg = `<svg width="30" height="30" viewBox="0 0 30 30"><circle cx="15" cy="15" r="10" fill="#03A63C" stroke="white" stroke-width="2"/><text x="15" y="20" font-size="8" fill="white" text-anchor="middle">{{ID}}</text></svg>`;
+            cachedOrangeIconSvg = `<svg width="30" height="30" viewBox="0 0 30 30"><circle cx="15" cy="15" r="10" fill="#FF8C00" stroke="white" stroke-width="2"/><text x="15" y="20" font-size="8" fill="white" text-anchor="middle">{{ID}}</text></svg>`;
+            console.log('✅ Iconos fallback creados');
         }
     }
     
@@ -428,9 +466,31 @@ class BarranquillaEduMap {
         ['critico', 'voluminoso'].forEach(type => {
             const checkbox = document.getElementById(`filter-${type}`);
             if (checkbox) {
-                checkbox.addEventListener('change', () => {
+                console.log(`✅ Event listener agregado para filter-${type}`);
+                
+                // Usar solo el evento change, que es más confiable
+                checkbox.addEventListener('change', (e) => {
+                    console.log(`🔄 Checkbox ${type} cambiado a:`, e.target.checked);
                     this.handleFilterChange();
                 });
+                
+                // Manejar click en el label padre de forma más simple
+                const label = checkbox.closest('.filter-item');
+                if (label) {
+                    label.addEventListener('click', (e) => {
+                        // Solo procesar si NO se hizo click directamente en el checkbox o checkmark
+                        if (e.target === label || e.target.classList.contains('filter-text') || e.target.classList.contains('count')) {
+                            console.log(`🏷️ Click en label ${type}`);
+                            e.preventDefault();
+                            checkbox.checked = !checkbox.checked;
+                            console.log(`🔄 Label click - Checkbox ${type} cambiado a:`, checkbox.checked);
+                            // Disparar evento change manualmente
+                            checkbox.dispatchEvent(new Event('change'));
+                        }
+                    });
+                }
+            } else {
+                console.error(`❌ Checkbox filter-${type} no encontrado`);
             }
         });
         
@@ -794,42 +854,150 @@ class BarranquillaEduMap {
      */
     async loadPuntosCriticos() {
         try {
+            console.log('Cargando puntos críticos desde src/data/puntos_criticos.json...');
             const response = await fetch('src/data/puntos_criticos.json');
             if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+                throw new Error(`Error HTTP ${response.status}: ${response.statusText}`);
             }
             
             const data = await response.json();
             puntosData = data.features || [];
             
-            // Poblar barriosWithPoints
-            barriosWithPoints.clear(); // Limpiar datos previos si la función se llama varias veces
-            puntosData.forEach(punto => {
-                if (punto.properties && punto.properties.barrio) {
-                    barriosWithPoints.add(punto.properties.barrio.toLowerCase());
-                }
-            });
-            console.log('Barrios con puntos:', barriosWithPoints); // DEBUG LOG
-
-            // Limpiar marcadores existentes de puntos críticos
-            puntosLayer.clearLayers();
-            currentPuntosCriticos = [];
+            if (puntosData.length === 0) {
+                console.warn('No se encontraron puntos críticos en el archivo');
+            }
             
-            // Crear marcadores para cada punto crítico
+            // Marcar como puntos críticos
             puntosData.forEach(punto => {
-                const marker = this.createPuntoCriticoMarker(punto);
-                currentPuntosCriticos.push({ marker, punto });
+                punto.pointType = 'critico';
             });
             
-            console.log(`Cargados ${puntosData.length} puntos críticos`);
+            console.log(`✅ Cargados ${puntosData.length} puntos críticos`);
             
-            // Actualizar estadísticas después de cargar los datos
-            this.updateStatistics();
+            // Cargar también puntos voluminosos
+            await this.loadPuntosVoluminosos();
             
         } catch (error) {
-            console.error('Error cargando puntos críticos:', error);
-            this.showToast('Error al cargar puntos críticos', 'error');
+            console.error('❌ Error cargando puntos críticos:', error);
+            this.showToast('Error al cargar puntos críticos: ' + error.message, 'error');
+            // Continuar con datos vacíos para no bloquear la aplicación
+            puntosData = [];
+            await this.loadPuntosVoluminosos();
         }
+    }
+    
+    /**
+     * Carga y renderiza los puntos voluminosos en el mapa
+     */
+    async loadPuntosVoluminosos() {
+        try {
+            console.log('Cargando puntos voluminosos desde src/data/puntos_voluminosos.json...');
+            const response = await fetch('src/data/puntos_voluminosos.json');
+            if (!response.ok) {
+                throw new Error(`Error HTTP ${response.status}: ${response.statusText}`);
+            }
+            
+            const data = await response.json();
+            
+            if (!Array.isArray(data)) {
+                throw new Error('Los datos de puntos voluminosos no tienen el formato esperado (array)');
+            }
+            
+            // Convertir formato de puntos voluminosos a GeoJSON
+            puntosVoluminosos = data.map(punto => {
+                if (!punto.COORD_X || !punto.COORD_Y) {
+                    console.warn('Punto voluminoso sin coordenadas:', punto.ID);
+                    return null;
+                }
+                
+                return {
+                    type: 'Feature',
+                    geometry: {
+                        type: 'Point',
+                        coordinates: [punto.COORD_Y, punto.COORD_X] // [lng, lat]
+                    },
+                    properties: {
+                        id: punto.ID,
+                        barrio: punto.BARRIO,
+                        localidad: punto.LOCALIDAD,
+                        estado_actual: punto.ESTADO_ACTUAL,
+                        poblacion_impactada: punto.POBLACION_IMPACTADA,
+                        toneladas_co2_equivalente: punto.TONELADAS_DE_CO2_EQUIVALENTE,
+                        tipo_residuo: 'Residuos Voluminosos',
+                        acciones_realizadas: punto.ACCIONES_REALIZADAS || 'Recuperación de residuos voluminosos',
+                        direccion: punto.DIRECCION || 'No especificada'
+                    },
+                    pointType: 'voluminoso'
+                };
+            }).filter(punto => punto !== null); // Filtrar puntos inválidos
+            
+            console.log(`✅ Cargados ${puntosVoluminosos.length} puntos voluminosos`);
+            
+        } catch (error) {
+            console.error('❌ Error cargando puntos voluminosos:', error);
+            this.showToast('Error al cargar puntos voluminosos: ' + error.message, 'error');
+            // Continuar con datos vacíos
+            puntosVoluminosos = [];
+        }
+        
+        // Siempre combinar puntos y renderizar, incluso si hay errores
+        this.combineAndRenderAllPoints();
+        
+        // Inicializar checkboxes por defecto (ambos marcados)
+        this.initializeFilters();
+    }
+    
+    /**
+     * Combina todos los tipos de puntos y los renderiza
+     */
+    combineAndRenderAllPoints() {
+        console.log('🔄 Combinando y renderizando puntos...');
+        console.log(`Puntos críticos disponibles: ${puntosData.length}`);
+        console.log(`Puntos voluminosos disponibles: ${puntosVoluminosos.length}`);
+        
+        // Combinar todos los puntos
+        allPoints = [...puntosData, ...puntosVoluminosos];
+        console.log(`Total puntos combinados: ${allPoints.length}`);
+        
+        // Debug: mostrar tipos de puntos
+        const tiposPuntos = allPoints.map(p => p.pointType);
+        console.log('Tipos de puntos:', tiposPuntos);
+        
+        // Poblar barriosWithPoints
+        barriosWithPoints.clear();
+        allPoints.forEach(punto => {
+            if (punto.properties && punto.properties.barrio) {
+                barriosWithPoints.add(punto.properties.barrio.toLowerCase());
+            }
+        });
+        
+        // Limpiar marcadores existentes
+        puntosLayer.clearLayers();
+        currentPuntosCriticos = [];
+        
+        // Crear marcadores para todos los puntos
+        console.log('🗺️ Creando marcadores...');
+        allPoints.forEach((punto, index) => {
+            console.log(`Creando marcador ${index + 1}: ${punto.properties.id} (tipo: ${punto.pointType})`);
+            const marker = punto.pointType === 'voluminoso' ? 
+                this.createPuntoVoluminosoMarker(punto) : 
+                this.createPuntoCriticoMarker(punto);
+            
+            if (marker) {
+                currentPuntosCriticos.push({ marker, punto });
+                console.log(`✅ Marcador creado exitosamente para ${punto.properties.id}`);
+            } else {
+                console.error(`❌ Error creando marcador para ${punto.properties.id}`);
+            }
+        });
+        
+        console.log(`Total renderizado: ${allPoints.length} puntos (${puntosData.length} críticos + ${puntosVoluminosos.length} voluminosos)`);
+        console.log(`Marcadores creados: ${currentPuntosCriticos.length}`);
+        
+        // Actualizar estadísticas y UI con todos los puntos (estado inicial)
+        this.updateStatistics(allPoints);
+        this.updateFilterCounts();
+        this.updatePointsList(allPoints);
     }
 
 
@@ -838,16 +1006,19 @@ class BarranquillaEduMap {
      * Crea un marcador personalizado para un punto crítico
      */
     createPuntoCriticoMarker(punto) {
+        console.log(`🟢 Creando marcador crítico para: ${punto.properties.id}`);
         const coordinates = [punto.geometry.coordinates[1], punto.geometry.coordinates[0]];
         const properties = punto.properties;
+        
+        console.log(`Coordenadas: [${coordinates[0]}, ${coordinates[1]}]`);
 
         // Usar la plantilla cacheada y reemplazar el placeholder
         if (!cachedIconSvg) {
-            console.error('La plantilla del ícono no está cargada. Usando ícono de fallback.');
-            // Aquí podrías retornar un ícono por defecto si la carga falló
+            console.error(`❌ Plantilla de ícono verde no disponible para ${properties.id}`);
             return null;
         }
         const iconHtml = cachedIconSvg.replace('{{ID}}', properties.id || 'N/A');
+        console.log('✅ Icono HTML generado para punto crítico');
 
         const icon = L.divIcon({
             className: 'custom-point-marker',
@@ -879,6 +1050,53 @@ class BarranquillaEduMap {
     }
     
     /**
+     * Crea un marcador personalizado para un punto voluminoso (usa icono naranja)
+     */
+    createPuntoVoluminosoMarker(punto) {
+        console.log(`🟠 Creando marcador voluminoso para: ${punto.properties.id}`);
+        const coordinates = [punto.geometry.coordinates[1], punto.geometry.coordinates[0]];
+        const properties = punto.properties;
+        
+        console.log(`Coordenadas: [${coordinates[0]}, ${coordinates[1]}]`);
+
+        // Usar la plantilla naranja cacheada para puntos voluminosos
+        if (!cachedOrangeIconSvg) {
+            console.error(`❌ Plantilla de ícono naranja no disponible para ${properties.id}`);
+            return null;
+        }
+        const iconHtml = cachedOrangeIconSvg.replace('{{ID}}', properties.id || 'N/A');
+        console.log('✅ Icono HTML generado para punto voluminoso');
+
+        const icon = L.divIcon({
+            className: 'custom-point-marker', // Misma clase que puntos críticos
+            html: iconHtml,
+            iconSize: [30, 30],      
+            iconAnchor: [15, 28],     
+            popupAnchor: [0, -30]     
+        });
+        
+        const marker = L.marker(coordinates, { icon })
+            .bindPopup(this.createPuntoCriticoPopupContent(properties, coordinates), { // Usar el mismo popup que críticos
+                maxWidth: 380,
+                className: 'punto-critico-popup-wrapper' // Misma clase que puntos críticos
+            })
+            .bindTooltip(`
+                <div class="population-tooltip-content">
+                    <i class="fas fa-users"></i>
+                    <span>${properties.poblacion_impactada ? properties.poblacion_impactada.toLocaleString('es-CO') : '0'}</span>
+                </div>
+            `, {
+                permanent: false,
+                direction: 'right',
+                offset: [20, -18], 
+                className: 'population-tooltip' // Mismo tooltip que críticos
+            });
+        
+        puntosLayer.addLayer(marker);
+        return marker;
+    }
+    
+    /**
      * Obtiene la etiqueta legible para el tipo de institución
      */
     getPointTypeLabel(type) {
@@ -890,14 +1108,16 @@ class BarranquillaEduMap {
     }
 
     selectPuntoCritico(pointId) {
-        const point = currentPuntosCriticos.find(p => p.properties.id === pointId);
-        if (point) {
-            map.setView([point.geometry.coordinates[1], point.geometry.coordinates[0]], 16);
-            puntosLayer.eachLayer(layer => {
-                if (layer.feature && layer.feature.properties.id === pointId) {
-                    layer.openPopup();
-                }
-            });
+        // Buscar en todos los puntos (críticos + voluminosos)
+        const pointData = currentPuntosCriticos.find(p => p.punto.properties.id === pointId);
+        if (pointData) {
+            const coords = [pointData.punto.geometry.coordinates[1], pointData.punto.geometry.coordinates[0]];
+            map.setView(coords, 16);
+            
+            // Abrir el popup del marcador correspondiente
+            if (pointData.marker) {
+                pointData.marker.openPopup();
+            }
         }
     }
     
@@ -918,29 +1138,40 @@ class BarranquillaEduMap {
 
         const formatNumber = (num) => num ? parseFloat(num).toLocaleString('es-CO') : '0';
 
+        // Determinar el tipo de punto basado en el ID
+        const isVoluminoso = properties.id && properties.id.startsWith('VL');
+        const pointTitle = isVoluminoso ? `Residuo Voluminoso ${properties.id || 'N/A'}` : `Punto Crítico ${properties.id || 'N/A'}`;
+        
         return `
             <div class="popup-header" style="background-color: #FFFFFF; color: #374151; padding: 8px 12px 0 12px;">
-                <h4 style="margin: 0; font-size: 16px; font-weight: 700; font-family: var(--font-family);">Punto Crítico ${properties.id || 'N/A'}</h4>
+                <h4 style="margin: 0; font-size: 16px; font-weight: 700; font-family: var(--font-family);">${pointTitle}</h4>
                 <p style="margin: 2px 0 0; font-size: 13px; opacity: 0.9; font-family: var(--font-family);">Barrio: ${properties.barrio || 'No especificado'}</p>
             </div>
             
             <div style="padding: 0 12px;">
                 <div style="display: flex; justify-content: space-around; align-items: flex-start; padding-top: 8px; margin-bottom: 8px; text-align: center; font-family: var(--font-family);">
+                    ${!isVoluminoso && properties.area_recuperada_m2 ? `
                     <div title="Área Recuperada">
                         <i class="fas fa-chart-area" style="color: #16a34a; font-size: 16px; margin-bottom: 4px;"></i>
                         <p style="margin: 0; font-weight: 600; color: #374151; font-size: 14px;">${formatNumber(properties.area_recuperada_m2)} m²</p>
                         <p style="margin: 0; font-size: 10px; color: #6b7280;">Recuperada</p>
-                    </div>
+                    </div>` : ''}
                     <div title="Población Impactada">
                         <i class="fas fa-users" style="color: #16a34a; font-size: 16px; margin-bottom: 4px;"></i>
                         <p style="margin: 0; font-weight: 600; color: #374151; font-size: 14px;">${formatNumber(properties.poblacion_impactada)}</p>
-                        <p style="margin: 0; font-size: 10px; color: #6b7280;">Impactada</p>
+                        <p style="margin: 0; font-size: 10px; color: #6b7280;">Población Impactada</p>
                     </div>
                     <div title="Toneladas de CO₂ Equivalente">
                         <i class="fas fa-smog" style="color: #16a34a; font-size: 16px; margin-bottom: 4px;"></i>
                         <p style="margin: 0; font-weight: 600; color: #374151; font-size: 14px;">${formatNumber(properties.toneladas_co2_equivalente)}</p>
                         <p style="margin: 0; font-size: 10px; color: #6b7280;">Ton CO₂ Equiv.</p>
                     </div>
+                    ${isVoluminoso && properties.estado_actual ? `
+                    <div title="Estado Actual">
+                        <i class="fas fa-check-circle" style="color: #16a34a; font-size: 16px; margin-bottom: 4px;"></i>
+                        <p style="margin: 0; font-weight: 600; color: #374151; font-size: 12px;">${getStatusBadge(properties.estado_actual)}</p>
+                        <p style="margin: 0; font-size: 10px; color: #6b7280;">Estado</p>
+                    </div>` : ''}
                 </div>
 
                 <div style="line-height: 1.5; font-size: 13px; padding-bottom: 8px; font-family: var(--font-family);">
@@ -950,13 +1181,21 @@ class BarranquillaEduMap {
                         <p style="margin: 0 0 0 24px; color: #6b7280; font-size: 12px;">${properties.direccion || 'No especificada'}</p>
                     </div>
                     
+                    ${isVoluminoso && properties.localidad ? `
+                    <div style="margin-bottom: 10px;">
+                        <i class="fas fa-building" style="color: #4b5563; width: 18px; margin-right: 6px;"></i>
+                        <span style="font-weight: 600; color: #374151;">Localidad:</span>
+                        <p style="margin: 0 0 0 24px; color: #6b7280; font-size: 12px;">${properties.localidad}</p>
+                    </div>` : ''}
+                    
+                    ${properties.tipo_residuo ? `
                     <div style="margin-bottom: 10px;">
                         <i class="fas fa-trash" style="color: #4b5563; width: 18px; margin-right: 6px;"></i>
                         <span style="font-weight: 600; color: #374151;">Tipo de residuo:</span>
                         <p style="margin: 0 0 0 24px; color: #6b7280; font-size: 12px;">${properties.tipo_residuo || 'No especificado'}</p>
-                    </div>
+                    </div>` : ''}
                     
-                    ${properties.acciones_realizadas ? `
+                    ${properties.acciones_realizadas && properties.acciones_realizadas !== 'ND' ? `
                     <div style="margin-bottom: 10px;">
                         <i class="fas fa-tools" style="color: #4b5563; width: 18px; margin-right: 6px;"></i>
                         <span style="font-weight: 600; color: #374151;">Acciones realizadas:</span>
@@ -973,6 +1212,9 @@ class BarranquillaEduMap {
             </div>
         `;
     }
+    
+    // Función eliminada: createPuntoVoluminosoPopupContent
+    // Los puntos voluminosos ahora usan el mismo popup que los críticos
     
     /**
      * Maneja la búsqueda de instituciones
@@ -1006,11 +1248,14 @@ class BarranquillaEduMap {
         const filterCriticoChecked = document.getElementById('filter-critico')?.checked ?? false;
         const filterVoluminosoChecked = document.getElementById('filter-voluminoso')?.checked ?? false;
 
-        let pointsAfterSearch = puntosData;
+        console.log('🔍 Aplicando filtros:', { searchTerm, filterCriticoChecked, filterVoluminosoChecked });
 
-        // 1. Apply search term filter
+        // Usar TODOS los puntos (críticos + voluminosos)
+        let pointsAfterSearch = allPoints;
+
+        // 1. Apply search term filter - buscar en TODOS los puntos
         if (searchTerm) {
-            pointsAfterSearch = puntosData.filter(feature => {
+            pointsAfterSearch = allPoints.filter(feature => {
                 if (!feature.properties) return false;
                 const props = feature.properties;
                 const searchIn = [
@@ -1018,41 +1263,52 @@ class BarranquillaEduMap {
                     props.direccion,
                     props.barrio,
                     props.tipo_residuo,
-                    props.acciones_realizadas
+                    props.acciones_realizadas,
+                    props.localidad
                 ].join(' ').toLowerCase();
                 return searchIn.includes(searchTerm);
             });
         }
 
-        // 2. Apply type filters
+        // 2. Apply type filters usando pointType
         const finalFilteredPoints = pointsAfterSearch.filter(feature => {
             if (!feature.properties) return false;
-            const props = feature.properties;
-            const isVoluminoso = props.tipo_residuo && props.tipo_residuo.toLowerCase().includes('voluminosos');
+            
+            // Usar pointType para determinar el tipo
+            const isCritico = feature.pointType === 'critico';
+            const isVoluminoso = feature.pointType === 'voluminoso';
 
-            // If NO filter checkboxes are checked, show ALL points (default state)
+            // Si NINGÚN filtro está marcado, mostrar TODOS los puntos (comportamiento por defecto)
             if (!filterCriticoChecked && !filterVoluminosoChecked) {
                 return true;
             }
 
-            // A point is included if it matches any of the checked filters
+            // Si al menos un filtro está marcado, solo mostrar puntos que coincidan
             let matchesAnyFilter = false;
-            if (filterCriticoChecked) {
-                matchesAnyFilter = true; // 'critico' means show all
+            if (filterCriticoChecked && isCritico) {
+                matchesAnyFilter = true;
             }
             if (filterVoluminosoChecked && isVoluminoso) {
-                matchesAnyFilter = true; // 'voluminoso' means show bulky waste
+                matchesAnyFilter = true;
             }
             return matchesAnyFilter;
         });
 
-        // Update map markers
+        // Update map markers - usar la función correcta según el tipo
+        console.log(`🗺️ Renderizando ${finalFilteredPoints.length} puntos filtrados`);
         puntosLayer.clearLayers();
+        
         finalFilteredPoints.forEach(punto => {
-            this.createPuntoCriticoMarker(punto);
+            console.log(`Renderizando punto: ${punto.properties.id} (tipo: ${punto.pointType})`);
+            if (punto.pointType === 'voluminoso') {
+                this.createPuntoVoluminosoMarker(punto);
+            } else {
+                this.createPuntoCriticoMarker(punto);
+            }
         });
 
-        // Update sidebar list
+        // Update stats and sidebar list con puntos filtrados actuales
+        this.updateStatistics(finalFilteredPoints);
         this.updatePointsList(finalFilteredPoints);
     }
     
@@ -1062,8 +1318,9 @@ class BarranquillaEduMap {
     updatePointsList(points) {
         const container = document.getElementById('points-container');
         if (!container) return;
-
-        if (points.length === 0) {
+        
+        // Validar que points sea un array válido
+        if (!points || !Array.isArray(points) || points.length === 0) {
             container.innerHTML = `
                 <div class="no-results" style="text-align: center; padding: 20px; color: #86868b;">
                     <i class="fas fa-info-circle" style="font-size: 24px; margin-bottom: 10px;"></i>
@@ -1076,6 +1333,7 @@ class BarranquillaEduMap {
         container.innerHTML = points.map(feature => {
             const props = feature.properties;
             const statusClass = props.estado_actual ? props.estado_actual.toLowerCase().replace(/ /g, '-') : 'sin-estado';
+            
             return `
                 <div class="point-card" onclick="eduMap.selectPuntoCritico('${props.id}')">
                     <div class="point-card-header">
@@ -1085,6 +1343,10 @@ class BarranquillaEduMap {
                     <div class="point-card-body">
                         <div class="point-card-barrio">Barrio: ${props.barrio || 'No especificado'}</div>
                         <div class="point-card-address">${props.direccion || 'Dirección no disponible'}</div>
+                        <div class="point-card-population">
+                            <i class="fas fa-users" style="color: #6b7280; margin-right: 4px;"></i>
+                            ${props.poblacion_impactada ? props.poblacion_impactada.toLocaleString() : '0'} personas impactadas
+                        </div>
                     </div>
                 </div>
             `;
@@ -1094,18 +1356,18 @@ class BarranquillaEduMap {
     /**
      * Actualiza las estadísticas en el header y filtros usando datos reales del JSON
      */
-    updateStatistics() {
+    updateStatistics(visiblePoints = allPoints) {
         console.log('=== updateStatistics() iniciada ===');
-        console.log('puntosData.length:', puntosData.length);
+        console.log('visiblePoints.length:', visiblePoints.length);
         
-        // Calcular métricas reales desde todos los puntos críticos
+        // Calcular métricas reales desde los puntos visibles (críticos + voluminosos)
         let totalAreaRecuperada = 0; // en m²
         let totalPoblacionImpactada = 0;
         let totalCo2Equivalente = 0;
-        const localidadesGestionadas = new Set();
+        const barriosImpactados = new Set();
         
-        // Procesar todos los puntos sin filtros
-        puntosData.forEach((punto, index) => {
+        // Procesar puntos visibles (críticos + voluminosos)
+        visiblePoints.forEach((punto, index) => {
             const properties = punto.properties;
             
             // Sumar datos reales del JSON
@@ -1117,38 +1379,38 @@ class BarranquillaEduMap {
             totalPoblacionImpactada += poblacion;
             totalCo2Equivalente += co2;
             
-            // Agregar localidad al conjunto (evita duplicados)
-            if (properties.localidad) {
-                localidadesGestionadas.add(properties.localidad);
+            // Agregar barrio al conjunto (evita duplicados)
+            if (properties.barrio) {
+                barriosImpactados.add(properties.barrio);
             }
             
-            console.log(`Punto ${index}: área=${area}, población=${poblacion}, co2=${co2}, localidad=${properties.localidad}`);
+            console.log(`Punto ${index} (${punto.pointType}): área=${area}, población=${poblacion}, co2=${co2}, barrio=${properties.barrio}`);
         });
         
-        console.log('Totales calculados:', {
-            totalPuntos: puntosData.length,
+        console.log('Totales calculados (visibles):', {
+            totalPuntos: visiblePoints.length,
             totalAreaRecuperada,
             totalPoblacionImpactada,
             totalCo2Equivalente,
-            localidades: localidadesGestionadas.size
+            barrios: barriosImpactados.size
         });
         
-        // Calcular totales finales
-        const totalPuntos = puntosData.length;
-        const areaRecuperadaHectareas = totalAreaRecuperada / 10000; // Convertir m² a hectáreas
+        // Totales finales basados en puntos visibles
+        const totalPuntos = visiblePoints.length;
+        const areaRecuperadaM2 = totalAreaRecuperada;
         
         console.log('Actualizando elementos del DOM:', {
             totalPuntos,
-            areaRecuperadaHectareas,
+            areaRecuperadaM2,
             totalPoblacionImpactada,
             totalCo2Equivalente,
-            localidades: localidadesGestionadas.size
+            barrios: barriosImpactados.size
         });
         
         // Actualizar estadísticas del header con datos reales
         const totalElement = document.getElementById('total-points');
         if (totalElement) {
-            totalElement.textContent = totalPuntos;
+            totalElement.textContent = totalPuntos.toLocaleString('es-CO');
             console.log('Total points actualizado:', totalPuntos);
         } else {
             console.error('Elemento total-points no encontrado');
@@ -1156,8 +1418,8 @@ class BarranquillaEduMap {
         
         const areaElement = document.getElementById('recovered-area');
         if (areaElement) {
-            areaElement.textContent = areaRecuperadaHectareas.toFixed(1);
-            console.log('Área recuperada actualizada:', areaRecuperadaHectareas.toFixed(1));
+            areaElement.textContent = areaRecuperadaM2.toLocaleString('es-CO');
+            console.log('m² recuperados actualizado:', areaRecuperadaM2);
         } else {
             console.error('Elemento recovered-area no encontrado');
         }
@@ -1180,11 +1442,55 @@ class BarranquillaEduMap {
         
         const localidadesElement = document.getElementById('total-localities');
         if (localidadesElement) {
-            localidadesElement.textContent = localidadesGestionadas.size;
-            console.log('Total localidades actualizado:', localidadesGestionadas.size);
+            localidadesElement.textContent = barriosImpactados.size.toLocaleString('es-CO');
+            console.log('Barrios impactados actualizado:', barriosImpactados.size);
         } else {
             console.error('Elemento total-localities no encontrado');
         }
+    }
+    
+    /**
+     * Inicializa los filtros con valores por defecto
+     */
+    initializeFilters() {
+        // Marcar ambos checkboxes por defecto
+        const criticoCheckbox = document.getElementById('filter-critico');
+        const voluminosoCheckbox = document.getElementById('filter-voluminoso');
+        
+        if (criticoCheckbox) {
+            criticoCheckbox.checked = true;
+            console.log('✅ Checkbox críticos inicializado como marcado');
+        }
+        
+        if (voluminosoCheckbox) {
+            voluminosoCheckbox.checked = true;
+            console.log('✅ Checkbox voluminosos inicializado como marcado');
+        }
+        
+        // Aplicar filtros iniciales
+        this.applyFilters('');
+    }
+    
+    /**
+     * Actualiza los contadores de los filtros
+     */
+    updateFilterCounts() {
+        const criticosCount = puntosData.length;
+        const voluminososCount = puntosVoluminosos.length;
+        
+        // Actualizar contador de puntos críticos
+        const countCritico = document.getElementById('count-critico');
+        if (countCritico) {
+            countCritico.textContent = criticosCount;
+        }
+        
+        // Actualizar contador de puntos voluminosos
+        const countVoluminoso = document.getElementById('count-voluminoso');
+        if (countVoluminoso) {
+            countVoluminoso.textContent = voluminososCount;
+        }
+        
+        console.log(`Contadores actualizados: críticos=${criticosCount}, voluminosos=${voluminososCount}`);
     }
     
     /**
@@ -1745,6 +2051,15 @@ const mapCustomStyles = `
         .leaflet-zoom-level-18 .barrio-label {
             font-size: 9px;
             padding: 2px 6px;
+        }
+        
+        /* Estilos para información de población en las tarjetas */
+        .point-card-population {
+            font-size: 11px !important;
+            color: #6b7280 !important;
+            margin-top: 4px !important;
+            display: flex !important;
+            align-items: center !important;
         }
     </style>
 `;

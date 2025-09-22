@@ -691,7 +691,24 @@ html {
 }
 
 .filter-item input {
-    display: none;
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+/* Asegurar que toda el área del filtro sea clickeable */
+.filter-item {
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+.filter-item:active {
+    transform: scale(0.98);
 }
 
 .checkmark {
