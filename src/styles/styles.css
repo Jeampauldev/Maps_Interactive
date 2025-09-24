@@ -323,13 +323,13 @@ html {
     backdrop-filter: blur(20px) saturate(180%);
     -webkit-backdrop-filter: blur(20px) saturate(180%);
     border-bottom: 1px solid var(--border);
-    padding: 4px 16px;
+    padding: 2px 16px;
     position: sticky;
     top: 0;
     z-index: 1000;
     box-shadow: var(--shadow-sm);
     transition: var(--transition-fast);
-    min-height: 70px;
+    min-height: auto;
 }
 
 .header-content {
@@ -345,6 +345,8 @@ html {
     align-items: center;
     gap: 12px;
     padding: 0;
+    margin: 0;
+    line-height: 1;
 }
 
 .logo-section::before {
@@ -356,11 +358,28 @@ html {
 }
 
 .header-logo {
-    width: 60px;
-    height: 36px;
+    width: 180px;
+    height: 108px;
     object-fit: contain;
     display: block;
-    filter: grayscale(100%) brightness(0) contrast(200%) !important;
+    flex-shrink: 0;
+    margin: 0;
+    padding: 0;
+}
+
+.logo-separator {
+    width: 1px;
+    height: 40px;
+    background: linear-gradient(to bottom, transparent, var(--border), transparent);
+    margin: 0 8px;
+    flex-shrink: 0;
+}
+
+.header-logo-secondary {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+    display: block;
     flex-shrink: 0;
 }
 
@@ -768,6 +787,30 @@ html {
     text-align: center;
 }
 
+/* Mejorar la funcionalidad de clic en los filtros */
+.filter-text, .count {
+    cursor: pointer;
+    transition: color 0.2s ease;
+    user-select: none;
+}
+
+.filter-text:hover, .count:hover {
+    color: #F2CE16;
+}
+
+.filter-item[data-filter] {
+    cursor: pointer;
+}
+
+.filter-item[data-filter]:hover .filter-text {
+    color: #F2CE16;
+}
+
+.filter-item[data-filter]:hover .count {
+    background-color: #F2CE16;
+    color: #0F1B26;
+}
+
 /* ===== LISTA DE PUNTOS CRÍTICOS ===== */
 .critical-points-list, .institutions-list {
     flex: 1;
@@ -992,18 +1035,34 @@ html {
     bottom: var(--spacing-lg);
     left: var(--spacing-lg);
     width: 350px;
+    min-height: 200px;
     background: var(--bg-primary);
     border-radius: var(--border-radius-lg);
     box-shadow: var(--shadow-xl);
     z-index: 1000;
-    transform: translateY(100%);
-    transition: var(--transition-normal);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(20px);
+    transition: all 0.3s ease;
     backdrop-filter: blur(20px);
     border: 1px solid rgba(255, 255, 255, 0.2);
+    display: block; /* Asegurar que siempre tenga display block */
 }
 
+/* Estado oculto por defecto */
+.institution-info.hidden {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    transform: translateY(20px) !important;
+    pointer-events: none;
+}
+
+/* Estado visible cuando se remueve la clase hidden */
 .institution-info:not(.hidden) {
-    transform: translateY(0);
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: translateY(0) !important;
+    pointer-events: auto;
 }
 
 .close-info {
@@ -1345,7 +1404,10 @@ html {
 
 /* ===== UTILIDADES ===== */
 .hidden {
-    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+    /* Removemos display: none para permitir transiciones */
 }
 
 .sr-only {
@@ -1724,16 +1786,52 @@ canvas.leaflet-zoom-animated,
 .point-card {
     background: var(--bg-primary);
     border: 1px solid var(--border-color);
-    border-radius: var(--border-radius);
+    border-radius: 8px;
     cursor: pointer;
-    transition: var(--transition-fast);
-    box-shadow: var(--shadow-sm);
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     overflow: hidden;
+    min-height: 120px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    margin: 4px auto; /* Centrar horizontalmente */
+    width: calc(100% - 16px); /* Dejar más espacio para evitar corte */
+    max-width: 100%; /* Limitar ancho máximo */
+    box-sizing: border-box; /* Incluir padding y border en el cálculo del ancho */
+}
+
+/* Borde izquierdo con gradiente original */
+.point-card::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: linear-gradient(180deg, var(--primary-color) 0%, var(--success-green) 50%, var(--warning-yellow) 100%);
+    transition: width 0.2s ease;
+}
+
+.point-card:hover::before {
+    width: 4px;
+}
+
+/* Estilo para point-cards vacíos */
+.point-card:empty::before {
+    content: "Cargando datos...";
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100px;
+    color: var(--text-secondary);
+    font-style: italic;
+    font-size: 12px;
 }
 
 .point-card:hover {
     border-color: var(--primary-color);
-    box-shadow: var(--shadow-md);
+    box-shadow: 0 2px 8px rgba(3, 88, 140, 0.15);
     transform: translateY(-1px);
 }
 
@@ -1741,46 +1839,209 @@ canvas.leaflet-zoom-animated,
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 15px;
-    background: var(--bg-secondary);
-    border-bottom: 1px solid var(--border-color);
+    padding: 12px 16px;
+    background: rgba(3, 88, 140, 0.03);
+    border-bottom: 1px solid rgba(3, 88, 140, 0.1);
+    flex-shrink: 0;
+    position: relative;
 }
 
 .point-card-header strong {
-    font-size: 15px;
-    font-weight: 700;
-    color: var(--text-primary);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--primary-color);
+    letter-spacing: -0.01em;
 }
 
 .point-card-status {
     display: inline-block;
     padding: 3px 8px;
-    border-radius: 10px;
-    font-size: 10px;
-    font-weight: 600;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 500;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.3px;
+    position: relative;
 }
 
 .point-card-status.recuperado {
-    background: rgba(22, 163, 74, 0.15); /* Verde sutil */
+    background: rgba(22, 163, 74, 0.1);
     color: #16a34a;
 }
 
 .point-card-status.en-proceso {
-    background: rgba(245, 158, 11, 0.15); /* Naranja sutil */
+    background: rgba(245, 158, 11, 0.1);
     color: #f59e0b;
 }
 
 .point-card-status.pendiente, .point-card-status.activo {
-    background: rgba(220, 38, 38, 0.15); /* Rojo sutil */
+    background: rgba(220, 38, 38, 0.1);
     color: #dc2626;
 }
 
-.point-card-body {
-    padding: 10px 15px;
+/* Nuevos estilos para los elementos adicionales de las tarjetas */
+.point-card-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(3, 88, 140, 0.1);
+}
+
+.point-card-type .type-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    background: linear-gradient(135deg, rgba(3, 88, 140, 0.1) 0%, rgba(3, 88, 140, 0.05) 100%);
+    color: var(--primary-color);
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-radius: 12px;
+    border: 1px solid rgba(3, 88, 140, 0.2);
+}
+
+.point-card-date {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: var(--text-secondary);
+}
+
+.point-card-date i {
+    color: var(--primary-color);
+    opacity: 0.7;
+}
+
+.point-card-priority {
+    display: flex;
+    align-items: center;
+}
+
+.priority-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 8px;
+    border-radius: 15px;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.priority-alta {
+    background: linear-gradient(135deg, rgba(220, 38, 38, 0.1) 0%, rgba(220, 38, 38, 0.05) 100%);
+    color: #dc2626;
+    border: 1px solid rgba(220, 38, 38, 0.2);
+}
+
+.priority-media {
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(245, 158, 11, 0.05) 100%);
+    color: #f59e0b;
+    border: 1px solid rgba(245, 158, 11, 0.2);
+}
+
+.priority-baja {
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.1) 0%, rgba(34, 197, 94, 0.05) 100%);
+    color: #22c55e;
+    border: 1px solid rgba(34, 197, 94, 0.2);
+}
+
+.point-card-location-wide {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+    min-width: 0; /* Permitir que los elementos se reduzcan si es necesario */
+}
+
+.point-card-barrio {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    color: var(--primary-color);
+    font-weight: 600;
+    width: 100%;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+.point-card-barrio i {
+    color: var(--primary-color);
+    opacity: 0.8;
+}
+
+.point-card-address {
     font-size: 13px;
     color: var(--text-secondary);
+    width: 100%;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    line-height: 1.4;
+}
+
+.point-card-locality {
+    font-size: 12px;
+    color: var(--text-secondary);
+    font-style: italic;
+    width: 100%;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+.metric-item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 8px;
+    background: linear-gradient(135deg, rgba(248, 249, 250, 0.8) 0%, rgba(255, 255, 255, 0.4) 100%);
+    border-radius: 6px;
+    border: 1px solid rgba(3, 88, 140, 0.08);
+    transition: all 0.2s ease;
+}
+
+.metric-item:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(3, 88, 140, 0.1);
+}
+
+.metric-item i {
+    color: var(--primary-color);
+    font-size: 12px;
+    opacity: 0.8;
+    min-width: 12px;
+}
+
+.metric-value {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1;
+}
+
+.metric-label {
+    font-size: 9px;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.point-card-body {
+    padding: 12px 16px 16px 16px;
+    font-size: 13px;
+    color: var(--text-secondary);
+    flex: 1; /* Permite que el body ocupe el espacio restante */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    width: 100%;
+    box-sizing: border-box;
+    min-height: 0; /* Permitir que se ajuste al contenido */
 }
 
 .point-card-barrio {
@@ -1793,6 +2054,13 @@ canvas.leaflet-zoom-animated,
     font-size: 12px;
     color: var(--text-light);
     margin-bottom: 6px;
+}
+
+.point-card-locality {
+    font-size: 11px;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+    font-style: italic;
 }
 
 /* Estilos adicionales para la población impactada */
@@ -1832,12 +2100,44 @@ canvas.leaflet-zoom-animated,
     flex: 1;
     overflow-y: auto;
     overflow-x: hidden;
-    padding: 0 24px 24px 24px;
+    padding: 8px 12px 24px 12px; /* Reducir padding lateral */
     display: flex;
     flex-direction: column;
     gap: 8px;
     min-height: 0;
     max-height: 100%;
+    /* Barra de desplazamiento elegante */
+    scrollbar-width: thin;
+    scrollbar-color: var(--primary-color) transparent;
+    box-sizing: border-box;
+}
+
+/* Estilos para barra de desplazamiento en WebKit (Chrome, Safari, Edge) */
+.points-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+.points-container::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 10px;
+    margin: 4px 0;
+}
+
+.points-container::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
+}
+
+.points-container::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, var(--primary-dark), var(--accent-blue));
+    transform: scale(1.1);
+    box-shadow: 0 2px 8px rgba(3, 88, 140, 0.3);
+}
+
+.points-container::-webkit-scrollbar-thumb:active {
+    background: var(--primary-dark);
 }
 
 /* Mensaje de carga */

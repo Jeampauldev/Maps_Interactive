@@ -79,7 +79,7 @@
     <header class="main-header">
         <div class="header-content">
             <div class="logo-section">
-                <img src="./src/assets/logos/Alcaldia_Original.png" alt="Logo" class="header-logo">
+                <img src="./src/assets/logos/Logos_Juntos.png" alt="Logos Alcaldía y Barranquilla Limpia y Linda" class="header-logo">
                 <h1>Spatial Data Report | Disposición Final</h1>
             </div>
             <div class="header-stats">
@@ -130,17 +130,17 @@
             <div class="filter-section">
                 <h3>Tipo de Punto</h3>
                 <div class="filter-group">
-                    <label class="filter-item">
+                    <label class="filter-item" data-filter="critico">
                         <input type="checkbox" id="filter-critico">
                         <span class="checkmark critico"></span>
                         <span class="filter-text">Puntos Críticos</span>
                         <span class="count" id="count-critico">50</span>
                     </label>
                     
-                    <label class="filter-item">
+                    <label class="filter-item" data-filter="voluminoso">
                         <input type="checkbox" id="filter-voluminoso">
                         <span class="checkmark voluminoso"></span>
-                        <span class="filter-text">Residuos Voluminosos</span>
+                        <span class="filter-text">Jornadas de Voluminosos</span>
                         <span class="count" id="count-voluminoso">0</span>
                     </label>
                 </div>
@@ -172,11 +172,12 @@
             
             <!-- Control de capas de mapa -->
             <div class="map-layers-control">
-                <label for="layerSelect">Estilo de mapa:</label>
                 <select id="layerSelect" class="layer-select">
-                    <option value="detailed">Detallado</option>
+                    <option value="detailed">Detallado Moderno</option>
+                    <option value="satellite">Satélite HD</option>
                     <option value="minimal" selected>Minimalista</option>
-                    <option value="dark">Oscuro</option>
+                    <option value="dark">Oscuro Elegante</option>
+                    <option value="streets">Calles Básicas</option>
                 </select>
             </div>
             

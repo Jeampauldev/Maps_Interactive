@@ -20,12 +20,18 @@ const CONFIG = {
         terrain: 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png'
     },
     
-    // Configuración de capas de mapa con soporte para Vercel
+    // Configuración de capas de mapa con proveedores confiables y estables
     MAP_LAYERS: {
         detailed: {
-            name: 'Detallado',
-            url: 'https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png',
-            attribution: '&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors',
+            name: 'Detallado Moderno',
+            url: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+            errorTileUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg=='
+        },
+        satellite: {
+            name: 'Satélite HD',
+            url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+            attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
             errorTileUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg=='
         },
         minimal: {
@@ -35,9 +41,15 @@ const CONFIG = {
             errorTileUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg=='
         },
         dark: {
-            name: 'Oscuro',
+            name: 'Oscuro Elegante',
             url: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+            errorTileUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg=='
+        },
+        streets: {
+            name: 'Calles Básicas',
+            url: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
             errorTileUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg=='
         }
     }
@@ -462,7 +474,7 @@ class BarranquillaEduMap {
             searchInput.focus();
         });
         
-        // Filtros por tipo de punto crítico
+        // Filtros por tipo de punto crítico - incluir todos los tipos disponibles
         ['critico', 'voluminoso'].forEach(type => {
             const checkbox = document.getElementById(`filter-${type}`);
             if (checkbox) {
@@ -474,21 +486,55 @@ class BarranquillaEduMap {
                     this.handleFilterChange();
                 });
                 
-                // Manejar click en el label padre de forma más simple
+                // Manejar click en el label padre completo
                 const label = checkbox.closest('.filter-item');
                 if (label) {
+                    // Event listener para todo el label
                     label.addEventListener('click', (e) => {
-                        // Solo procesar si NO se hizo click directamente en el checkbox o checkmark
-                        if (e.target === label || e.target.classList.contains('filter-text') || e.target.classList.contains('count')) {
-                            console.log(`🏷️ Click en label ${type}`);
-                            e.preventDefault();
-                            checkbox.checked = !checkbox.checked;
-                            console.log(`🔄 Label click - Checkbox ${type} cambiado a:`, checkbox.checked);
-                            // Disparar evento change manualmente
-                            checkbox.dispatchEvent(new Event('change'));
+                        // Prevenir que el click se propague si ya se hizo click en el checkbox
+                        if (e.target === checkbox) {
+                            return; // Dejar que el checkbox maneje su propio evento
                         }
+                        
+                        console.log(`🏷️ Click en label completo ${type}`);
+                        e.preventDefault();
+                        e.stopPropagation();
+                        
+                        // Cambiar el estado del checkbox
+                        checkbox.checked = !checkbox.checked;
+                        console.log(`🔄 Label click - Checkbox ${type} cambiado a:`, checkbox.checked);
+                        
+                        // Disparar evento change manualmente
+                        checkbox.dispatchEvent(new Event('change'));
                     });
                 }
+                
+                // Event listeners específicos para los spans para mayor responsividad
+                const filterText = label?.querySelector('.filter-text');
+                const countSpan = label?.querySelector('.count');
+                const checkmark = label?.querySelector('.checkmark');
+                
+                // Agregar event listeners a cada elemento clickeable
+                [filterText, countSpan, checkmark].forEach(element => {
+                    if (element) {
+                        element.addEventListener('click', (e) => {
+                            console.log(`📝 Click directo en elemento ${element.className} para ${type}`);
+                            e.preventDefault();
+                            e.stopPropagation();
+                            
+                            // Cambiar el estado del checkbox
+                            checkbox.checked = !checkbox.checked;
+                            console.log(`🔄 Elemento click - Checkbox ${type} cambiado a:`, checkbox.checked);
+                            
+                            // Disparar evento change manualmente
+                            checkbox.dispatchEvent(new Event('change'));
+                        });
+                        
+                        // Agregar estilo de cursor pointer
+                        element.style.cursor = 'pointer';
+                    }
+                });
+                
             } else {
                 console.error(`❌ Checkbox filter-${type} no encontrado`);
             }
@@ -1275,12 +1321,13 @@ class BarranquillaEduMap {
         
         console.log('Estado de checkboxes antes de filtrar:', { filterCriticoChecked, filterVoluminosoChecked });
         
-        // Si AMBOS filtros están marcados O NINGUNO está marcado, mostrar TODOS los puntos
-        if ((filterCriticoChecked && filterVoluminosoChecked) || (!filterCriticoChecked && !filterVoluminosoChecked)) {
-            console.log('🎆 Mostrando TODOS los puntos (ambos filtros activos o ninguno)');
+        // Si TODOS los filtros están marcados O NINGUNO está marcado, mostrar TODOS los puntos
+        if ((filterCriticoChecked && filterVoluminosoChecked) || 
+            (!filterCriticoChecked && !filterVoluminosoChecked)) {
+            console.log('🎆 Mostrando TODOS los puntos (todos los filtros activos o ninguno)');
             finalFilteredPoints = pointsAfterSearch;
         } else {
-            // Solo un filtro está marcado, aplicar filtrado específico
+            // Al menos un filtro está marcado, aplicar filtrado específico
             console.log('⚙️ Aplicando filtrado específico');
             finalFilteredPoints = pointsAfterSearch.filter(feature => {
                 if (!feature.properties) return false;
@@ -1291,7 +1338,7 @@ class BarranquillaEduMap {
                 
                 console.log(`Evaluando punto ${feature.properties.id}: tipo=${feature.pointType}, isCritico=${isCritico}, isVoluminoso=${isVoluminoso}`);
 
-                // Solo mostrar puntos que coincidan con el filtro marcado
+                // Solo mostrar puntos que coincidan con algún filtro marcado
                 let matchesFilter = false;
                 if (filterCriticoChecked && isCritico) {
                     matchesFilter = true;
@@ -1361,7 +1408,36 @@ class BarranquillaEduMap {
             const props = feature.properties;
             const statusClass = props.estado_actual ? props.estado_actual.toLowerCase().replace(/ /g, '-') : 'sin-estado';
             
+            // Calcular datos adicionales valiosos
+            const area = parseFloat(props.area_recuperada_m2) || 0;
+            const co2 = parseFloat(props.toneladas_co2_equivalente) || 0;
+            const poblacion = parseInt(props.poblacion_impactada) || 0;
+            
             console.log(`Generando tarjeta ${index + 1}:`, props.id, 'en barrio', props.barrio);
+            
+            // Generar contenido diferente según el tipo de punto
+            let locationContent = '';
+            
+            if (feature.pointType === 'voluminoso') {
+                // Para voluminosos: solo barrio y localidad
+                locationContent = `
+                    <div class="point-card-barrio">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <strong>${props.barrio || 'No especificado'}</strong>
+                    </div>
+                    <div class="point-card-locality">${props.localidad || 'Localidad no especificada'}</div>
+                `;
+            } else {
+                // Para críticos: barrio, dirección y localidad
+                locationContent = `
+                    <div class="point-card-barrio">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <strong>${props.barrio || 'No especificado'}</strong>
+                    </div>
+                    <div class="point-card-address">${props.direccion || 'Dirección no disponible'}</div>
+                    <div class="point-card-locality">${props.localidad || 'Localidad no especificada'}</div>
+                `;
+            }
             
             return `
                 <div class="point-card" onclick="eduMap.selectPuntoCritico('${props.id}')">
@@ -1370,11 +1446,8 @@ class BarranquillaEduMap {
                         <span class="point-card-status ${statusClass}">${props.estado_actual || 'N/A'}</span>
                     </div>
                     <div class="point-card-body">
-                        <div class="point-card-barrio">Barrio: ${props.barrio || 'No especificado'}</div>
-                        <div class="point-card-address">${props.direccion || 'Dirección no disponible'}</div>
-                        <div class="point-card-population">
-                            <i class="fas fa-users" style="color: #6b7280; margin-right: 4px;"></i>
-                            ${props.poblacion_impactada ? props.poblacion_impactada.toLocaleString() : '0'} personas impactadas
+                        <div class="point-card-location-wide">
+                            ${locationContent}
                         </div>
                     </div>
                 </div>
@@ -1399,7 +1472,9 @@ class BarranquillaEduMap {
         let totalCo2Equivalente = 0;
         const barriosImpactados = new Set();
         
-        // Procesar puntos visibles (críticos + voluminosos)
+        // Separar puntos críticos y voluminosos para estadísticas diferenciadas
+        let puntosVisiblesCriticos = 0;
+        
         visiblePoints.forEach((punto, index) => {
             const properties = punto.properties;
             
@@ -1412,6 +1487,11 @@ class BarranquillaEduMap {
             totalPoblacionImpactada += poblacion;
             totalCo2Equivalente += co2;
             
+            // Contar solo puntos críticos para el total (no voluminosos)
+            if (punto.pointType === 'critico') {
+                puntosVisiblesCriticos++;
+            }
+            
             // Agregar barrio al conjunto (evita duplicados)
             if (properties.barrio) {
                 barriosImpactados.add(properties.barrio);
@@ -1421,15 +1501,16 @@ class BarranquillaEduMap {
         });
         
         console.log('Totales calculados (visibles):', {
-            totalPuntos: visiblePoints.length,
+            totalPuntos: puntosVisiblesCriticos, // Solo puntos críticos
+            totalPuntosGeneral: visiblePoints.length, // Todos los puntos (críticos + voluminosos)
             totalAreaRecuperada,
             totalPoblacionImpactada,
             totalCo2Equivalente,
             barrios: barriosImpactados.size
         });
         
-        // Totales finales basados en puntos visibles
-        const totalPuntos = visiblePoints.length;
+        // Totales finales basados en puntos críticos únicamente (no voluminosos)
+        const totalPuntos = puntosVisiblesCriticos;
         const areaRecuperadaM2 = totalAreaRecuperada;
         
         console.log('Actualizando elementos del DOM:', {
