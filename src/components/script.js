@@ -1123,7 +1123,7 @@ class BarranquillaEduMap {
         
         const marker = L.marker(coordinates, { icon })
             .bindPopup(this.createPuntoCriticoPopupContent(properties, coordinates), { // Usar el mismo popup que críticos
-                maxWidth: 380,
+                maxWidth: 300, // Reducir el ancho para puntos voluminosos
                 className: 'punto-critico-popup-wrapper' // Misma clase que puntos críticos
             })
             .bindTooltip(`
@@ -1189,72 +1189,69 @@ class BarranquillaEduMap {
         const pointTitle = isVoluminoso ? `Residuo Voluminoso ${properties.id || 'N/A'}` : `Punto Crítico ${properties.id || 'N/A'}`;
         
         return `
-            <div class="popup-header" style="background-color: #FFFFFF; color: #374151; padding: 8px 12px 0 12px;">
-                <h4 style="margin: 0; font-size: 16px; font-weight: 700; font-family: var(--font-family);">${pointTitle}</h4>
-                <p style="margin: 2px 0 0; font-size: 13px; opacity: 0.9; font-family: var(--font-family);">Barrio: ${properties.barrio || 'No especificado'}</p>
-            </div>
-            
-            <div style="padding: 0 12px;">
-                <div style="display: flex; justify-content: space-around; align-items: flex-start; padding-top: 8px; margin-bottom: 8px; text-align: center; font-family: var(--font-family);">
-                    ${!isVoluminoso && properties.area_recuperada_m2 ? `
-                    <div title="Área Recuperada">
-                        <i class="fas fa-chart-area" style="color: #16a34a; font-size: 16px; margin-bottom: 4px;"></i>
-                        <p style="margin: 0; font-weight: 600; color: #374151; font-size: 14px;">${formatNumber(properties.area_recuperada_m2)} m²</p>
-                        <p style="margin: 0; font-size: 10px; color: #6b7280;">Recuperada</p>
-                    </div>` : ''}
-                    <div title="Población Impactada">
-                        <i class="fas fa-users" style="color: #16a34a; font-size: 16px; margin-bottom: 4px;"></i>
-                        <p style="margin: 0; font-weight: 600; color: #374151; font-size: 14px;">${formatNumber(properties.poblacion_impactada)}</p>
-                        <p style="margin: 0; font-size: 10px; color: #6b7280;">Población Impactada</p>
-                    </div>
-                    <div title="Toneladas de CO₂ Equivalente">
-                        <i class="fas fa-smog" style="color: #16a34a; font-size: 16px; margin-bottom: 4px;"></i>
-                        <p style="margin: 0; font-weight: 600; color: #374151; font-size: 14px;">${formatNumber(properties.toneladas_co2_equivalente)}</p>
-                        <p style="margin: 0; font-size: 10px; color: #6b7280;">Ton CO₂ Equiv.</p>
-                    </div>
-                    ${isVoluminoso && properties.estado_actual ? `
-                    <div title="Estado Actual">
-                        <i class="fas fa-check-circle" style="color: #16a34a; font-size: 16px; margin-bottom: 4px;"></i>
-                        <p style="margin: 0; font-weight: 600; color: #374151; font-size: 12px;">${getStatusBadge(properties.estado_actual)}</p>
-                        <p style="margin: 0; font-size: 10px; color: #6b7280;">Estado</p>
-                    </div>` : ''}
+            <div class="popup-container" style="font-family: var(--font-family);">
+                <div class="popup-header" style="background-color: #FFFFFF; color: #374151; padding: 8px 12px 0 12px;">
+                    <h4 style="margin: 0; font-size: 16px; font-weight: 700;">${pointTitle}</h4>
+                    <p style="margin: 2px 0 0; font-size: 13px; opacity: 0.9;">Barrio: ${properties.barrio || 'No especificado'}</p>
                 </div>
+                
+                <div style="padding: 0 12px;">
+                    <div style="display: flex; justify-content: space-around; align-items: flex-start; padding-top: 8px; margin-bottom: 8px; text-align: center;">
+                        <div title="Población Impactada">
+                            <i class="fas fa-users" style="color: #16a34a; font-size: 16px; margin-bottom: 4px;"></i>
+                            <p style="margin: 0; font-weight: 600; color: #374151; font-size: 14px;">${formatNumber(properties.poblacion_impactada)}</p>
+                            <p style="margin: 0; font-size: 10px; color: #6b7280;">Población Impactada</p>
+                        </div>
+                        <div title="Toneladas de CO₂ Equivalente">
+                            <i class="fas fa-smog" style="color: #16a34a; font-size: 16px; margin-bottom: 4px;"></i>
+                            <p style="margin: 0; font-weight: 600; color: #374151; font-size: 14px;">${formatNumber(properties.toneladas_co2_equivalente)}</p>
+                            <p style="margin: 0; font-size: 10px; color: #6b7280;">Ton CO₂ Equiv.</p>
+                        </div>
+                        ${!isVoluminoso ? `
+                        <div title="Área Recuperada">
+                            <i class="fas fa-leaf" style="color: #16a34a; font-size: 16px; margin-bottom: 4px;"></i>
+                            <p style="margin: 0; font-weight: 600; color: #374151; font-size: 14px;">${formatNumber(properties.area_recuperada_m2)}</p>
+                            <p style="margin: 0; font-size: 10px; color: #6b7280;">m² Recuperados</p>
+                        </div>` : ''}
+                    </div>
 
-                <div style="line-height: 1.5; font-size: 13px; padding-bottom: 8px; font-family: var(--font-family);">
-                    <div style="margin-bottom: 10px;">
-                        <i class="fas fa-map-marker-alt" style="color: #4b5563; width: 18px; margin-right: 6px;"></i>
-                        <span style="font-weight: 600; color: #374151;">Dirección:</span>
-                        <p style="margin: 0 0 0 24px; color: #6b7280; font-size: 12px;">${properties.direccion || 'No especificada'}</p>
+                    <div style="line-height: 1.5; font-size: 13px; padding-bottom: 8px;">
+                        ${!isVoluminoso ? `
+                        <div style="margin-bottom: 10px;">
+                            <i class="fas fa-map-marker-alt" style="color: #4b5563; width: 18px; margin-right: 6px;"></i>
+                            <span style="font-weight: 600; color: #374151;">Dirección:</span>
+                            <p style="margin: 0 0 0 24px; color: #6b7280; font-size: 12px;">${properties.direccion || 'No especificada'}</p>
+                        </div>` : ''}
+                        
+                        ${isVoluminoso && properties.localidad ? `
+                        <div style="margin-bottom: 10px;">
+                            <i class="fas fa-building" style="color: #4b5563; width: 18px; margin-right: 6px;"></i>
+                            <span style="font-weight: 600; color: #374151;">Localidad:</span>
+                            <p style="margin: 0 0 0 24px; color: #6b7280; font-size: 12px;">${properties.localidad}</p>
+                        </div>` : ''}
+                        
+                        ${properties.tipo_residuo ? `
+                        <div style="margin-bottom: 10px;">
+                            <i class="fas fa-trash" style="color: #4b5563; width: 18px; margin-right: 6px;"></i>
+                            <span style="font-weight: 600; color: #374151;">Tipo de residuo:</span>
+                            <p style="margin: 0 0 0 24px; color: #6b7280; font-size: 12px;">${properties.tipo_residuo || 'No especificado'}</p>
+                        </div>` : ''}
+                        
+                        ${properties.acciones_realizadas && properties.acciones_realizadas !== 'ND' ? `
+                        <div style="margin-bottom: 10px;">
+                            <i class="fas fa-tools" style="color: #4b5563; width: 18px; margin-right: 6px;"></i>
+                            <span style="font-weight: 600; color: #374151;">Acciones realizadas:</span>
+                            <p style="margin: 0 0 0 24px; color: #6b7280; font-size: 12px;">${properties.acciones_realizadas}</p>
+                        </div>` : ''}
                     </div>
-                    
-                    ${isVoluminoso && properties.localidad ? `
-                    <div style="margin-bottom: 10px;">
-                        <i class="fas fa-building" style="color: #4b5563; width: 18px; margin-right: 6px;"></i>
-                        <span style="font-weight: 600; color: #374151;">Localidad:</span>
-                        <p style="margin: 0 0 0 24px; color: #6b7280; font-size: 12px;">${properties.localidad}</p>
-                    </div>` : ''}
-                    
-                    ${properties.tipo_residuo ? `
-                    <div style="margin-bottom: 10px;">
-                        <i class="fas fa-trash" style="color: #4b5563; width: 18px; margin-right: 6px;"></i>
-                        <span style="font-weight: 600; color: #374151;">Tipo de residuo:</span>
-                        <p style="margin: 0 0 0 24px; color: #6b7280; font-size: 12px;">${properties.tipo_residuo || 'No especificado'}</p>
-                    </div>` : ''}
-                    
-                    ${properties.acciones_realizadas && properties.acciones_realizadas !== 'ND' ? `
-                    <div style="margin-bottom: 10px;">
-                        <i class="fas fa-tools" style="color: #4b5563; width: 18px; margin-right: 6px;"></i>
-                        <span style="font-weight: 600; color: #374151;">Acciones realizadas:</span>
-                        <p style="margin: 0 0 0 24px; color: #6b7280; font-size: 12px;">${properties.acciones_realizadas}</p>
-                    </div>` : ''}
                 </div>
-            </div>
-            
-            <div style="border-top: 1px solid #e5e7eb; padding: 4px 10px; background: #f9fafb; font-family: var(--font-family);">
-                <small style="color: #9ca3af; font-size: 10px; display: flex; align-items: center;">
-                    <i class="fas fa-globe" style="margin-right: 5px;"></i>
-                    Lat: ${coordinates[0].toFixed(6)}, Long: ${coordinates[1].toFixed(6)}
-                </small>
+                
+                <div style="border-top: 1px solid #e5e7eb; padding: 4px 10px; background: #f9fafb;">
+                    <small style="color: #9ca3af; font-size: 10px; display: flex; align-items: center;">
+                        <i class="fas fa-globe" style="margin-right: 5px;"></i>
+                        Lat: ${coordinates[0].toFixed(6)}, Long: ${coordinates[1].toFixed(6)}
+                    </small>
+                </div>
             </div>
         `;
     }
@@ -1415,39 +1412,23 @@ class BarranquillaEduMap {
             
             console.log(`Generando tarjeta ${index + 1}:`, props.id, 'en barrio', props.barrio);
             
-            // Generar contenido diferente según el tipo de punto
-            let locationContent = '';
-            
-            if (feature.pointType === 'voluminoso') {
-                // Para voluminosos: solo barrio y localidad
-                locationContent = `
-                    <div class="point-card-barrio">
-                        <i class="fas fa-map-marker-alt"></i>
-                        <strong>${props.barrio || 'No especificado'}</strong>
-                    </div>
-                    <div class="point-card-locality">${props.localidad || 'Localidad no especificada'}</div>
-                `;
-            } else {
-                // Para críticos: barrio, dirección y localidad
-                locationContent = `
-                    <div class="point-card-barrio">
-                        <i class="fas fa-map-marker-alt"></i>
-                        <strong>${props.barrio || 'No especificado'}</strong>
-                    </div>
-                    <div class="point-card-address">${props.direccion || 'Dirección no disponible'}</div>
-                    <div class="point-card-locality">${props.localidad || 'Localidad no especificada'}</div>
-                `;
-            }
+            // Determinar si es un punto voluminoso
+            const isVoluminoso = props.id && props.id.startsWith('VL');
             
             return `
-                <div class="point-card" onclick="eduMap.selectPuntoCritico('${props.id}')">
+                <div class="point-card compact" onclick="eduMap.selectPuntoCritico('${props.id}')">
                     <div class="point-card-header">
                         <strong>${props.id}</strong>
-                        <span class="point-card-status ${statusClass}">${props.estado_actual || 'N/A'}</span>
+                        ${!isVoluminoso ? `<span class="point-card-status ${statusClass}">${props.estado_actual || 'N/A'}</span>` : ''}
                     </div>
                     <div class="point-card-body">
-                        <div class="point-card-location-wide">
-                            ${locationContent}
+                        <div class="point-card-location">
+                            <div class="point-card-barrio">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <strong>${props.barrio || 'No especificado'}</strong>
+                            </div>
+                            ${!isVoluminoso ? `<div class="point-card-address">${props.direccion || 'Dirección no disponible'}</div>` : ''}
+                            <div class="point-card-locality">Localidad: ${props.localidad || 'Localidad no especificada'}</div>
                         </div>
                     </div>
                 </div>
@@ -1470,13 +1451,25 @@ class BarranquillaEduMap {
         let totalAreaRecuperada = 0; // en m²
         let totalPoblacionImpactada = 0;
         let totalCo2Equivalente = 0;
-        const barriosImpactados = new Set();
+        const barriosImpactados = new Set(); // Solo barrios con puntos críticos
         
-        // Separar puntos críticos y voluminosos para estadísticas diferenciadas
-        let puntosVisiblesCriticos = 0;
+        // Separar puntos críticos de voluminosos para el conteo
+        let puntosCriticosCount = 0;
         
+        // Procesar puntos visibles (críticos + voluminosos)
         visiblePoints.forEach((punto, index) => {
             const properties = punto.properties;
+            const isVoluminoso = properties.id && properties.id.startsWith('VL');
+            
+            // Solo contar puntos críticos en el total (excluir voluminosos)
+            if (!isVoluminoso) {
+                puntosCriticosCount++;
+                
+                // Solo agregar barrios de puntos críticos al conjunto
+                if (properties.barrio) {
+                    barriosImpactados.add(properties.barrio);
+                }
+            }
             
             // Sumar datos reales del JSON
             const area = parseFloat(properties.area_recuperada_m2) || 0;
@@ -1487,30 +1480,20 @@ class BarranquillaEduMap {
             totalPoblacionImpactada += poblacion;
             totalCo2Equivalente += co2;
             
-            // Contar solo puntos críticos para el total (no voluminosos)
-            if (punto.pointType === 'critico') {
-                puntosVisiblesCriticos++;
-            }
-            
-            // Agregar barrio al conjunto (evita duplicados)
-            if (properties.barrio) {
-                barriosImpactados.add(properties.barrio);
-            }
-            
-            console.log(`Punto ${index} (${punto.pointType}): área=${area}, población=${poblacion}, co2=${co2}, barrio=${properties.barrio}`);
+            console.log(`Punto ${index} (${punto.pointType}): área=${area}, población=${poblacion}, co2=${co2}, barrio=${properties.barrio}, isVoluminoso=${isVoluminoso}`);
         });
         
         console.log('Totales calculados (visibles):', {
-            totalPuntos: puntosVisiblesCriticos, // Solo puntos críticos
-            totalPuntosGeneral: visiblePoints.length, // Todos los puntos (críticos + voluminosos)
+            totalPuntos: visiblePoints.length,
+            puntosCriticosCount,
             totalAreaRecuperada,
             totalPoblacionImpactada,
             totalCo2Equivalente,
             barrios: barriosImpactados.size
         });
         
-        // Totales finales basados en puntos críticos únicamente (no voluminosos)
-        const totalPuntos = puntosVisiblesCriticos;
+        // Totales finales basados en puntos críticos únicamente (excluyendo voluminosos)
+        const totalPuntos = puntosCriticosCount;
         const areaRecuperadaM2 = totalAreaRecuperada;
         
         console.log('Actualizando elementos del DOM:', {

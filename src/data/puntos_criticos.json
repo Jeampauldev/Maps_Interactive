@@ -1050,6 +1050,69 @@
         "poblacion_impactada": 3645,
         "toneladas_co2_equivalente": 149
       }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-74.79487650, 10.97311310]
+      },
+      "properties": {
+        "id": "PC121",
+        "fecha_entrega": "13/9/2025",
+        "direccion": "Diagonal 31 Entre Calles 50 A 53d",
+        "barrio": "Lucero",
+        "localidad": "Suroccidente",
+        "estado_actual": "Recuperado",
+        "acciones_realizadas": "Reconstrucción De Andén, Bordillo Y Jardinera",
+        "tipo_residuo": "Residuos Orgánicos, Ordinarios, Escombros, Poda De Árboles",
+        "frecuencia_limpieza": "Cuatrisemanal",
+        "area_recuperada_m2": 2171,
+        "poblacion_impactada": 1887,
+        "toneladas_co2_equivalente": 926
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-74.78844210, 10.98646170]
+      },
+      "properties": {
+        "id": "PC118",
+        "fecha_entrega": "20/9/2025",
+        "direccion": "Calle 50 Entre Carrera 44 Y 45",
+        "barrio": "Boston",
+        "localidad": "Norte Centro Histórico",
+        "estado_actual": "Recuperado",
+        "acciones_realizadas": "Reconstrucción De Andén, Bordillo Y Jardinera",
+        "tipo_residuo": "Residuos Orgánicos, Ordinarios, Escombros, Poda De Árboles",
+        "frecuencia_limpieza": "Interdiaria",
+        "area_recuperada_m2": 259,
+        "poblacion_impactada": 952,
+        "toneladas_co2_equivalente": 2
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-74.77778040, 10.94436060]
+      },
+      "properties": {
+        "id": "PC126",
+        "fecha_entrega": "20/9/2025",
+        "direccion": "Carrera 5b Con Calle 23",
+        "barrio": "Simón Bolívar",
+        "localidad": "Suroriente",
+        "estado_actual": "Recuperado",
+        "acciones_realizadas": "Reconstrucción De Andén, Bordillo Y Jardinera",
+        "tipo_residuo": "Residuos Orgánicos, Ordinarios, Escombros, Poda De Árboles",
+        "frecuencia_limpieza": "Interdiaria",
+        "area_recuperada_m2": 1437,
+        "poblacion_impactada": 909,
+        "toneladas_co2_equivalente": 30
+      }
     }
   ]
 }

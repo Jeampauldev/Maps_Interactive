@@ -1440,9 +1440,9 @@ html {
 /* 2. Aplicamos el estilo a nuestro contenido personalizado */
 .punto-critico-popup-wrapper .leaflet-popup-content {
     position: relative;
-    width: 320px !important; /* Ancho fijo y agradable */
-    padding: 20px;
-    padding-top: 28px; /* Espacio superior para la barra de degradado */
+    width: 280px !important; /* Ancho reducido para mejor compacidad */
+    padding: 16px; /* Padding reducido */
+    padding-top: 24px; /* Espacio superior reducido para la barra de degradado */
     margin: 0;
     background: white;
     border-radius: 12px;
@@ -1790,15 +1790,88 @@ canvas.leaflet-zoom-animated,
     cursor: pointer;
     transition: all 0.2s ease;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-    min-height: 120px;
+    overflow: hidden !important; /* Mantener hidden para contener el contenido */
+    min-height: 120px !important; /* Aumentado para asegurar espacio */
     display: flex;
     flex-direction: column;
     position: relative;
-    margin: 4px auto; /* Centrar horizontalmente */
-    width: calc(100% - 16px); /* Dejar más espacio para evitar corte */
-    max-width: 100%; /* Limitar ancho máximo */
-    box-sizing: border-box; /* Incluir padding y border en el cálculo del ancho */
+    margin: 2px auto; /* Reducido margen vertical */
+    width: calc(100% - 2px) !important; /* Aún más ancho que antes */
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+/* Estilos específicos para tarjetas compactas */
+.point-card.compact {
+    min-height: 80px !important; /* Reducido de 100px para más compacto */
+    padding: 0 !important;
+    overflow: visible !important; /* Asegurar que no se corte el contenido */
+}
+
+.point-card.compact .point-card-header {
+    padding: 6px 10px !important; /* Reducido de 8px 12px */
+    background: rgba(3, 88, 140, 0.03);
+    border-bottom: 1px solid rgba(3, 88, 140, 0.1);
+}
+
+.point-card.compact .point-card-header strong {
+    font-size: 12px !important; /* Reducido de 13px */
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+.point-card.compact .point-card-status {
+    padding: 1px 5px !important; /* Reducido de 2px 6px */
+    font-size: 9px !important; /* Reducido de 10px */
+}
+
+.point-card.compact .point-card-body {
+    padding: 6px 10px 8px 10px !important; /* Reducido de 8px 12px 10px 12px */
+    flex: 1 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-start !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    min-height: 0 !important;
+}
+
+/* Contenedor para dirección y localidad en línea */
+.point-card.compact .point-card-address-container {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: baseline !important;
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+}
+
+.point-card.compact .point-card-barrio {
+    font-size: 11px !important; /* Reducido de 12px */
+    margin-bottom: 1px !important; /* Reducido de 2px */
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.point-card.compact .point-card-address {
+    font-size: 10px !important; /* Reducido de 11px */
+    margin-bottom: 0 !important; /* Sin margen inferior para estar en línea */
+    color: var(--text-light);
+    display: inline !important; /* Inline para estar en la misma línea */
+    margin-right: 6px !important; /* Reducido de 8px para más compacto */
+}
+
+.point-card.compact .point-card-location {
+    display: block !important; /* Cambiar de flex a block para permitir inline */
+    width: 100%;
+    overflow: hidden; /* Evitar que el contenido se salga */
+}
+
+.point-card.compact .point-card-locality {
+    font-size: 9px !important; /* Reducido de 10px */
+    margin-bottom: 0 !important; /* Sin margen inferior */
+    color: var(--text-secondary);
+    font-style: italic;
+    display: inline !important; /* Inline para estar en la misma línea */
 }
 
 /* Borde izquierdo con gradiente original */
@@ -1811,6 +1884,8 @@ canvas.leaflet-zoom-animated,
     width: 3px;
     background: linear-gradient(180deg, var(--primary-color) 0%, var(--success-green) 50%, var(--warning-yellow) 100%);
     transition: width 0.2s ease;
+    border-radius: 8px 0 0 8px; /* Redondear solo el lado izquierdo */
+    z-index: 1; /* Asegurar que esté dentro de la tarjeta */
 }
 
 .point-card:hover::before {
