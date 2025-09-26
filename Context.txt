@@ -1,5 +1,0 @@
-el mapa que se desarrolla es esto:
-georeferenciacion de los puntos críticos recuperados bajo la estrategia Barranquilla limpia y linda
-
-nombre de este mapa:
-Spatial Data Report | Disposición Final
