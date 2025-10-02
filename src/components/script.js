@@ -1188,67 +1188,87 @@ class BarranquillaEduMap {
         const isVoluminoso = properties.id && properties.id.startsWith('VL');
         const pointTitle = isVoluminoso ? `Residuo Voluminoso ${properties.id || 'N/A'}` : `Punto Crítico ${properties.id || 'N/A'}`;
         
+        // Generar la ruta de la foto para puntos críticos
+        let photoHtml = '';
+        if (!isVoluminoso && properties.id) {
+            // Convertir PC001 → PC_001.jpg
+            const photoId = properties.id.replace('PC', 'PC_');
+            const photoPath = `./src/assets/Photos/${photoId}.jpg`;
+            
+            photoHtml = `
+                <div class="popup-photo" style="margin: 6px 0; text-align: center;">
+                    <img src="${photoPath}" 
+                         alt="Foto del ${pointTitle}" 
+                         style="width: 100%; max-width: 200px; height: 120px; object-fit: cover; border-radius: 6px; box-shadow: 0 2px 6px rgba(0,0,0,0.1);"
+                         onerror="this.parentElement.style.display='none';"
+                         onload="this.parentElement.style.display='block';">
+                </div>
+            `;
+        }
+        
         return `
             <div class="popup-container" style="font-family: var(--font-family);">
-                <div class="popup-header" style="background-color: #FFFFFF; color: #374151; padding: 8px 12px 0 12px;">
-                    <h4 style="margin: 0; font-size: 16px; font-weight: 700;">${pointTitle}</h4>
-                    <p style="margin: 2px 0 0; font-size: 13px; opacity: 0.9;">Barrio: ${properties.barrio || 'No especificado'}</p>
+                <div class="popup-header" style="background-color: #FFFFFF; color: #374151; padding: 6px 10px 0 10px;">
+                    <h4 style="margin: 0; font-size: 15px; font-weight: 700;">${pointTitle}</h4>
+                    <p style="margin: 2px 0 0; font-size: 12px; opacity: 0.9;">Barrio: ${properties.barrio || 'No especificado'}</p>
                 </div>
                 
-                <div style="padding: 0 12px;">
-                    <div style="display: flex; justify-content: space-around; align-items: flex-start; padding-top: 8px; margin-bottom: 8px; text-align: center;">
+                ${photoHtml}
+                
+                <div style="padding: 0 10px;">
+                    <div style="display: flex; justify-content: space-around; align-items: flex-start; padding-top: 6px; margin-bottom: 6px; text-align: center;">
                         <div title="Población Impactada">
-                            <i class="fas fa-users" style="color: #16a34a; font-size: 16px; margin-bottom: 4px;"></i>
-                            <p style="margin: 0; font-weight: 600; color: #374151; font-size: 14px;">${formatNumber(properties.poblacion_impactada)}</p>
-                            <p style="margin: 0; font-size: 10px; color: #6b7280;">Población Impactada</p>
+                            <i class="fas fa-users" style="color: #16a34a; font-size: 14px; margin-bottom: 3px;"></i>
+                            <p style="margin: 0; font-weight: 600; color: #374151; font-size: 13px;">${formatNumber(properties.poblacion_impactada)}</p>
+                            <p style="margin: 0; font-size: 9px; color: #6b7280;">Población Impactada</p>
                         </div>
                         <div title="Toneladas de CO₂ Equivalente">
-                            <i class="fas fa-smog" style="color: #16a34a; font-size: 16px; margin-bottom: 4px;"></i>
-                            <p style="margin: 0; font-weight: 600; color: #374151; font-size: 14px;">${formatNumber(properties.toneladas_co2_equivalente)}</p>
-                            <p style="margin: 0; font-size: 10px; color: #6b7280;">Ton CO₂ Equiv.</p>
+                            <i class="fas fa-smog" style="color: #16a34a; font-size: 14px; margin-bottom: 3px;"></i>
+                            <p style="margin: 0; font-weight: 600; color: #374151; font-size: 13px;">${formatNumber(properties.toneladas_co2_equivalente)}</p>
+                            <p style="margin: 0; font-size: 9px; color: #6b7280;">Ton CO₂ Equiv.</p>
                         </div>
                         ${!isVoluminoso ? `
                         <div title="Área Recuperada">
-                            <i class="fas fa-leaf" style="color: #16a34a; font-size: 16px; margin-bottom: 4px;"></i>
-                            <p style="margin: 0; font-weight: 600; color: #374151; font-size: 14px;">${formatNumber(properties.area_recuperada_m2)}</p>
-                            <p style="margin: 0; font-size: 10px; color: #6b7280;">m² Recuperados</p>
+                            <i class="fas fa-leaf" style="color: #16a34a; font-size: 14px; margin-bottom: 3px;"></i>
+                            <p style="margin: 0; font-weight: 600; color: #374151; font-size: 13px;">${formatNumber(properties.area_recuperada_m2)}</p>
+                            <p style="margin: 0; font-size: 9px; color: #6b7280;">m² Recuperados</p>
                         </div>` : ''}
                     </div>
 
-                    <div style="line-height: 1.5; font-size: 13px; padding-bottom: 8px;">
+                    <div style="line-height: 1.4; font-size: 12px; padding-bottom: 6px;">
                         ${!isVoluminoso ? `
-                        <div style="margin-bottom: 10px;">
-                            <i class="fas fa-map-marker-alt" style="color: #4b5563; width: 18px; margin-right: 6px;"></i>
+                        <div style="margin-bottom: 8px;">
+                            <i class="fas fa-map-marker-alt" style="color: #4b5563; width: 16px; margin-right: 5px;"></i>
                             <span style="font-weight: 600; color: #374151;">Dirección:</span>
-                            <p style="margin: 0 0 0 24px; color: #6b7280; font-size: 12px;">${properties.direccion || 'No especificada'}</p>
+                            <p style="margin: 0 0 0 21px; color: #6b7280; font-size: 11px;">${properties.direccion || 'No especificada'}</p>
                         </div>` : ''}
                         
                         ${isVoluminoso && properties.localidad ? `
-                        <div style="margin-bottom: 10px;">
-                            <i class="fas fa-building" style="color: #4b5563; width: 18px; margin-right: 6px;"></i>
+                        <div style="margin-bottom: 8px;">
+                            <i class="fas fa-building" style="color: #4b5563; width: 16px; margin-right: 5px;"></i>
                             <span style="font-weight: 600; color: #374151;">Localidad:</span>
-                            <p style="margin: 0 0 0 24px; color: #6b7280; font-size: 12px;">${properties.localidad}</p>
+                            <p style="margin: 0 0 0 21px; color: #6b7280; font-size: 11px;">${properties.localidad}</p>
                         </div>` : ''}
                         
                         ${properties.tipo_residuo ? `
-                        <div style="margin-bottom: 10px;">
-                            <i class="fas fa-trash" style="color: #4b5563; width: 18px; margin-right: 6px;"></i>
+                        <div style="margin-bottom: 8px;">
+                            <i class="fas fa-trash" style="color: #4b5563; width: 16px; margin-right: 5px;"></i>
                             <span style="font-weight: 600; color: #374151;">Tipo de residuo:</span>
-                            <p style="margin: 0 0 0 24px; color: #6b7280; font-size: 12px;">${properties.tipo_residuo || 'No especificado'}</p>
+                            <p style="margin: 0 0 0 21px; color: #6b7280; font-size: 11px;">${properties.tipo_residuo || 'No especificado'}</p>
                         </div>` : ''}
                         
                         ${properties.acciones_realizadas && properties.acciones_realizadas !== 'ND' ? `
-                        <div style="margin-bottom: 10px;">
-                            <i class="fas fa-tools" style="color: #4b5563; width: 18px; margin-right: 6px;"></i>
+                        <div style="margin-bottom: 8px;">
+                            <i class="fas fa-tools" style="color: #4b5563; width: 16px; margin-right: 5px;"></i>
                             <span style="font-weight: 600; color: #374151;">Acciones realizadas:</span>
-                            <p style="margin: 0 0 0 24px; color: #6b7280; font-size: 12px;">${properties.acciones_realizadas}</p>
+                            <p style="margin: 0 0 0 21px; color: #6b7280; font-size: 11px;">${properties.acciones_realizadas}</p>
                         </div>` : ''}
                     </div>
                 </div>
                 
-                <div style="border-top: 1px solid #e5e7eb; padding: 4px 10px; background: #f9fafb;">
-                    <small style="color: #9ca3af; font-size: 10px; display: flex; align-items: center;">
-                        <i class="fas fa-globe" style="margin-right: 5px;"></i>
+                <div style="border-top: 1px solid #e5e7eb; padding: 3px 8px; background: #f9fafb;">
+                    <small style="color: #9ca3af; font-size: 9px; display: flex; align-items: center;">
+                        <i class="fas fa-globe" style="margin-right: 4px;"></i>
                         Lat: ${coordinates[0].toFixed(6)}, Long: ${coordinates[1].toFixed(6)}
                     </small>
                 </div>
