@@ -20,36 +20,54 @@ const CONFIG = {
         terrain: 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png'
     },
     
-    // Configuración de capas de mapa con proveedores gratuitos y estables
+    // Configuración de capas de mapa con proveedores de alta calidad
     MAP_LAYERS: {
         detailed: {
-            name: 'Detallado Moderno',
-            url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+            name: 'Detallado HD',
+            url: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+            subdomains: 'abcd',
+            maxZoom: 20,
+            tileSize: 512,
+            zoomOffset: -1,
             errorTileUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg=='
         },
         satellite: {
             name: 'Satélite HD',
             url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-            attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
+            attribution: 'Tiles &copy; Esri &mdash; Source: Esri, Maxar, GeoEye, Earthstar Geographics, CNES/Airbus DS, USDA, USGS, AeroGRID, IGN, and the GIS User Community',
+            maxZoom: 19,
+            tileSize: 256,
             errorTileUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg=='
         },
         minimal: {
             name: 'Minimalista',
-            url: 'https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png',
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Tiles style by <a href="https://www.hotosm.org/" target="_blank">Humanitarian OpenStreetMap Team</a>',
+            url: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+            subdomains: 'abcd',
+            maxZoom: 20,
+            tileSize: 512,
+            zoomOffset: -1,
             errorTileUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg=='
         },
         dark: {
             name: 'Oscuro Elegante',
-            url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+            url: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+            subdomains: 'abcd',
+            maxZoom: 20,
+            tileSize: 512,
+            zoomOffset: -1,
             errorTileUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg=='
         },
         streets: {
-            name: 'Calles Básicas',
-            url: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+            name: 'Calles HD',
+            url: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+            subdomains: 'abcd',
+            maxZoom: 20,
+            tileSize: 512,
+            zoomOffset: -1,
             errorTileUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg=='
         }
     }
@@ -1207,68 +1225,68 @@ class BarranquillaEduMap {
         }
         
         return `
-            <div class="popup-container" style="font-family: var(--font-family);">
-                <div class="popup-header" style="background-color: #FFFFFF; color: #374151; padding: 6px 10px 0 10px;">
-                    <h4 style="margin: 0; font-size: 15px; font-weight: 700;">${pointTitle}</h4>
-                    <p style="margin: 2px 0 0; font-size: 12px; opacity: 0.9;">Barrio: ${properties.barrio || 'No especificado'}</p>
+            <div class="popup-container" style="font-family: var(--font-family); max-width: 280px;">
+                <div class="popup-header" style="background-color: #FFFFFF; color: #374151; padding: 4px 8px 0 8px;">
+                    <h4 style="margin: 0; font-size: 14px; font-weight: 700; line-height: 1.2;">${pointTitle}</h4>
+                    <p style="margin: 1px 0 0; font-size: 11px; opacity: 0.9; line-height: 1.2;">Barrio: ${properties.barrio || 'No especificado'}</p>
                 </div>
                 
                 ${photoHtml}
                 
-                <div style="padding: 0 10px;">
-                    <div style="display: flex; justify-content: space-around; align-items: flex-start; padding-top: 6px; margin-bottom: 6px; text-align: center;">
+                <div style="padding: 0 8px;">
+                    <div style="display: flex; justify-content: space-around; align-items: flex-start; padding-top: 4px; margin-bottom: 4px; text-align: center;">
                         <div title="Población Impactada">
-                            <i class="fas fa-users" style="color: #16a34a; font-size: 14px; margin-bottom: 3px;"></i>
-                            <p style="margin: 0; font-weight: 600; color: #374151; font-size: 13px;">${formatNumber(properties.poblacion_impactada)}</p>
-                            <p style="margin: 0; font-size: 9px; color: #6b7280;">Población Impactada</p>
+                            <i class="fas fa-users" style="color: #16a34a; font-size: 12px; margin-bottom: 2px;"></i>
+                            <p style="margin: 0; font-weight: 600; color: #374151; font-size: 12px; line-height: 1.1;">${formatNumber(properties.poblacion_impactada)}</p>
+                            <p style="margin: 0; font-size: 8px; color: #6b7280; line-height: 1.1;">Población Impactada</p>
                         </div>
                         <div title="Toneladas de CO₂ Equivalente">
-                            <i class="fas fa-smog" style="color: #16a34a; font-size: 14px; margin-bottom: 3px;"></i>
-                            <p style="margin: 0; font-weight: 600; color: #374151; font-size: 13px;">${formatNumber(properties.toneladas_co2_equivalente)}</p>
-                            <p style="margin: 0; font-size: 9px; color: #6b7280;">Ton CO₂ Equiv.</p>
+                            <i class="fas fa-smog" style="color: #16a34a; font-size: 12px; margin-bottom: 2px;"></i>
+                            <p style="margin: 0; font-weight: 600; color: #374151; font-size: 12px; line-height: 1.1;">${formatNumber(properties.toneladas_co2_equivalente)}</p>
+                            <p style="margin: 0; font-size: 8px; color: #6b7280; line-height: 1.1;">Ton CO₂ Equiv.</p>
                         </div>
                         ${!isVoluminoso ? `
                         <div title="Área Recuperada">
-                            <i class="fas fa-leaf" style="color: #16a34a; font-size: 14px; margin-bottom: 3px;"></i>
-                            <p style="margin: 0; font-weight: 600; color: #374151; font-size: 13px;">${formatNumber(properties.area_recuperada_m2)}</p>
-                            <p style="margin: 0; font-size: 9px; color: #6b7280;">m² Recuperados</p>
+                            <i class="fas fa-leaf" style="color: #16a34a; font-size: 12px; margin-bottom: 2px;"></i>
+                            <p style="margin: 0; font-weight: 600; color: #374151; font-size: 12px; line-height: 1.1;">${formatNumber(properties.area_recuperada_m2)}</p>
+                            <p style="margin: 0; font-size: 8px; color: #6b7280; line-height: 1.1;">m² Recuperados</p>
                         </div>` : ''}
                     </div>
 
-                    <div style="line-height: 1.4; font-size: 12px; padding-bottom: 6px;">
+                    <div style="line-height: 1.2; font-size: 11px; padding-bottom: 4px;">
                         ${!isVoluminoso ? `
-                        <div style="margin-bottom: 8px;">
-                            <i class="fas fa-map-marker-alt" style="color: #4b5563; width: 16px; margin-right: 5px;"></i>
-                            <span style="font-weight: 600; color: #374151;">Dirección:</span>
-                            <p style="margin: 0 0 0 21px; color: #6b7280; font-size: 11px;">${properties.direccion || 'No especificada'}</p>
+                        <div style="margin-bottom: 4px;">
+                            <i class="fas fa-map-marker-alt" style="color: #4b5563; width: 12px; margin-right: 3px; font-size: 10px;"></i>
+                            <span style="font-weight: 600; color: #374151; font-size: 10px;">Dirección:</span>
+                            <p style="margin: 0 0 0 15px; color: #6b7280; font-size: 9px; line-height: 1.1;">${properties.direccion || 'No especificada'}</p>
                         </div>` : ''}
                         
                         ${isVoluminoso && properties.localidad ? `
-                        <div style="margin-bottom: 8px;">
-                            <i class="fas fa-building" style="color: #4b5563; width: 16px; margin-right: 5px;"></i>
-                            <span style="font-weight: 600; color: #374151;">Localidad:</span>
-                            <p style="margin: 0 0 0 21px; color: #6b7280; font-size: 11px;">${properties.localidad}</p>
+                        <div style="margin-bottom: 4px;">
+                            <i class="fas fa-building" style="color: #4b5563; width: 12px; margin-right: 3px; font-size: 10px;"></i>
+                            <span style="font-weight: 600; color: #374151; font-size: 10px;">Localidad:</span>
+                            <p style="margin: 0 0 0 15px; color: #6b7280; font-size: 9px; line-height: 1.1;">${properties.localidad}</p>
                         </div>` : ''}
                         
                         ${properties.tipo_residuo ? `
-                        <div style="margin-bottom: 8px;">
-                            <i class="fas fa-trash" style="color: #4b5563; width: 16px; margin-right: 5px;"></i>
-                            <span style="font-weight: 600; color: #374151;">Tipo de residuo:</span>
-                            <p style="margin: 0 0 0 21px; color: #6b7280; font-size: 11px;">${properties.tipo_residuo || 'No especificado'}</p>
+                        <div style="margin-bottom: 4px;">
+                            <i class="fas fa-trash" style="color: #4b5563; width: 12px; margin-right: 3px; font-size: 10px;"></i>
+                            <span style="font-weight: 600; color: #374151; font-size: 10px;">Tipo de residuo:</span>
+                            <p style="margin: 0 0 0 15px; color: #6b7280; font-size: 9px; line-height: 1.1;">${properties.tipo_residuo || 'No especificado'}</p>
                         </div>` : ''}
                         
                         ${properties.acciones_realizadas && properties.acciones_realizadas !== 'ND' ? `
-                        <div style="margin-bottom: 8px;">
-                            <i class="fas fa-tools" style="color: #4b5563; width: 16px; margin-right: 5px;"></i>
-                            <span style="font-weight: 600; color: #374151;">Acciones realizadas:</span>
-                            <p style="margin: 0 0 0 21px; color: #6b7280; font-size: 11px;">${properties.acciones_realizadas}</p>
+                        <div style="margin-bottom: 4px;">
+                            <i class="fas fa-tools" style="color: #4b5563; width: 12px; margin-right: 3px; font-size: 10px;"></i>
+                            <span style="font-weight: 600; color: #374151; font-size: 10px;">Acciones realizadas:</span>
+                            <p style="margin: 0 0 0 15px; color: #6b7280; font-size: 9px; line-height: 1.1;">${properties.acciones_realizadas}</p>
                         </div>` : ''}
                     </div>
                 </div>
                 
-                <div style="border-top: 1px solid #e5e7eb; padding: 3px 8px; background: #f9fafb;">
-                    <small style="color: #9ca3af; font-size: 9px; display: flex; align-items: center;">
-                        <i class="fas fa-globe" style="margin-right: 4px;"></i>
+                <div style="border-top: 1px solid #e5e7eb; padding: 2px 6px; background: #f9fafb;">
+                    <small style="color: #9ca3af; font-size: 8px; display: flex; align-items: center;">
+                        <i class="fas fa-globe" style="margin-right: 3px; font-size: 8px;"></i>
                         Lat: ${coordinates[0].toFixed(6)}, Long: ${coordinates[1].toFixed(6)}
                     </small>
                 </div>
