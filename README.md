@@ -1,8 +1,8 @@
-# 🗺️ EduMap Barranquilla - Mapa Interactivo de Instituciones Educativas
+# 🗺️ Mapa Interactivo de Residuos - Barranquilla
 
 ## 📋 Descripción
 
-EduMap Barranquilla es una **Progressive Web App (PWA)** interactiva que permite explorar y descubrir las mejores instituciones educativas de Barranquilla, Colombia. Optimizada según las mejores prácticas de Vercel y diseñada con tecnologías modernas para ofrecer una experiencia de usuario excepcional.
+Mapa interactivo de **puntos críticos y voluminosos de residuos** en Barranquilla, Colombia. Esta **Progressive Web App (PWA)** permite visualizar, explorar y gestionar información sobre la disposición final de residuos sólidos en la ciudad, optimizada con tecnologías modernas para ofrecer una experiencia de usuario excepcional.
 
 ## 🏗️ Decisiones Clave y Razonamiento
 
@@ -12,17 +12,17 @@ EduMap Barranquilla es una **Progressive Web App (PWA)** interactiva que permite
 - **JavaScript ES6+**: Clases, módulos, async/await para código mantenible
 - **Leaflet.js**: Biblioteca líder para mapas interactivos, ligera y extensible
 
-**¿Por qué esta arquitectura?** Garantiza rendimiento óptimo, accesibilidad WCAG AA y escalabilidad para futuras funcionalidades.
+**¿Por qué esta arquitectura?** Garantiza rendimiento óptimo, accesibilidad WCAG AA y escalabilidad para futuras funcionalidades de gestión ambiental.
 
 ### 2. **Patrones de Diseño Implementados**
 - **Template Method**: Secuencia de inicialización de la aplicación
-- **Factory Method**: Creación de marcadores específicos por tipo de institución
+- **Factory Method**: Creación de marcadores específicos por tipo de residuo
 - **Observer Pattern**: Gestión de eventos de interfaz
 - **Builder Pattern**: Construcción progresiva del mapa con configuraciones
 
 ### 3. **Experiencia de Usuario (UX)**
 - **Mobile-First**: Diseño responsivo que funciona en todos los dispositivos
-- **Búsqueda en Tiempo Real**: Filtrado instantáneo sin recargas
+- **Búsqueda en Tiempo Real**: Filtrado instantáneo por barrios y localidades
 - **Feedback Visual**: Animaciones y transiciones que guían al usuario
 - **Accesibilidad**: Navegación por teclado, lectores de pantalla, contraste adecuado
 
@@ -30,29 +30,30 @@ EduMap Barranquilla es una **Progressive Web App (PWA)** interactiva que permite
 
 ### ✨ Funcionalidades Implementadas
 
-1. **🗺️ Mapa Interactivo**
+1. **🗺️ Mapa Interactivo de Residuos**
    - Centrado en Barranquilla con zoom optimizado
-   - Marcadores personalizados por tipo de institución
-   - Popups informativos con datos relevantes
+   - Marcadores diferenciados: rojos para puntos críticos, naranjas para voluminosos
+   - Popups informativos con métricas ambientales
    - Controles de navegación intuitivos
+   - Capas de mapa de alta calidad (CARTO)
 
-2. **🔍 Sistema de Búsqueda Avanzado**
-   - Búsqueda en tiempo real por nombre, dirección o descripción
-   - Filtros por tipo: Universidades, Colegios, Institutos Técnicos
+2. **🔍 Sistema de Filtros Avanzado**
+   - Filtros independientes por tipo: Críticos y Voluminosos
+   - Búsqueda en tiempo real por barrio o localidad
    - Contadores dinámicos de resultados
    - Botón de limpieza rápida
 
 3. **📱 Panel Lateral Inteligente**
-   - Lista de instituciones con información resumida
+   - Lista de puntos con información resumida
    - Sincronización con selección en el mapa
    - Scroll independiente para navegación eficiente
    - Estados vacíos informativos
 
 4. **ℹ️ Panel de Información Detallada**
-   - Datos completos de la institución seleccionada
-   - Botones de acción: direcciones y compartir
-   - Animaciones de entrada/salida suaves
-   - Diseño card moderno
+   - Datos completos del punto seleccionado
+   - Métricas ambientales: CO₂ equivalente, área recuperada, población impactada
+   - Información de estado y acciones realizadas
+   - Diseño diferenciado por tipo de residuo
 
 5. **🎛️ Controles Avanzados**
    - Geolocalización del usuario
@@ -62,42 +63,44 @@ EduMap Barranquilla es una **Progressive Web App (PWA)** interactiva que permite
 
 ### 🎨 Diseño Visual
 
-- **Paleta de Colores Moderna**: Azules, verdes y naranjas con excelente contraste
+- **Paleta de Colores Temática**: Rojos para críticos, naranjas para voluminosos
 - **Tipografía Inter**: Fuente moderna y legible en todos los tamaños
 - **Gradientes Sutiles**: Fondos atractivos sin comprometer la legibilidad
 - **Sombras Realistas**: Profundidad visual que mejora la jerarquía
 - **Animaciones Fluidas**: Transiciones de 300ms para feedback inmediato
 
-## 🏛️ Instituciones Incluidas
+## 🗑️ Datos de Residuos Incluidos
 
-### 🎓 Universidades (4)
-- **Universidad del Norte** - Líder en investigación y excelencia académica
-- **Universidad Autónoma del Caribe** - Formación integral y humanística
-- **Universidad Libre Seccional** - Tradición jurídica y empresarial
-- **Universidad Simón Bolívar** - Innovación en ciencias de la salud
+### ⚠️ Puntos Críticos (126 puntos)
+Ubicaciones con acumulación crítica de residuos que requieren intervención prioritaria:
+- **Estados**: Recuperado, En proceso, Pendiente
+- **Tipos de residuo**: Orgánicos, ordinarios, escombros, poda de árboles
+- **Métricas**: Área recuperada (m²), población impactada, CO₂ equivalente
+- **Localidades**: Metropolitana, Suroriente, Suroccidente, Norte Centro Histórico
 
-### 🏫 Colegios (4)
-- **Colegio Karl C. Parrish** - Educación bilingüe internacional
-- **Colegio Marymount** - Institución católica para señoritas
-- **Colegio San José** - Tradición lasallista masculina
-- **Colegio Británico Internacional** - Currículo británico
+### 🗑️ Puntos Voluminosos (9 puntos)
+Ubicaciones con residuos de gran volumen que requieren manejo especializado:
+- **Tipos**: Muebles, electrodomésticos, escombros, material de construcción
+- **Estados**: Todos recuperados
+- **Frecuencia de limpieza**: Diaria, semanal, quincenal, mensual
+- **Impacto**: Hasta 4,918 personas beneficiadas por punto
 
-### 🔧 Institutos Técnicos (4)
-- **SENA - Centro Industrial** - Formación técnica gratuita
-- **Instituto Técnico Industrial** - Bachillerato técnico especializado
-- **Fundación Tecnológica Antonio de Arévalo** - Programas tecnológicos
-- **Instituto Nacional de Formación Técnica** - Especialización profesional
+### 🏘️ Información Geográfica
+- **Barrios**: Más de 50 barrios mapeados
+- **Localidades**: 4 localidades principales de Barranquilla
+- **Coordenadas**: Sistema de coordenadas geográficas (WGS84)
+- **Límites**: Archivo GeoJSON con límites de barrios según POT
 
 ## 🛠️ Guía de Uso e Integración
 
 ### Instalación Local
 
 ```bash
-# 1. Clonar o descargar el proyecto
-git clone [repositorio] o descargar ZIP
+# 1. Clonar el repositorio
+git clone https://github.com/Jeampauldev/Maps_Interactive.git
 
 # 2. Navegar al directorio
-cd mapa-barranquilla
+cd Maps_Interactive
 
 # 3. Iniciar servidor local (Python)
 python -m http.server 8000
@@ -109,62 +112,92 @@ http://localhost:8000
 ### Estructura del Proyecto
 
 ```
-mapa-barranquilla/
-├── index.html              # Estructura HTML principal
-├── styles.css              # Estilos CSS modernos
-├── script.js               # Lógica JavaScript
-├── README.md              # Esta documentación
-└── assets/                # Recursos adicionales (futuro)
-    ├── icons/             # Iconos personalizados
-    └── images/            # Imágenes del proyecto
+Mapa/
+├── index.html                          # Estructura HTML principal
+├── src/
+│   ├── components/
+│   │   └── script.js                   # Lógica JavaScript principal
+│   ├── styles/
+│   │   └── styles.css                  # Estilos CSS modernos
+│   ├── data/
+│   │   ├── puntos_criticos.json        # 126 puntos críticos (GeoJSON)
+│   │   ├── puntos_voluminosos.json     # 9 puntos voluminosos
+│   │   ├── barrios_optimizado.geojson  # Límites de barrios
+│   │   └── Base punto critico.csv      # Datos base en CSV
+│   ├── assets/
+│   │   ├── Photos/                     # Fotos de puntos críticos
+│   │   ├── icons/                      # Iconos personalizados
+│   │   └── logos/                      # Logos institucionales
+│   └── libs/
+│       ├── leaflet.js                  # Biblioteca de mapas
+│       └── leaflet.css                 # Estilos de Leaflet
+├── docs/
+│   └── PUNTOS_VOLUMINOSOS_README.md    # Documentación específica
+└── README.md                           # Esta documentación
 ```
 
 ### Personalización
 
-#### Agregar Nuevas Instituciones
+#### Agregar Nuevos Puntos Críticos
 
 ```javascript
-// En script.js, agregar al array EDUCATIONAL_INSTITUTIONS
+// En puntos_criticos.json, agregar al array features
 {
-    id: 13,
-    name: 'Nueva Institución',
-    type: 'universidad', // 'universidad', 'colegio', 'tecnico'
-    coordinates: [10.9639, -74.7964], // [latitud, longitud]
-    address: 'Dirección completa',
-    phone: '+57 5 XXX XXXX',
-    website: 'https://www.institucion.edu.co',
-    description: 'Descripción de la institución',
-    programs: ['Programa 1', 'Programa 2'],
-    students: 1000,
-    founded: 2020
+  "type": "Feature",
+  "geometry": {
+    "type": "Point",
+    "coordinates": [-74.7964, 10.9639] // [longitud, latitud]
+  },
+  "properties": {
+    "id": "PC127",
+    "fecha_entrega": "01/01/2025",
+    "direccion": "Nueva dirección",
+    "barrio": "Nombre del barrio",
+    "localidad": "Localidad",
+    "estado_actual": "Pendiente", // Pendiente, En proceso, Recuperado
+    "acciones_realizadas": "Descripción de acciones",
+    "tipo_residuo": "Tipo de residuos encontrados",
+    "frecuencia_limpieza": "Frecuencia",
+    "area_recuperada_m2": 100,
+    "poblacion_impactada": 500,
+    "toneladas_co2_equivalente": 10.5
+  }
+}
+```
+
+#### Agregar Nuevos Puntos Voluminosos
+
+```javascript
+// En puntos_voluminosos.json, agregar al array
+{
+  "ID": "VL010",
+  "COORD_X": 10.9639,
+  "COORD_Y": -74.7964,
+  "BARRIO": "Nombre del barrio",
+  "LOCALIDAD": "Localidad",
+  "ESTADO_ACTUAL": "Recuperado",
+  "POBLACION_IMPACTADA": 1000,
+  "TONELADAS_DE_CO2_EQUIVALENTE": 15.2
 }
 ```
 
 #### Modificar Colores por Tipo
 
 ```javascript
-// En CONFIG.INSTITUTION_COLORS
-INSTITUTION_COLORS: {
-    universidad: '#2563eb',  // Azul
-    colegio: '#10b981',      // Verde
-    tecnico: '#f59e0b'       // Naranja
+// En CONFIG del script.js
+POINT_COLORS: {
+    critico: '#dc2626',    // Rojo para puntos críticos
+    voluminoso: '#ea580c'  // Naranja para puntos voluminosos
 }
-```
-
-#### Cambiar Centro del Mapa
-
-```javascript
-// En CONFIG.BARRANQUILLA_COORDS
-BARRANQUILLA_COORDS: [10.9639, -74.7964] // [latitud, longitud]
 ```
 
 ## 🔧 Análisis Técnico
 
 ### Rendimiento
-- **Carga inicial**: < 2 segundos en conexión 3G
-- **Búsqueda**: Respuesta instantánea (< 50ms)
+- **Carga inicial**: < 3 segundos en conexión 3G
+- **Filtrado**: Respuesta instantánea (< 100ms)
 - **Animaciones**: 60 FPS en dispositivos modernos
-- **Memoria**: < 50MB de uso en navegador
+- **Memoria**: < 80MB de uso en navegador
 
 ### Compatibilidad
 - **Navegadores**: Chrome 80+, Firefox 75+, Safari 13+, Edge 80+
@@ -172,14 +205,11 @@ BARRANQUILLA_COORDS: [10.9639, -74.7964] // [latitud, longitud]
 - **Resoluciones**: 320px - 4K
 - **Accesibilidad**: WCAG 2.1 AA
 
-### SEO y Metadatos
-```html
-<!-- Agregar al <head> para mejor SEO -->
-<meta name="description" content="Mapa interactivo de instituciones educativas en Barranquilla, Colombia">
-<meta name="keywords" content="Barranquilla, educación, universidades, colegios, mapa">
-<meta property="og:title" content="EduMap Barranquilla">
-<meta property="og:description" content="Explora las mejores instituciones educativas de Barranquilla">
-```
+### Datos y Fuentes
+- **Puntos críticos**: 126 ubicaciones georeferenciadas
+- **Puntos voluminosos**: 9 ubicaciones especializadas
+- **Barrios**: Límites oficiales según POT Barranquilla
+- **Fotos**: 48 imágenes de puntos críticos
 
 ## 🚀 Próximos Pasos Recomendados
 
@@ -187,95 +217,100 @@ BARRANQUILLA_COORDS: [10.9639, -74.7964] // [latitud, longitud]
 
 1. **🗄️ Base de Datos Dinámica**
 ```javascript
-// Integrar con API REST
-class InstitutionService {
-    async fetchInstitutions() {
-        const response = await fetch('/api/institutions');
+// Integrar con API REST para datos en tiempo real
+class ResiduosService {
+    async fetchPuntosCriticos() {
+        const response = await fetch('/api/puntos-criticos');
         return response.json();
     }
 }
 ```
 
-2. **📊 Analytics y Métricas**
+2. **📊 Dashboard de Métricas**
 ```javascript
-// Google Analytics 4
-gtag('event', 'institution_view', {
-    institution_name: institution.name,
-    institution_type: institution.type
-});
+// Panel de control con estadísticas ambientales
+class MetricsDashboard {
+    calculateEnvironmentalImpact() {
+        return {
+            totalCO2Saved: this.getTotalCO2(),
+            areasRecovered: this.getTotalArea(),
+            populationBenefited: this.getTotalPopulation()
+        };
+    }
+}
 ```
 
-3. **🔄 Datos en Tiempo Real**
+3. **🔄 Actualizaciones en Tiempo Real**
 ```javascript
-// WebSocket para actualizaciones live
-const ws = new WebSocket('wss://api.edumap.com/live');
+// WebSocket para monitoreo en vivo
+const ws = new WebSocket('wss://api.residuos-barranquilla.com/live');
 ws.onmessage = (event) => {
     const update = JSON.parse(event.data);
-    this.updateInstitution(update);
+    this.updatePoint(update);
 };
 ```
 
 ### Extensiones Avanzadas
 
-1. **🤖 Inteligencia Artificial**
-   - Recomendaciones personalizadas
-   - Chatbot para consultas
-   - Análisis de sentimientos en reseñas
-
-2. **📱 Progressive Web App (PWA)**
+1. **📱 Progressive Web App (PWA)**
    - Funcionamiento offline
    - Instalación en dispositivos
-   - Notificaciones push
+   - Notificaciones push para nuevos puntos
 
-3. **🌐 Internacionalización**
-   - Soporte multi-idioma
-   - Localización de contenido
-   - Formatos regionales
+2. **🤖 Inteligencia Artificial**
+   - Predicción de puntos críticos
+   - Optimización de rutas de recolección
+   - Análisis de patrones de acumulación
 
-4. **🔐 Sistema de Usuarios**
-   - Perfiles personalizados
-   - Instituciones favoritas
-   - Historial de búsquedas
+3. **📈 Reportes Automatizados**
+   - Informes mensuales de impacto
+   - Exportación de datos en múltiples formatos
+   - Integración con sistemas municipales
+
+4. **🌐 Integración Institucional**
+   - API para terceros
+   - Conexión con sistemas de la Alcaldía
+   - Portal de denuncias ciudadanas
 
 ## 📚 Recursos para Profundizar
 
 ### Documentación Técnica
 - [Leaflet.js Documentation](https://leafletjs.com/reference.html)
-- [CSS Grid Complete Guide](https://css-tricks.com/snippets/css/complete-guide-grid/)
-- [JavaScript ES6+ Features](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
+- [GeoJSON Specification](https://geojson.org/)
 - [Web Accessibility Guidelines](https://www.w3.org/WAI/WCAG21/quickref/)
+- [Progressive Web Apps](https://web.dev/progressive-web-apps/)
 
 ### Herramientas de Desarrollo
-- [Figma](https://www.figma.com/) - Diseño de interfaces
+- [QGIS](https://qgis.org/) - Análisis de datos geoespaciales
+- [Turf.js](https://turfjs.org/) - Análisis geoespacial en JavaScript
 - [Lighthouse](https://developers.google.com/web/tools/lighthouse) - Auditoría de rendimiento
 - [Can I Use](https://caniuse.com/) - Compatibilidad de navegadores
-- [WebPageTest](https://www.webpagetest.org/) - Análisis de velocidad
 
-### Mapas y Geolocalización
+### Datos Ambientales
 - [OpenStreetMap](https://www.openstreetmap.org/) - Datos cartográficos abiertos
-- [Mapbox](https://www.mapbox.com/) - Mapas personalizados avanzados
-- [Google Maps Platform](https://developers.google.com/maps) - APIs de Google
-- [Turf.js](https://turfjs.org/) - Análisis geoespacial
+- [CARTO](https://carto.com/) - Plataforma de análisis geoespacial
+- [EPA Guidelines](https://www.epa.gov/) - Estándares ambientales
+- [UN-Habitat](https://unhabitat.org/) - Mejores prácticas urbanas
 
 ## 🎯 Conclusión
 
-**EduMap Barranquilla** representa una solución completa y moderna para la visualización de instituciones educativas. La arquitectura implementada no solo cumple con los requisitos actuales, sino que proporciona una base sólida para futuras expansiones.
+**Mapa Interactivo de Residuos - Barranquilla** representa una solución integral para la gestión y visualización de residuos sólidos urbanos. La plataforma no solo permite monitorear el estado actual de los puntos críticos y voluminosos, sino que proporciona herramientas para la toma de decisiones basada en datos.
 
-### Valor Agregado del Enfoque Didáctico
+### Valor Agregado del Enfoque Ambiental
 
-- **Código Limpio**: Siguiendo principios SOLID y patrones de diseño
-- **Documentación Exhaustiva**: Comentarios explicativos y guías de uso
-- **Escalabilidad**: Arquitectura preparada para crecimiento
-- **Mejores Prácticas**: Estándares de la industria en cada componente
-- **Experiencia de Usuario**: Diseño centrado en el usuario final
+- **Impacto Medible**: Métricas claras de CO₂, área recuperada y población beneficiada
+- **Transparencia**: Información pública accesible sobre gestión de residuos
+- **Escalabilidad**: Arquitectura preparada para expansión a otras ciudades
+- **Sostenibilidad**: Contribución a los Objetivos de Desarrollo Sostenible (ODS)
+- **Participación Ciudadana**: Herramienta para involucrar a la comunidad
 
-**¡Tu mapa interactivo está listo para usar!** Puedes comenzar a explorarlo inmediatamente y personalizarlo según tus necesidades específicas.
+**¡Tu mapa de residuos está listo para contribuir a una Barranquilla más limpia!** 
 
 ---
 
-*Desarrollado por El Maestro Artesano - Enfoque en mentoría técnica y código de calidad de producción* 🚀✨
+*Desarrollado para la gestión ambiental urbana - Enfoque en sostenibilidad y transparencia* 🌱♻️
 
-**Versión**: 1.0.0  
+**Versión**: 2.0.0  
 **Última actualización**: Enero 2025  
 **Licencia**: MIT  
-**Soporte**: Documentación completa incluida
+**Datos**: Alcaldía de Barranquilla - Secretaría de Gestión Ambiental
