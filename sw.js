@@ -1,212 +1,116 @@
-// Service Worker para EduMap Barranquilla
-// Versión del cache
-const CACHE_NAME = 'edumap-barranquilla-v1.0.0';
-const STATIC_CACHE = 'edumap-static-v1.0.0';
-const DYNAMIC_CACHE = 'edumap-dynamic-v1.0.0';
+// Versión del Service Worker
+const CACHE_NAME = 'mapa-barranquilla-v2';
 
-// Recursos para cachear
-const STATIC_ASSETS = [
+// Recursos esenciales para precachear
+const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
+  '/manifest.json',
   '/src/styles/styles.css',
   '/src/components/script.js',
-  '/manifest.json',
-  '/src/assets/logos/Alcaldia_Original.png',
   '/src/libs/leaflet.css',
   '/src/libs/leaflet.js',
   '/src/libs/font-awesome.css',
-  '/src/webfonts/fa-solid-900.woff2',
-  '/src/webfonts/fa-solid-900.ttf',
-  '/src/data/barrios_ultra_optimizado.geojson'
+  '/src/assets/logos/Logos_Juntos.png',
+  '/src/assets/icons/icono_ubicacion.xml',
+  '/src/assets/icons/icono_ubicacion_naranja.xml',
+  '/src/data/puntos_criticos.json',
+  '/src/data/puntos_voluminosos.json',
+  '/src/data/barrios_ultra_optimizado.geojson',
+  '/src/webfonts/fa-solid-900.woff2'
 ];
 
-// Recursos dinámicos (imágenes, tiles del mapa)
-const DYNAMIC_ASSETS_PATTERNS = [
-  /\/src\/assets\/images\//,
-  /tile\.openstreetmap\.org/,
-  /cdnjs\.cloudflare\.com/
-];
-
-// Instalación del Service Worker
+/**
+ * Evento de instalación:
+ * Se dispara cuando el Service Worker se instala.
+ * Abre el cache y guarda los recursos estáticos.
+ */
 self.addEventListener('install', (event) => {
-  console.log('Service Worker: Instalando...');
-  
   event.waitUntil(
-    caches.open(STATIC_CACHE)
+    caches.open(CACHE_NAME)
       .then((cache) => {
-        console.log('Service Worker: Cacheando recursos estáticos');
-        return cache.addAll(STATIC_ASSETS);
+        console.log('[SW] Cache abierto. Cacheando recursos estáticos para uso offline.');
+
+        // Cachear recursos de forma individual para ser más resiliente a fallos
+        const cachePromises = ASSETS_TO_CACHE.map(asset => {
+            return cache.add(asset).catch(err => {
+                console.warn(`[SW] No se pudo cachear el recurso: ${asset}`, err);
+            });
+        });
+
+        return Promise.all(cachePromises);
       })
-      .then(() => {
-        console.log('Service Worker: Instalación completada');
-        return self.skipWaiting();
-      })
-      .catch((error) => {
-        console.error('Service Worker: Error durante la instalación:', error);
-      })
+      .then(() => self.skipWaiting()) // Forzar la activación del nuevo SW
+      .catch(err => console.error('[SW] Falló la instalación del cache:', err))
   );
 });
 
-// Activación del Service Worker
+/**
+ * Evento de activación:
+ * Se dispara cuando el Service Worker se activa.
+ * Limpia los caches antiguos para liberar espacio.
+ */
 self.addEventListener('activate', (event) => {
-  console.log('Service Worker: Activando...');
-  
   event.waitUntil(
-    caches.keys()
-      .then((cacheNames) => {
-        return Promise.all(
-          cacheNames.map((cacheName) => {
-            if (cacheName !== STATIC_CACHE && cacheName !== DYNAMIC_CACHE) {
-              console.log('Service Worker: Eliminando cache obsoleto:', cacheName);
-              return caches.delete(cacheName);
-            }
-          })
-        );
-      })
-      .then(() => {
-        console.log('Service Worker: Activación completada');
-        return self.clients.claim();
-      })
+    caches.keys().then((cacheNames) => {
+      return Promise.all(
+        cacheNames.map((cacheName) => {
+          if (cacheName !== CACHE_NAME) {
+            console.log('[SW] Eliminando cache antiguo:', cacheName);
+            return caches.delete(cacheName);
+          }
+        })
+      );
+    }).then(() => self.clients.claim()) // Tomar control inmediato de las páginas
   );
 });
 
-// Interceptar peticiones de red
+/**
+ * Evento de fetch:
+ * Intercepta todas las peticiones de red.
+ * Implementa una estrategia de "Cache First" para los recursos de la aplicación
+ * y "Stale-While-Revalidate" para recursos de terceros como los tiles del mapa.
+ */
 self.addEventListener('fetch', (event) => {
   const { request } = event;
-  const url = new URL(request.url);
-  
-  // Solo manejar peticiones GET
+
+  // Ignorar peticiones que no sean GET
   if (request.method !== 'GET') {
     return;
   }
-  
-  // Estrategia Cache First para recursos estáticos
-  if (STATIC_ASSETS.includes(request.url) || STATIC_ASSETS.includes(url.pathname)) {
-    event.respondWith(cacheFirst(request));
-    return;
-  }
-  
-  // Estrategia Stale While Revalidate para recursos dinámicos
-  if (DYNAMIC_ASSETS_PATTERNS.some(pattern => pattern.test(request.url))) {
-    event.respondWith(staleWhileRevalidate(request));
-    return;
-  }
-  
-  // Estrategia Network First para el resto
-  event.respondWith(networkFirst(request));
-});
 
-// Estrategia Cache First
-async function cacheFirst(request) {
-  try {
-    const cachedResponse = await caches.match(request);
-    if (cachedResponse) {
-      return cachedResponse;
-    }
-    
-    const networkResponse = await fetch(request);
-    if (networkResponse.ok) {
-      const cache = await caches.open(STATIC_CACHE);
-      cache.put(request, networkResponse.clone());
-    }
-    return networkResponse;
-  } catch (error) {
-    console.error('Cache First error:', error);
-    return new Response('Recurso no disponible offline', { status: 503 });
-  }
-}
-
-// Estrategia Network First
-async function networkFirst(request) {
-  try {
-    const networkResponse = await fetch(request);
-    if (networkResponse.ok) {
-      const cache = await caches.open(DYNAMIC_CACHE);
-      cache.put(request, networkResponse.clone());
-    }
-    return networkResponse;
-  } catch (error) {
-    const cachedResponse = await caches.match(request);
-    if (cachedResponse) {
-      return cachedResponse;
-    }
-    return new Response('Contenido no disponible', { status: 503 });
-  }
-}
-
-// Estrategia Stale While Revalidate
-async function staleWhileRevalidate(request) {
-  const cache = await caches.open(DYNAMIC_CACHE);
-  const cachedResponse = await cache.match(request);
-  
-  const fetchPromise = fetch(request).then((networkResponse) => {
-    if (networkResponse.ok) {
-      cache.put(request, networkResponse.clone());
-    }
-    return networkResponse;
-  }).catch(() => cachedResponse);
-  
-  return cachedResponse || fetchPromise;
-}
-
-// Limpiar cache periódicamente
-self.addEventListener('message', (event) => {
-  if (event.data && event.data.type === 'CLEAN_CACHE') {
-    cleanOldCache();
-  }
-});
-
-async function cleanOldCache() {
-  const cache = await caches.open(DYNAMIC_CACHE);
-  const requests = await cache.keys();
-  
-  // Mantener solo los últimos 50 recursos dinámicos
-  if (requests.length > 50) {
-    const toDelete = requests.slice(0, requests.length - 50);
-    await Promise.all(toDelete.map(request => cache.delete(request)));
-    console.log(`Service Worker: Limpiados ${toDelete.length} recursos del cache`);
-  }
-}
-
-// Notificaciones push (para futuras implementaciones)
-self.addEventListener('push', (event) => {
-  if (event.data) {
-    const data = event.data.json();
-    const options = {
-      body: data.body,
-      icon: '/src/assets/logos/Alcaldia_Original.png',
-        badge: '/src/assets/logos/Alcaldia_Original.png',
-      vibrate: [100, 50, 100],
-      data: {
-        dateOfArrival: Date.now(),
-        primaryKey: data.primaryKey
-      },
-      actions: [
-        {
-          action: 'explore',
-          title: 'Explorar',
-          icon: '/src/assets/logos/Alcaldia_Original.png'
-        },
-        {
-          action: 'close',
-          title: 'Cerrar'
+  // Estrategia: Cache First para recursos propios
+  if (request.url.startsWith(self.location.origin)) {
+    event.respondWith(
+      caches.match(request).then((cachedResponse) => {
+        // Si el recurso está en el cache, devolverlo
+        if (cachedResponse) {
+          return cachedResponse;
         }
-      ]
-    };
-    
-    event.waitUntil(
-      self.registration.showNotification(data.title, options)
-    );
-  }
-});
 
-// Manejar clicks en notificaciones
-self.addEventListener('notificationclick', (event) => {
-  event.notification.close();
-  
-  if (event.action === 'explore') {
-    event.waitUntil(
-      clients.openWindow('/')
+        // Si no, buscarlo en la red
+        return fetch(request);
+      })
     );
+    return;
   }
+
+  // Estrategia: Stale-While-Revalidate para recursos de terceros (tiles del mapa, etc.)
+  event.respondWith(
+    caches.open(CACHE_NAME).then((cache) => {
+      return cache.match(request).then((cachedResponse) => {
+        // Realizar la petición a la red en segundo plano
+        const fetchPromise = fetch(request).then((networkResponse) => {
+          // Si la petición es exitosa, actualizar el cache
+          if (networkResponse.ok) {
+            cache.put(request, networkResponse.clone());
+          }
+          return networkResponse;
+        });
+
+        // Devolver la respuesta del cache si existe, si no, esperar la respuesta de la red
+        return cachedResponse || fetchPromise;
+      });
+    })
+  );
 });

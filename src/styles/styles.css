@@ -812,7 +812,7 @@ html {
 }
 
 /* ===== LISTA DE PUNTOS CRÍTICOS ===== */
-.critical-points-list, .institutions-list {
+.critical-points-list {
     flex: 1;
     padding: var(--spacing-lg);
     overflow: hidden;
@@ -822,16 +822,7 @@ html {
     box-sizing: border-box;
 }
 
-.institutions-list h3 {
-    font-size: var(--font-size-lg);
-    font-weight: 600;
-    margin-bottom: var(--spacing-md);
-    color: var(--text-primary);
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-}
-
-.institutions-container, .points-container {
+.points-container {
     flex: 1;
     overflow-y: auto;
     overflow-x: hidden;
@@ -842,7 +833,7 @@ html {
     box-sizing: border-box;
 }
 
-.institution-item, .point-item {
+.point-item {
     padding: var(--spacing-md);
     border: 1px solid var(--border-color);
     border-radius: var(--border-radius);
@@ -855,18 +846,18 @@ html {
     overflow-wrap: break-word;
 }
 
-.institution-item:hover, .point-item:hover {
+.point-item:hover {
     border-color: var(--primary-color);
     box-shadow: var(--shadow-md);
     transform: translateY(-1px);
 }
 
-.institution-item.active, .point-item.active {
+.point-item.active {
     border-color: var(--primary-color);
     background: rgba(37, 99, 235, 0.05);
 }
 
-.institution-name, .point-name {
+.point-name {
     font-weight: 600;
     color: var(--text-primary);
     margin-bottom: var(--spacing-xs);
@@ -876,7 +867,7 @@ html {
     max-width: 100%;
 }
 
-.institution-type, .point-type {
+.point-type {
     font-size: var(--font-size-sm);
     color: var(--text-secondary);
     margin-bottom: var(--spacing-xs);
@@ -884,7 +875,7 @@ html {
     overflow-wrap: break-word;
 }
 
-.institution-address, .point-location {
+.point-location {
     font-size: var(--font-size-xs);
     color: var(--text-light);
     word-wrap: break-word;
@@ -1029,168 +1020,6 @@ html {
     border-color: var(--accent-blue);
 }
 
-/* ===== INFORMACIÓN DE INSTITUCIÓN ===== */
-.institution-info {
-    position: absolute;
-    bottom: var(--spacing-lg);
-    left: var(--spacing-lg);
-    width: 350px;
-    min-height: 200px;
-    background: var(--bg-primary);
-    border-radius: var(--border-radius-lg);
-    box-shadow: var(--shadow-xl);
-    z-index: 1000;
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(20px);
-    transition: all 0.3s ease;
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    display: block; /* Asegurar que siempre tenga display block */
-}
-
-/* Estado oculto por defecto */
-.institution-info.hidden {
-    opacity: 0 !important;
-    visibility: hidden !important;
-    transform: translateY(20px) !important;
-    pointer-events: none;
-}
-
-/* Estado visible cuando se remueve la clase hidden */
-.institution-info:not(.hidden) {
-    opacity: 1 !important;
-    visibility: visible !important;
-    transform: translateY(0) !important;
-    pointer-events: auto;
-}
-
-.close-info {
-    position: absolute;
-    top: var(--spacing-md);
-    right: var(--spacing-md);
-    background: none;
-    border: none;
-    font-size: var(--font-size-lg);
-    cursor: pointer;
-    color: var(--text-secondary);
-    transition: var(--transition-fast);
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.close-info:hover {
-    background: var(--danger-color);
-    color: var(--text-white);
-}
-
-.info-content {
-    padding: var(--spacing-xl);
-}
-
-.info-header {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-md);
-    margin-bottom: var(--spacing-lg);
-}
-
-.info-icon {
-    width: 48px;
-    height: 48px;
-    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--text-white);
-    font-size: var(--font-size-xl);
-}
-
-.info-title h3 {
-    font-size: var(--font-size-lg);
-    font-weight: 600;
-    margin: 0;
-    color: var(--text-primary);
-}
-
-.info-title p {
-    font-size: var(--font-size-sm);
-    color: var(--text-secondary);
-    margin: 0;
-}
-
-.info-details {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-md);
-    margin-bottom: var(--spacing-lg);
-}
-
-.detail-item {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-md);
-    font-size: var(--font-size-sm);
-}
-
-.detail-item i {
-    width: 20px;
-    color: var(--text-secondary);
-}
-
-.detail-item a {
-    color: var(--primary-color);
-    text-decoration: none;
-    transition: var(--transition-fast);
-}
-
-.detail-item a:hover {
-    text-decoration: underline;
-}
-
-.info-actions {
-    display: flex;
-    gap: var(--spacing-md);
-}
-
-.action-btn {
-    flex: 1;
-    padding: var(--spacing-md);
-    border: none;
-    border-radius: var(--border-radius);
-    font-weight: 600;
-    cursor: pointer;
-    transition: var(--transition-fast);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: var(--spacing-sm);
-}
-
-.action-btn.primary {
-    background: var(--primary-color);
-    color: var(--text-white);
-}
-
-.action-btn.primary:hover {
-    background: var(--primary-dark);
-    transform: translateY(-1px);
-}
-
-.action-btn.secondary {
-    background: var(--bg-secondary);
-    color: var(--text-primary);
-    border: 1px solid var(--border-color);
-}
-
-.action-btn.secondary:hover {
-    background: var(--border-color);
-}
 
 /* ===== LOADING OVERLAY ===== */
 .loading-overlay {
@@ -1538,36 +1367,6 @@ html {
     color: var(--primary-blue);
 }
 
-.institution-badge {
-    display: inline-block;
-    padding: 4px 12px;
-    background: var(--neutral-gray);
-    border-radius: 12px;
-    font-size: 12px;
-    font-weight: 500;
-    text-transform: capitalize;
-    letter-spacing: -0.008em;
-    position: relative;
-    z-index: 1;
-    color: var(--text-secondary);
-    font-family: 'Volkswagen', -apple-system, BlinkMacSystemFont, sans-serif;
-}
-
-.institution-badge.universidad {
-    background: var(--accent-blue);
-    color: white;
-}
-
-.institution-badge.colegio {
-    background: var(--success-green);
-    color: white;
-}
-
-.institution-badge.tecnico {
-    background: var(--warning-yellow);
-    color: var(--text-primary);
-}
-
 .leaflet-control-zoom {
     border: none !important;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
@@ -1789,107 +1588,34 @@ canvas.leaflet-zoom-animated,
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.2s ease;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    overflow: hidden !important; /* Mantener hidden para contener el contenido */
-    min-height: 120px !important; /* Aumentado para asegurar espacio */
+    padding: 12px;
+}
+
+.point-card:hover {
+    border-color: var(--primary-color);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
+}
+
+.point-card-header {
     display: flex;
-    flex-direction: column;
-    position: relative;
-    margin: 2px auto; /* Reducido margen vertical */
-    width: calc(100% - 2px) !important; /* Aún más ancho que antes */
-    max-width: 100%;
-    box-sizing: border-box;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
 }
 
-/* Estilos específicos para tarjetas compactas */
-.point-card.compact {
-    min-height: 80px !important; /* Reducido de 100px para más compacto */
-    padding: 0 !important;
-    overflow: visible !important; /* Asegurar que no se corte el contenido */
-}
-
-.point-card.compact .point-card-header {
-    padding: 6px 10px !important; /* Reducido de 8px 12px */
-    background: rgba(3, 88, 140, 0.03);
-    border-bottom: 1px solid rgba(3, 88, 140, 0.1);
-}
-
-.point-card.compact .point-card-header strong {
-    font-size: 12px !important; /* Reducido de 13px */
+.point-card-header strong {
+    font-size: 14px;
     font-weight: 600;
     color: var(--primary-color);
 }
 
-.point-card.compact .point-card-status {
-    padding: 1px 5px !important; /* Reducido de 2px 6px */
-    font-size: 9px !important; /* Reducido de 10px */
-}
-
-.point-card.compact .point-card-body {
-    padding: 6px 10px 8px 10px !important; /* Reducido de 8px 12px 10px 12px */
-    flex: 1 !important;
-    display: flex !important;
-    flex-direction: column !important;
-    justify-content: flex-start !important;
-    width: 100% !important;
-    box-sizing: border-box !important;
-    min-height: 0 !important;
-}
-
-/* Contenedor para dirección y localidad en línea */
-.point-card.compact .point-card-address-container {
-    display: flex !important;
-    flex-direction: row !important;
-    align-items: baseline !important;
-    flex-wrap: wrap !important;
-    gap: 8px !important;
-}
-
-.point-card.compact .point-card-barrio {
-    font-size: 11px !important; /* Reducido de 12px */
-    margin-bottom: 1px !important; /* Reducido de 2px */
+.point-card-status {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 11px;
     font-weight: 500;
-    color: var(--text-primary);
-}
-
-.point-card.compact .point-card-address {
-    font-size: 10px !important; /* Reducido de 11px */
-    margin-bottom: 0 !important; /* Sin margen inferior para estar en línea */
-    color: var(--text-light);
-    display: inline !important; /* Inline para estar en la misma línea */
-    margin-right: 6px !important; /* Reducido de 8px para más compacto */
-}
-
-.point-card.compact .point-card-location {
-    display: block !important; /* Cambiar de flex a block para permitir inline */
-    width: 100%;
-    overflow: hidden; /* Evitar que el contenido se salga */
-}
-
-.point-card.compact .point-card-locality {
-    font-size: 9px !important; /* Reducido de 10px */
-    margin-bottom: 0 !important; /* Sin margen inferior */
-    color: var(--text-secondary);
-    font-style: italic;
-    display: inline !important; /* Inline para estar en la misma línea */
-}
-
-/* Borde izquierdo con gradiente original */
-.point-card::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 3px;
-    background: linear-gradient(180deg, var(--primary-color) 0%, var(--success-green) 50%, var(--warning-yellow) 100%);
-    transition: width 0.2s ease;
-    border-radius: 8px 0 0 8px; /* Redondear solo el lado izquierdo */
-    z-index: 1; /* Asegurar que esté dentro de la tarjeta */
-}
-
-.point-card:hover::before {
-    width: 4px;
 }
 
 /* Estilo para point-cards vacíos */
