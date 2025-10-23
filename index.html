@@ -185,50 +185,6 @@
             
             <!-- Mapa Principal -->
             <div id="map" class="map-container"></div>
-            
-            <!-- Información de la Institución Seleccionada -->
-            <div id="institution-info" class="institution-info hidden">
-                <button class="close-info" id="close-info">
-                    <i class="fas fa-times"></i>
-                </button>
-                <div class="info-content">
-                    <div class="info-header">
-                        <div class="info-icon">
-                            <i class="fas fa-graduation-cap"></i>
-                        </div>
-                        <div class="info-title">
-                            <h3 id="info-name">Nombre de la Institución</h3>
-                            <p id="info-type">Tipo de institución</p>
-                        </div>
-                    </div>
-                    
-                    <div class="info-details">
-                        <div class="detail-item">
-                            <i class="fas fa-map-marker-alt"></i>
-                            <span id="info-address">Dirección</span>
-                        </div>
-                        <div class="detail-item">
-                            <i class="fas fa-phone"></i>
-                            <span id="info-phone">Teléfono</span>
-                        </div>
-                        <div class="detail-item">
-                            <i class="fas fa-globe"></i>
-                            <a id="info-website" href="#" target="_blank">Sitio web</a>
-                        </div>
-                    </div>
-                    
-                    <div class="info-actions">
-                        <button class="action-btn primary" id="get-directions">
-                            <i class="fas fa-route"></i>
-                            Cómo llegar
-                        </button>
-                        <button class="action-btn secondary" id="share-location">
-                            <i class="fas fa-share"></i>
-                            Compartir
-                        </button>
-                    </div>
-                </div>
-            </div>
         </section>
     </main>
 
@@ -249,37 +205,7 @@
     
     <!-- Scripts -->
     <script src="./src/assets/icons/icons.js" defer></script>
-    <script>
-        // Función para cargar script principal de forma segura
-        function loadMainScript() {
-            const script = document.createElement('script');
-            script.src = `./src/components/script.js?v=${Date.now()}`;
-            script.defer = true;
-            
-            // Manejar errores de carga
-            script.onerror = function() {
-                console.error('❌ Error cargando script principal, usando fallback mínimo');
-                // Cargar script mínimo como fallback
-                const fallbackScript = document.createElement('script');
-                fallbackScript.src = './minimal-test.js';
-                fallbackScript.defer = true;
-                document.head.appendChild(fallbackScript);
-            };
-            
-            script.onload = function() {
-                console.log('✅ Script principal cargado exitosamente');
-            };
-            
-            document.head.appendChild(script);
-        }
-        
-        // Cargar cuando el DOM esté listo
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', loadMainScript);
-        } else {
-            loadMainScript();
-        }
-    </script>
+    <script type="module" src="./src/components/app.js"></script>
     
     <!-- Service Worker Registration - DESHABILITADO PARA DESARROLLO -->
     <script>
@@ -293,24 +219,17 @@
             });
         }
         
-        /* COMENTADO PARA DESARROLLO - DESCOMENTAR EN PRODUCCIÓN
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('/sw.js')
                     .then((registration) => {
                         console.log('SW registrado con éxito:', registration.scope);
-                        
-                        // Limpiar cache periódicamente
-                        setInterval(() => {
-                            registration.active?.postMessage({ type: 'CLEAN_CACHE' });
-                        }, 30 * 60 * 1000); // Cada 30 minutos
                     })
                     .catch((error) => {
                         console.log('SW registro falló:', error);
                     });
             });
         }
-        */
         
         // Detectar instalación de PWA
         let deferredPrompt;
